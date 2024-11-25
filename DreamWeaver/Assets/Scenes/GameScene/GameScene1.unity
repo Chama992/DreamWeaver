@@ -1443,8 +1443,6 @@ GameObject:
   - component: {fileID: 1770344354}
   - component: {fileID: 1770344353}
   - component: {fileID: 1770344352}
-  - component: {fileID: 1770344351}
-  - component: {fileID: 1770344356}
   m_Layer: 6
   m_Name: MyPlayer
   m_TagString: Player
@@ -1452,18 +1450,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1770344351
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1770344350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0cdb1ebf572d37a47956253f891c93f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1770344352
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1476,13 +1462,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24c702e3997ff594aa25c9720fbb2a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groundCheck: {fileID: 1551165941}
-  groundCheckDistance: 0.1
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 8
-  wallCheck: {fileID: 55886495}
-  wallCheckDistance: 0.2
   moveSpeed: 8
   jumpForce: 15
   airMoveSpeed: 6
@@ -1494,7 +1473,13 @@ MonoBehaviour:
   dashDuration: 0.3
   dashSpeed: 25
   dashCoolDown: 1
-  canDash: 1
+  groundCheck: {fileID: 1551165941}
+  groundCheckDistance: 0.1
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 8
+  wallCheck: {fileID: 55886495}
+  wallCheckDistance: 0.2
 --- !u!50 &1770344353
 Rigidbody2D:
   serializedVersion: 4
@@ -1575,18 +1560,6 @@ Transform:
   - {fileID: 55886495}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1770344356
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1770344350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91559d4ee4d8a1a45818c2128f3c0b9a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1810674742
 GameObject:
   m_ObjectHideFlags: 0

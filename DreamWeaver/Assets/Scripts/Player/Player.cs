@@ -1,11 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class Player : Entity
+public class Player : MonoBehaviour
 {
     #region PlayerStates
     public PlayerStateMachine StateMachine { get; private set;  }
@@ -33,12 +31,26 @@ public class Player : Entity
     [SerializeField] public float dashDuration;
     [SerializeField] public float dashSpeed;
     [SerializeField] private float dashCoolDown;
-    [SerializeField] private bool canDash = true;
     private float dashUsageTimer;
     public float dashDir { get; private set; }
-    protected override void Awake()
+    #region Components
+    public Animator Anim { get; private set; }
+    public Rigidbody2D Rb { get; private set; }
+    #endregion
+    [Header("CollisionCheck Info")]
+    [SerializeField] protected Transform groundCheck;
+    [SerializeField] protected float groundCheckDistance;
+    [SerializeField] protected LayerMask whatIsGround;
+    [SerializeField] protected Transform wallCheck;
+    [SerializeField] protected float wallCheckDistance;
+    #region FacingDir
+    public int facingDir { get; private set; } = 1;
+    public bool facingRight { get; private set; } = true;
+    #endregion
+    private  void Awake()
     {
-        base.Awake();
+        Anim = GetComponentInChildren<Animator>();
+        Rb = GetComponent<Rigidbody2D>();
         //use statemachine,player can switch to any state
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine, "Idle");
@@ -50,37 +62,63 @@ public class Player : Entity
         WallJumpState = new PlayerWallJumpState(this, StateMachine, "Jump");
         DeadState = new PlayerDeadState(this, StateMachine, "Dead");
     }
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
         StateMachine.Initialize(IdleState);
     }
-    protected override void Update()
+    private  void Update()
     {
-        base.Update();
         StateMachine.currentState.Update();
-        CheckDashActive();//???????????
+        CheckDashActive();
     }
+    #region Collision
+    public  bool IsGroundChecked() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+    public  bool IsWallChecked() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+    private  void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
+        Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
+    }
+    #endregion
     #region Dash
-    /// <summary>
-    /// ???????????????
-    /// </summary>
     private void CheckDashActive()
     {
-        if (this.IsWallChecked()) //???????????
+        dashUsageTimer -= Time.deltaTime;
+        if (this.IsWallChecked()) 
             return;
-        dashUsageTimer -= Time.deltaTime;//??????
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0 && canDash) // ��??????????shift
+        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
         {
             dashUsageTimer = dashCoolDown;
             // ????????????????
             dashDir = Input.GetAxisRaw("Horizontal");
             if (dashDir == 0)
-                dashDir = facingDir;//????��???????
+                dashDir = facingDir;
             if (dashDir != facingDir)
                 Flip();
             StateMachine.ChangeState(this.DashState);
         }
+    }
+    #endregion
+    #region Flip
+    public void Flip()
+    {
+        facingDir *= -1;
+        facingRight = !facingRight;
+        transform.Rotate(0, 180, 0);
+    }
+    private  void FlipControl(float _x)
+    {
+        if (_x > 0 && !facingRight)
+            Flip();
+        else if (_x < 0 && facingRight)
+            Flip();
+    }
+    #endregion
+    #region Velocity
+    public virtual void SetVelocity(float _xVelocity, float _yVelocity)
+    {
+        Rb.velocity = new Vector2(_xVelocity, _yVelocity);
+        FlipControl(_xVelocity);
     }
     #endregion
     public void AnimationTrigger() => this.StateMachine.currentState.AnimationFinishTrigger();

@@ -8,25 +8,25 @@ public class PlayerProps
     /// 获得道具
     /// </summary>
     /// <param name="propId"></param>
-    public void GetProps(int propId)
+    public void GetProps(int propId,int count)
     {
         if (props.ContainsKey(propId))
-            props[propId]++;
+            props[propId] += count;
         else
-            props.Add(propId, 1);
+            props.Add(propId, count);
         InGameUIManager.Instance.FreshPropPanel(propId,props[propId]);
     }
     /// <summary>
     /// 使用道具
     /// </summary>
     /// <param name="propId"></param>
-    public void UseProps(int propId)
+    public void UseProp(int propId)
     {
         if (props.ContainsKey(propId) && props[propId] > 0)
         {
             props[propId]--;
-            //TODO： 在这里写使用效果
             InGameUIManager.Instance.FreshPropPanel(propId,props[propId]);
+            //TODO： 在这里写使用道具逻辑
             if (props[propId] == 0)
                 props.Remove(propId);
         }

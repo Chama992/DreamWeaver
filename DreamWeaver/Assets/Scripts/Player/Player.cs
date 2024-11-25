@@ -66,12 +66,6 @@ public class Player : MonoBehaviour
         WallJumpState = new PlayerWallJumpState(this, StateMachine, "Jump");
         DeadState = new PlayerDeadState(this, StateMachine, "Dead");
     }
-
-    private IEnumerator a()
-    {
-        yield return new WaitForSeconds(dashDuration);
-    }
-
     private void Start()
     {
         StateMachine.Initialize(IdleState);
@@ -80,6 +74,18 @@ public class Player : MonoBehaviour
     {
         StateMachine.currentState.Update();
         CheckDashActive();
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            Props.GetProps(1,1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            Props.GetProps(2,1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            Props.UseProp(1);
+        }
     }
     #region Collision
     public  bool IsGroundChecked() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);

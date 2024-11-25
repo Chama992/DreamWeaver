@@ -47,6 +47,10 @@ public class Player : MonoBehaviour
     public int facingDir { get; private set; } = 1;
     public bool facingRight { get; private set; } = true;
     #endregion
+
+    #region Props
+    public PlayerProps Props { get; private set; } = new PlayerProps();
+    #endregion
     private  void Awake()
     {
         Anim = GetComponentInChildren<Animator>();
@@ -62,6 +66,12 @@ public class Player : MonoBehaviour
         WallJumpState = new PlayerWallJumpState(this, StateMachine, "Jump");
         DeadState = new PlayerDeadState(this, StateMachine, "Dead");
     }
+
+    private IEnumerator a()
+    {
+        yield return new WaitForSeconds(dashDuration);
+    }
+
     private void Start()
     {
         StateMachine.Initialize(IdleState);

@@ -25,7 +25,7 @@ public class PlayerIdleState : PlayerGroundedState
         if (StateMachine.currentState != player.IdleState)
             return;
         //这么多主要用于判断临近墙不能走
-        if (xInput != 0 && !player.IsBusy)
+        if (xInput != 0)
         {
             // near wall cant move
             if (player.IsWallChecked())

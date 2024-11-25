@@ -22,8 +22,6 @@ public class Entity : MonoBehaviour
     public int facingDir { get; private set; } = 1;
     public bool facingRight { get; private set; } = true;
     #endregion
-
-    public bool IsBusy { get; private set; }
     protected virtual void Awake()
     {
         Anim = GetComponentInChildren<Animator>();
@@ -65,7 +63,7 @@ public class Entity : MonoBehaviour
     /// <summary>
     /// ��ɫ���棬��Ҫ���ý�ɫ��y�ᷭת180��
     /// </summary>
-    public virtual void Flip()
+    public void Flip()
     {
         facingDir *= -1;
         facingRight = !facingRight;
@@ -75,7 +73,7 @@ public class Entity : MonoBehaviour
     /// ���ƽ�ɫ�Ƿ���Ҫ����
     /// </summary>
     /// <param name="_x"></param>
-    protected virtual void FlipControl(float _x)
+    protected  void FlipControl(float _x)
     {
         //�����ƶ����泯���
         if (_x > 0 && !facingRight)

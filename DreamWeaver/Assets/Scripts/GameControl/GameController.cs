@@ -51,13 +51,6 @@ public class GameController : SingleTon<GameController>
         winUI.SetActive(true);
         // SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         this.StartCoroutine(PlayerwinUI(winUI));//��UI
-        if (File.Exists(Application.persistentDataPath + "/save.json"))
-        {
-            using (StreamWriter streamWriter = new StreamWriter(Application.persistentDataPath + "/save.json"))
-            {
-                streamWriter.Write("");
-            }
-        }
     }
     public IEnumerator PlayerwinUI(GameObject winUI)
     {

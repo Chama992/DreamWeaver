@@ -14,7 +14,6 @@ public class PlayerDashState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        MySoundManager.PlayOneAudio("Shift");
         if (!findFlag)
         {
             AnimationClip dashClip = (from clip in player.Anim.runtimeAnimatorController.animationClips

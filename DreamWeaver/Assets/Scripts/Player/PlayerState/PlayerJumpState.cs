@@ -11,7 +11,6 @@ public class PlayerJumpState : PlayerState
     public override void Enter()
     {
         base.Enter();
-        MySoundManager.PlayOneAudio("jump");
         rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);//给一个瞬间的力
     }
 

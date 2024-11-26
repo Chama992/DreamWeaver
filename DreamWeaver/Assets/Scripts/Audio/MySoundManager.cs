@@ -33,10 +33,6 @@ public  class MySoundManager : SingleTon<MySoundManager>
         {
             oneShotObj = new GameObject(AUDIO_PATH + "OneShotSound");
             oneShotAudioSource = oneShotObj.AddComponent<AudioSource>();
-            //添加AudioMixer
-            oneShotAudioSource.outputAudioMixerGroup = Instance.audioMixerGroup;
-            
-            
         }
         oneShotAudioSource.pitch = Random.Range(0.8f, 1.2f);
         oneShotAudioSource.PlayOneShot(GetAudio(_sfxName));
@@ -64,9 +60,6 @@ public  class MySoundManager : SingleTon<MySoundManager>
             {
                 oneShotObj = new GameObject(AUDIO_PATH + "OneShotSound");
                 oneShotAudioSource = oneShotObj.AddComponent<AudioSource>();
-                
-                //添加AudioMixer
-                oneShotAudioSource.outputAudioMixerGroup = Instance.audioMixerGroup;
             }
             oneShotAudioSource.pitch = Random.Range(0.8f, 1.2f);
             oneShotAudioSource.PlayOneShot(GetAudio(_sfxName));

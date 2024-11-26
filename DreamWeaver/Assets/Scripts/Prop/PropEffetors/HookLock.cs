@@ -19,8 +19,7 @@ public class HookLock : PropEffector
         RaycastHit2D hit = Physics2D.Raycast(player.transform.position,(mousePosWorld - player.transform.position).normalized,radius,LayerMask.GetMask("Ground"));
         if (hit)
         {
-            //TODO: ×ªÒÆ×´Ì¬
+            player.HookState.SetTarget(hit.point);
         }
-        
     }
 }

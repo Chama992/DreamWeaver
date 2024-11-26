@@ -15,6 +15,7 @@ public class Player : MonoBehaviour
     public PlayerWallSlideState WallSlideState { get; private set; }
     public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerDeadState DeadState { get; private set; }
+    public PlayerHookState HookState { get; private set; }
     #endregion
     [Header("Move Info")]
     [SerializeField] public float moveSpeed;
@@ -50,6 +51,10 @@ public class Player : MonoBehaviour
     #region Props
     public PlayerProps Props { get; private set; } = new PlayerProps();
     #endregion
+
+    #region Hook
+    public float hookSpeed;
+    #endregion
     private  void Awake()
     {
         Anim = GetComponentInChildren<Animator>();
@@ -64,6 +69,7 @@ public class Player : MonoBehaviour
         WallSlideState = new PlayerWallSlideState(this, StateMachine, "WallSlide");
         WallJumpState = new PlayerWallJumpState(this, StateMachine, "Jump");
         DeadState = new PlayerDeadState(this, StateMachine, "Dead");
+        HookState = new PlayerHookState(this, StateMachine, "Jump");
         Props.Initialize(this);
     }
     private void Start()
@@ -123,6 +129,11 @@ public class Player : MonoBehaviour
     {
         Rb.velocity = new Vector2(_xVelocity, _yVelocity);
         FlipControl(_xVelocity);
+    }
+    public virtual void SetVelocity(Vector2 velocity)
+    {
+        Rb.velocity = velocity;
+        FlipControl(velocity.x);
     }
     #endregion
     public void AnimationTrigger() => this.StateMachine.currentState.AnimationFinishTrigger();

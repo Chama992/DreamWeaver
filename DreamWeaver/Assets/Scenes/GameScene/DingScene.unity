@@ -3588,6 +3588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ba5f88ef195ee243a8d9b5e869776aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
   pieces: []
   checkPoint: {fileID: 0}
   pieceGenePositionRamdonBias: 0

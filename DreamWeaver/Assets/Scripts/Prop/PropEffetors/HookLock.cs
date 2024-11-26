@@ -20,6 +20,7 @@ public class HookLock : PropEffector
         if (hit)
         {
             player.HookState.SetTarget(hit.point);
+            player.StateMachine.ChangeState(player.HookState);
         }
     }
 }

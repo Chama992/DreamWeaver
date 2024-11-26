@@ -19,8 +19,8 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     [Header("PropPanel")]
     public GameObject propPanel;
     public GameObject propFrame;
-    private Dictionary<int, PropFrameUI> propFrameUIs = new();//记录第几个位置是哪个道具
-    private List<GameObject> propFrameObjectsPool = new();
+    public Dictionary<int, PropFrameUI> propFrameUIs = new();
+    // private List<GameObject> propFrameObjectsPool = new();
     private void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
@@ -30,7 +30,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     {
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            OpenRoguePropPanel();
+            OpenRoguePropPanel(1);
         }
         if (Input.GetKeyDown(KeyCode.CapsLock))
         {
@@ -56,13 +56,14 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         threadLength = _threadLength;
         threadLengthTmp.text = threadLength.ToString("P2");
     }
-
-    public void OpenRoguePropPanel()
+    /// <summary>
+    /// 打开肉鸽面板
+    /// </summary>
+    public void OpenRoguePropPanel(int count)
     {
         roguePropPanel.SetActive(true);
         GenerateRoguePropPanel();
     }
-
     /// <summary>
     /// 生成肉鸽面板
     /// </summary>
@@ -126,49 +127,51 @@ public class InGameUIManager : SingleTon<InGameUIManager>
             if (propCount == 0)
             {
                 propFrameUIs.Remove(propId);
-                GameObject propFrameObject = propPanel.GetComponent<ScrollRect>().content.Find(propId.ToString()).gameObject;
-                InPropFramePool(propFrameObject);
-                // Destroy(propPanel.GetComponent<ScrollRect>().content.Find(propId.ToString()).gameObject); 
+                // GameObject propFrameObject = propPanel.GetComponent<ScrollRect>().content.Find(propId.ToString()).gameObject;
+                // InPropFramePool(propFrameObject);
+                Destroy(propPanel.GetComponent<ScrollRect>().content.Find(propId.ToString()).gameObject); 
             }
             else
                 propFrameUIs[propId].GetComponent<PropFrameUI>().ChangePropCount(propCount); 
         }
         else
         {
-            GameObject propFrameObject = GetFromPropFramePool();
-            PropFrameUI newProp = propFrameObject.GetComponent<PropFrameUI>();
+            // GameObject propFrameObject = GetFromPropFramePool();
+            // PropFrameUI newProp = propFrameObject.GetComponent<PropFrameUI>();
+            // newProp.Initialize(PropDataManager.Instance.GetPropData(propId), propCount);
+            // propFrameUIs.Add(propId, newProp);
+            PropFrameUI newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content).GetComponent<PropFrameUI>();
             newProp.Initialize(PropDataManager.Instance.GetPropData(propId), propCount);
-            propFrameUIs.Add(propId, newProp);
-            // PropFrameUI newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content).GetComponent<PropFrameUI>();
-            // newProp.Initialize(PropPools.Instance.GetPropData(propId), propCount);
-            // propFrameUIs.Add(propId,newProp);
+            propFrameUIs.Add(propId,newProp);
         }
     }
-    /// <summary>
-    /// 框框对象池入池
-    /// </summary>
-    /// <param name="propFrameObject"></param>
-    private void InPropFramePool(GameObject propFrameObject)
-    {
-        propFrameObjectsPool.Add(propFrameObject);
-        propFrameObject.SetActive(false);
-    }
-    /// <summary>
-    /// 框框对象池出池
-    /// </summary>
-    /// <returns></returns>
-    private GameObject GetFromPropFramePool()
-    {
-        GameObject newProp;
-        if (propFrameObjectsPool.Count != 0)
-        {
-            newProp = propFrameObjectsPool[0];
-            newProp.transform.SetAsLastSibling();
-            newProp.SetActive(true);
-            propFrameObjectsPool.RemoveAt(0);
-            return newProp;
-        }
-        newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content);
-        return newProp;
-    }
+    #if 框框对象池有bug
+    // /// <summary>
+    // /// 框框对象池入池
+    // /// </summary>
+    // /// <param name="propFrameObject"></param>
+    // private void InPropFramePool(GameObject propFrameObject)
+    // {
+    //     propFrameObjectsPool.Add(propFrameObject);
+    //     propFrameObject.SetActive(false);
+    // }
+    // /// <summary>
+    // /// 框框对象池出池
+    // /// </summary>
+    // /// <returns></returns>
+    // private GameObject GetFromPropFramePool()
+    // {
+    //     GameObject newProp;
+    //     if (propFrameObjectsPool.Count != 0)
+    //     {
+    //         newProp = propFrameObjectsPool[0];
+    //         newProp.transform.SetAsLastSibling();
+    //         newProp.SetActive(true);
+    //         propFrameObjectsPool.RemoveAt(0);
+    //         return newProp;
+    //     }
+    //     newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content);
+    //     return newProp;
+    // }
+    #endif
 }

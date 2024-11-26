@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class RogueFrameUI : MonoBehaviour,IPointerClickHandler
 {
-    private int propId;
+    public int propId{ get; private set; }
     private Image propImage;
     private TMP_Text propDescriptionText;
     private TMP_Text propName;

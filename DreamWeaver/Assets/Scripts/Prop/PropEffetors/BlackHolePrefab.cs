@@ -8,7 +8,8 @@ public class BlackHolePrefab : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            //TODO: GameControl给一个接口游戏结束
+            GameController.instance.PauseGame();
+            GameController.instance.EndGame();
         }
     }
 }

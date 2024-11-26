@@ -11,6 +11,6 @@ public class Reset : PropEffector
     public override void Instant()
     {
         base.Instant();
-        //TODO: GameControl给一个接口，指定位置生成一个随机碎片
+        //TODO: GameControl给一个接口，重新生成该关卡
     }
 }

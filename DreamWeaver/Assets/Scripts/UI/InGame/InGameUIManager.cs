@@ -68,7 +68,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     /// </summary>
     public void GenerateRoguePropPanel()
     {
-        List<PropData> propDatas = PropManager.Instance.GetRandomProps();
+        List<PropData> propDatas = PropDataManager.Instance.GetRandomProps();
         for (int i = 0; i < propDatas.Count; i++)
         {
             GameObject roguePropFrame = GetFromRoguePropFramePool();
@@ -137,7 +137,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         {
             GameObject propFrameObject = GetFromPropFramePool();
             PropFrameUI newProp = propFrameObject.GetComponent<PropFrameUI>();
-            newProp.Initialize(PropManager.Instance.GetPropData(propId), propCount);
+            newProp.Initialize(PropDataManager.Instance.GetPropData(propId), propCount);
             propFrameUIs.Add(propId, newProp);
             // PropFrameUI newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content).GetComponent<PropFrameUI>();
             // newProp.Initialize(PropPools.Instance.GetPropData(propId), propCount);

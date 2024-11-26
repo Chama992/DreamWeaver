@@ -8,4 +8,6 @@ public class PropData : ScriptableObject
     public string propName;
     public string propDescription;
     public Sprite propIcon;
+    public PropType propType;
+    public PropEffectorType propEffectorType;
 }

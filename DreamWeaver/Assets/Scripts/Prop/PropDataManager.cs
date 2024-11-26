@@ -6,7 +6,7 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 
-public class PropManager : SingleTon<PropManager>
+public class PropDataManager : SingleTon<PropDataManager>
 {
     private Dictionary<int, PropData> propPools = new();
     protected override void Awake()
@@ -24,6 +24,23 @@ public class PropManager : SingleTon<PropManager>
         if (propPools.ContainsKey(propId))
             return propPools[propId];
         return Resources.Load<PropData>("Data/Props/" + propId.ToString());
+    }
+    /// <summary>
+    /// 获取道具类型
+    /// </summary>
+    /// <param name="propId"></param>
+    /// <returns></returns>
+    public PropType GetPropType(int propId)
+    {
+        if (propPools.ContainsKey(propId))
+            return propPools[propId].propType;
+        return Resources.Load<PropData>("Data/Props/" + propId.ToString()).propType;
+    }
+    public PropEffectorType GetPropTypeEffectorType(int propId)
+    {
+        if (propPools.ContainsKey(propId))
+            return propPools[propId].propEffectorType;
+        return Resources.Load<PropData>("Data/Props/" + propId.ToString()).propEffectorType;
     }
     /// <summary>
     /// 加载道具数据
@@ -57,4 +74,15 @@ public class PropManager : SingleTon<PropManager>
         }
         return props;
     }
+}
+
+public enum PropType
+{
+    Fireworks,
+    Feather,
+    HookLock,
+    Bomb,
+    Reset,
+    Hammer,
+    BlackHole
 }

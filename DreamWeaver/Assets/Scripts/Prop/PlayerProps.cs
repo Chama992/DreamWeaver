@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayerProps
 {
     private Player player;
-
     public void Initialize(Player _player)
     {
         player = _player;
@@ -17,6 +16,11 @@ public class PlayerProps
     /// <param name="propId"></param>
     public void GetProps(int propId,int count)
     {
+        if (PropDataManager.Instance.GetPropTypeEffectorType(propId) == PropEffectorType.Special)
+        {
+            //TODO: 写特殊道具逻辑
+            return;
+        }
         if (props.ContainsKey(propId))
             props[propId] += count;
         else
@@ -33,10 +37,39 @@ public class PlayerProps
         {
             props[propId]--;
             InGameUIManager.Instance.FreshPropPanel(propId,props[propId]);
+            UseSpecificProps(propId);
             //TODO： 在这里写使用道具逻辑
             if (props[propId] == 0)
                 props.Remove(propId);
         }
     }
-    
+    public void UseSpecificProps(int propId)
+    {
+        PropEffectorManager propEffectorManager = player.gameObject.GetComponent<PropEffectorManager>();
+        PropType propType = PropDataManager.Instance.GetPropType(propId);
+        switch (propType)
+        {
+            case PropType.Fireworks:
+                propEffectorManager.AddPropEffector<Firework>();
+                break;
+            case PropType.Feather:
+                propEffectorManager.AddPropEffector<Feather>();
+                break;
+            case PropType.HookLock:
+                propEffectorManager.AddPropEffector<HookLock>();
+                break;
+            case PropType.Bomb:
+                propEffectorManager.AddPropEffector<Bomb>();
+                break;
+            case PropType.Reset:
+                propEffectorManager.AddPropEffector<Feather>();
+                break;
+            case PropType.Hammer:
+                propEffectorManager.AddPropEffector<Feather>();
+                break;
+            case PropType.BlackHole:
+                propEffectorManager.AddPropEffector<Feather>();
+                break;
+        }
+    }
 }

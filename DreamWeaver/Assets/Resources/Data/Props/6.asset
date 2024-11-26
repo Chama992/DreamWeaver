@@ -16,3 +16,5 @@ MonoBehaviour:
   propName: "\u5DE5\u7A0B\u9524"
   propDescription: 
   propIcon: {fileID: 21300000, guid: 25ca45251f4632e479d3b2ca748eac76, type: 3}
+  propType: 5
+  propEffectorType: 0

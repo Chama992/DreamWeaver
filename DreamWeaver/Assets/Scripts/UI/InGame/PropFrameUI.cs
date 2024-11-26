@@ -18,20 +18,15 @@ public class PropFrameUI : MonoBehaviour,IPointerClickHandler
         propCountText.text = _propCount.ToString();
         gameObject.name = propId.ToString();
     }
-    public void ChangePropFrame(Sprite propFrame)
-    {
-        propImage.sprite = propFrame;
-    }
     public void ChangePropCount(int propCount)
     {
         propCountText.text = propCount.ToString();
     }
-
     public void OnPointerClick(PointerEventData eventData)
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
-            //TODO: 写使用道具的逻辑
+            FindObjectOfType<Player>().Props.UseProp(propId);
         }
     }
 }

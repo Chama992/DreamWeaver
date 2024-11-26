@@ -3,6 +3,13 @@ using UnityEngine;
 
 public class PlayerProps
 {
+    private Player player;
+
+    public void Initialize(Player _player)
+    {
+        player = _player;
+    }
+
     private Dictionary<int, int> props = new Dictionary<int, int>();//前一个是id 后一个是数量
     /// <summary>
     /// 获得道具

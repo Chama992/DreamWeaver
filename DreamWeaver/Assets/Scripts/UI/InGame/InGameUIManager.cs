@@ -15,6 +15,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     [Header("RoguePanel")]
     public GameObject roguePropPanel;
     public GameObject roguePropFrame;
+    private List<GameObject> propRogueFrameObjectsPool = new();
     [Header("PropPanel")]
     public GameObject propPanel;
     public GameObject propFrame;
@@ -24,6 +25,19 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
     }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            OpenRoguePropPanel();
+        }
+        if (Input.GetKeyDown(KeyCode.CapsLock))
+        {
+            CloseRoguePropPanel();
+        }
+    }
+
     /// <summary>
     /// 设置关卡深度
     /// </summary>
@@ -42,16 +56,23 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         threadLength = _threadLength;
         threadLengthTmp.text = threadLength.ToString("P2");
     }
+
+    public void OpenRoguePropPanel()
+    {
+        roguePropPanel.SetActive(true);
+        GenerateRoguePropPanel();
+    }
+
     /// <summary>
     /// 生成肉鸽面板
     /// </summary>
     public void GenerateRoguePropPanel()
     {
         List<PropData> propDatas = PropManager.Instance.GetRandomProps();
-        
         for (int i = 0; i < propDatas.Count; i++)
         {
-            
+            GameObject roguePropFrame = GetFromRoguePropFramePool();
+            roguePropFrame.GetComponent<RogueFrameUI>().Initialize(propDatas[i]);
         }
     }
     /// <summary>
@@ -59,14 +80,41 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     /// </summary>
     public void CloseRoguePropPanel()
     {
-        
+        roguePropPanel.SetActive(false);
+        Transform rogueGroup = roguePropPanel.transform.Find("RogueGroup");
+        for (int i = 0; i < rogueGroup.childCount; i++)
+        {
+            GameObject roguePropFrame = rogueGroup.GetChild(i).gameObject;
+            InRoguePropFramePool(roguePropFrame);
+        }
     }
     /// <summary>
-    /// 生成肉鸽单个选项卡
+    /// 肉鸽框框对象池入池
     /// </summary>
-    private void GenerateRoguePropFrame()
+    /// <param name="propFrameObject"></param>
+    private void InRoguePropFramePool(GameObject _propRogueFrameObject)
     {
-        
+        propRogueFrameObjectsPool.Add(_propRogueFrameObject);
+        _propRogueFrameObject.SetActive(false);
+    }
+    /// <summary>
+    /// 肉鸽框框对象池出池
+    /// </summary>
+    /// <returns></returns>
+    private GameObject GetFromRoguePropFramePool()
+    {
+        GameObject newProp;
+        if (propRogueFrameObjectsPool.Count != 0)
+        {
+            newProp = propRogueFrameObjectsPool[0];
+            // newProp.transform.SetAsLastSibling();
+            propRogueFrameObjectsPool.RemoveAt(0);
+            newProp.SetActive(true);
+            return newProp;
+            
+        }
+        newProp = Instantiate(roguePropFrame, roguePropPanel.transform.Find("RogueGroup"));
+        return newProp;
     }
     /// <summary>
     /// 刷新局内道具面板
@@ -117,6 +165,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
             newProp = propFrameObjectsPool[0];
             newProp.transform.SetAsLastSibling();
             newProp.SetActive(true);
+            propFrameObjectsPool.RemoveAt(0);
             return newProp;
         }
         newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content);

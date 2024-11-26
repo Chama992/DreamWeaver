@@ -9,8 +9,9 @@ using Random = UnityEngine.Random;
 public class PropManager : SingleTon<PropManager>
 {
     private Dictionary<int, PropData> propPools = new();
-    private void Start()
+    protected override void Awake()
     {
+        base.Awake();
         StartCoroutine(LoadPropDataCoroutine());
     }
     /// <summary>
@@ -33,7 +34,7 @@ public class PropManager : SingleTon<PropManager>
         int propId = 1;
         while (true)
         {
-            PropData propData = Resources.Load<PropData>("Props/" + propId.ToString());
+            PropData propData = Resources.Load<PropData>("Data/Props/" + propId.ToString());
             if (propData is null)
                 break;
             propPools.Add(propId++, propData);
@@ -54,7 +55,6 @@ public class PropManager : SingleTon<PropManager>
             propsId.Remove(propId);
             props.Add(propPools[propId]);
         }
-
         return props;
     }
 }

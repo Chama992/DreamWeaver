@@ -1,9 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Cryptography;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,9 +11,15 @@ public class GameController : MonoBehaviour
     public static GameController instance;
 
     #region stats
-    [Header("玩家相关")]
+    [Header("玩家与游戏相关")]
     [Tooltip("玩家")]
     public Player player;
+
+    [Tooltip("黑洞")]
+    public GameObject blackHole;
+
+    [Tooltip("可交互半径")]
+    public float interactRatio;
 
     [Header("地图相关")]
     [Tooltip("全局碎片数据列表")]
@@ -87,12 +89,12 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 关卡起点
     /// </summary>
-    public Vector3 levelStartPoint {  get; private set; }
+    public Vector3 levelStartPoint { get; private set; }
 
     /// <summary>
     /// 关卡中心
     /// </summary>
-    public Vector3 levelCenterPoint {  get; private set; }
+    public Vector3 levelCenterPoint { get; private set; }
 
     /// <summary>
     /// 关卡终点
@@ -102,22 +104,27 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 可用碎片列表
     /// </summary>
-    public List<Piece> enabledPieces  { get { return new(); } private set { } }
+    public List<Piece> enabledPieces { get; private set; } = new();
 
     /// <summary>
-    /// 关卡碎片生成位置
+    /// 关卡碎片可生成位置
     /// </summary>
-    public List<Vector3> pieceGenePositions { get { return new(); } private set { } }
+    public List<Vector3> pieceGenePositions { get; private set; } = new();
+
+    /// <summary>
+    /// 关卡所有生成的碎片
+    /// </summary>
+    public List<Piece> levelPieces { get; private set; } = new();
 
     /// <summary>
     /// 进入下一关动画结束后清除的碎片
     /// </summary>
-    public List<Piece> readyToClearPieces { get { return new(); } private set { } }
+    public List<Piece> readyToClearPieces { get; private set; } = new();
 
     /// <summary>
     /// 进入下一关先不清楚，加入到下下一关清除列表中的碎片
     /// </summary>
-    public List<Piece> readyToReadyToClearPieces { get { return new(); } private set { } }
+    public List<Piece> readyToReadyToClearPieces { get; private set; } = new();
 
     /// <summary>
     /// 关卡碎片生成量
@@ -127,22 +134,22 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 入梦深度
     /// </summary>
-    public int level {  get; private set; }
+    public int level { get; private set; }
 
     /// <summary>
     /// 玩家解决方案，每次连接时更新
     /// </summary>
-    public Stack<Vector3> Solution { get { return new(); } private set { } }
+    public Stack<Vector3> Solution { get; private set; } = new();
 
     /// <summary>
     /// 本关已连接的线长，每次连接更新
     /// </summary>
-    public float nodedLevelWeaveLength {  get; private set; }
+    public float nodedLevelWeaveLength { get; private set; }
 
     /// <summary>
     /// 本关线长，每帧更新
     /// </summary>
-    public float levelWeaveLength {  get; private set; }
+    public float levelWeaveLength { get; private set; }
 
     /// <summary>
     /// 理论最优解线长，每关更新
@@ -152,27 +159,38 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 总线长，即已通关卡线长之和，每关更新
     /// </summary>
-    public float overallWeaveLength {  get; private set; }
+    public float overallWeaveLength { get; private set; }
 
     /// <summary>
     /// 每关的得分修饰系数
     /// </summary>
-    public float scoreLevelModifier {  get; private set; }
+    public float scoreLevelModifier { get; private set; }
 
     /// <summary>
     /// 分数，每关更新
     /// </summary>
-    public float score {  get; private set; }
+    public float score { get; private set; }
 
     /// <summary>
     /// 当前关评级，每帧更新
     /// </summary>
-    public int stars {  get; private set; }
+    public int stars { get; private set; }
+
+    /// <summary>
+    /// 当前关奖励
+    /// </summary>
+    public int bonus { get; private set; }
+
+    /// <summary>
+    /// 下一关生成黑洞数
+    /// </summary>
+    public int blackHoleAmount { get; private set; }
 
     /// <summary>
     /// 是否正在暂停
     /// </summary>
     public bool isPausing { get; private set; }
+
     #endregion
 
     #region Actions
@@ -216,7 +234,7 @@ public class GameController : MonoBehaviour
 
     private void Start()
     {
-        if(instance != null)
+        if (instance != null)
             Destroy(gameObject);
         else
             instance = this;
@@ -227,6 +245,24 @@ public class GameController : MonoBehaviour
     {
         RefreshLevelWeaveLength();
         RefreshStars();
+
+        //Debug
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            CompleteLevel();
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            StartLevel();
+        }
+        if(Input.GetKeyDown(KeyCode.Y))
+        {
+            RegenerateLevel();
+        }
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            StartGame();
+        }
     }
     #endregion
 
@@ -237,7 +273,7 @@ public class GameController : MonoBehaviour
     /// <param name="_id">地图id</param>
     /// <param name="_position">世界位置</param>
     /// <param name="_readyToBeClear">是否在关卡结束时清除</param>
-    public Piece GeneratePiece(int _id,Vector3 _position,bool _readyToBeClear)
+    public Piece GeneratePiece(int _id, Vector3 _position, bool _readyToBeClear)
     {
         Piece piece = Instantiate(pieces.Find(t => t.id == _id).gameObject, _position, Quaternion.identity).GetComponent<Piece>();
         if (_readyToBeClear)
@@ -252,7 +288,7 @@ public class GameController : MonoBehaviour
     /// <param name="_piece">地图引用</param>
     /// <param name="_position">世界位置</param>
     /// <param name="_readyToBeClear">是否在关卡结束时清除</param>
-    public Piece GeneratePiece(Piece _piece, Vector3 _position,bool _readyToBeClear)
+    public Piece GeneratePiece(Piece _piece, Vector3 _position, bool _readyToBeClear)
     {
         Piece piece = Instantiate(_piece.gameObject, _position, Quaternion.identity).GetComponent<Piece>();
         if (_readyToBeClear)
@@ -265,57 +301,102 @@ public class GameController : MonoBehaviour
     /// 在位置列表中随机选择位置生成列表中随机一个地图
     /// </summary>
     /// <remarks>
-    /// 如果最后一个参数为真，严禁向此方法中直接传全局地图数据列表和关卡位置列表！！！要传也使用深拷贝方法DeepCopyHelper.DeepCopy拷贝一份！！！
+    /// 严禁向此方法中直接传全局地图数据列表和关卡位置列表！！！要传也使用深拷贝方法DeepCopyHelper.DeepCopy拷贝一份！！！
     /// 此方法亦不可用于对两个参数的列表的foreach枚举语句中
     /// </remarks>
-    /// <param name="_PieceList">地图id列表</param>
+    /// <param name="_pieceList">地图id列表</param>
     /// <param name="_positionList">位置列表</param>
     /// <param name="_readyToBeClear">是否在关卡结束时清除</param>
     /// <param name="_allowEmpty">随机生成是否包括不生成</param>
     /// <param name="_removeGenerated">是否删除列表中此次生成的碎片和位置</param>
-    public void GenerateRandomPiece(List<Piece> _PieceList,List<Vector3> _positionList,bool _readyToBeClear,bool _allowEmpty,bool _removeGenerated)
+    public Piece GenerateRandomPiece(List<Piece> _pieceList, List<Vector3> _positionList, bool _readyToBeClear, bool _allowEmpty, out Piece _extraDoor)
     {
-        if (_PieceList == null || _positionList == null)
-            return;
+        if (_pieceList == null || _positionList == null || _pieceList.Count == 0 || _positionList.Count == 0)
+        {
+            _extraDoor = null;
+            return null;
+        }
         int idIndex;
         if (_allowEmpty)
-            idIndex = Random.Range(-1, _PieceList.Count);
+            idIndex = Random.Range(-1, _pieceList.Count);
         else
-            idIndex = Random.Range(0, _PieceList.Count);
+            idIndex = Random.Range(0, _pieceList.Count);
         int positionIndex = Random.Range(0, _positionList.Count);
-        Piece newPiece = new();
+        Piece newPiece = null;
         if (idIndex != -1)
         {
-            newPiece = GeneratePiece(_PieceList[idIndex], _positionList[positionIndex],_readyToBeClear);
-            if (_removeGenerated && !(_PieceList[idIndex] is Piece_Door))
-                _PieceList.RemoveAt(idIndex);
+            newPiece = GeneratePiece(_pieceList[idIndex], _positionList[positionIndex], _readyToBeClear);
         }
-        if (_removeGenerated)
-            _positionList.RemoveAt(positionIndex);
-        if (_PieceList[idIndex] is Piece_Door)
+        _positionList.RemoveAt(positionIndex);
+        Piece extraPiece = null;
+        if (idIndex != -1 && _pieceList[idIndex] is Piece_Door)
         {
             positionIndex = Random.Range(0, _positionList.Count);
-            Piece extraPiece = GeneratePiece(_PieceList[idIndex], _positionList[positionIndex], _readyToBeClear);
+            extraPiece = GeneratePiece(_pieceList[idIndex], _positionList[positionIndex], _readyToBeClear);
             ((Piece_Door)newPiece).relatedDoor = (Piece_Door)extraPiece;
             ((Piece_Door)extraPiece).relatedDoor = (Piece_Door)newPiece;
-            if(_removeGenerated)
-                _positionList.RemoveAt(positionIndex);
+            _positionList.RemoveAt(positionIndex);
+            _pieceList.RemoveAll(t => t is Piece_Door);
         }
-        _PieceList.RemoveAll(t => t is Piece_Door);
+        else
+        {
+            _pieceList.RemoveAt(idIndex);
+        }
+        _extraDoor = extraPiece;
+        return newPiece;
     }
 
+    /// <summary>
+    /// 生成地图
+    /// </summary>
     public void GenenrateMap()
     {
-        if(level == 0)
+
+        if (level == 0)
         {
-            GeneratePiece(checkPoint, levelStartPoint,true);
+            levelPieces.Clear();
+            Piece piece = GeneratePiece(checkPoint, levelStartPoint, true);
+            if (piece != null)
+                levelPieces.Add(piece);
         }
-        GeneratePiece(checkPoint, levelEndPoint,false);
-        List<Piece> enabledPieceCopy = DeepCopyHelper.DeepCopy(enabledPieces);
-        List<Vector3> genePositionsCopy = DeepCopyHelper.DeepCopy(pieceGenePositions);
+        else
+        {
+            Piece checkPoint = levelPieces.Find(t => t.transform.position == levelStartPoint);
+            levelPieces.Clear();
+            levelPieces.Add(checkPoint);
+        }
+        levelPieces.Add(GeneratePiece(checkPoint, levelEndPoint, false));
+        List<Piece> enabledPieceCopy = enabledPieces.FindAll(t => true);
+        List<Vector3> genePositionsCopy = pieceGenePositions.FindAll(t => true);
         for (int i = 0; i < pieceGeneAmount; i++)
         {
-            GenerateRandomPiece(enabledPieceCopy, genePositionsCopy, true,false,true);
+            if (Math.Min(pieceGeneAmount - i, genePositionsCopy.Count) < 2)
+            {
+                enabledPieceCopy.RemoveAll(t => t is Piece_Door);
+            }
+            Piece extraDoor = null;
+            Piece newPiece = GenerateRandomPiece(enabledPieceCopy, genePositionsCopy, true, false, out extraDoor);
+            if (newPiece != null)
+                levelPieces.Add(newPiece);
+            if (extraDoor != null)
+                levelPieces.Add(extraDoor);
+        }
+
+        GenerateBlackHole();
+    }
+
+    /// <summary>
+    /// 在地图完成生成后生成黑洞
+    /// </summary>
+    public void GenerateBlackHole()
+    {
+        List<Piece> levelPiecesCopy = levelPieces.FindAll(t => !t.isCheckPoint);
+
+        for (int i = 0; i < Math.Min(blackHoleAmount, levelPiecesCopy.Count); i++)
+        {
+            int index = Random.Range(0, levelPiecesCopy.Count);
+            Instantiate(blackHole, levelPiecesCopy[index].transform.position, Quaternion.identity);
+            levelPiecesCopy.RemoveAt(index);
         }
     }
 
@@ -324,12 +405,23 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void ClearMap()
     {
-        for (int i = 0;i < readyToClearPieces.Count;i++)
+        for (int i = 0; i < readyToClearPieces.Count; i++)
         {
             Destroy(readyToClearPieces[i].gameObject);
         }
-        readyToClearPieces = DeepCopyHelper.DeepCopy(readyToReadyToClearPieces);
+        readyToClearPieces = readyToReadyToClearPieces.FindAll(t => true);
         readyToReadyToClearPieces.Clear();
+    }
+
+    /// <summary>
+    /// 清除当前地图，包括终点，用于重新生成
+    /// </summary>
+    private void ClearCurrentMap()
+    {
+        foreach (var pieces in levelPieces.FindAll(t=>t.transform.position != levelStartPoint))
+        {
+            Destroy(pieces.gameObject);
+        }
     }
 
     #endregion
@@ -342,12 +434,12 @@ public class GameController : MonoBehaviour
     private void RefreshLevelPieceGenePosition()
     {
         List<Vector3> result = new();
-        Vector3 startCorner = levelStartPoint + new Vector3(Math.Min(blockHorizontalInterval*(1+level/blockHorizontalInterAddLv*blockHorizontalInterAddRate),blockHorizontalMaxInterval), 0);
-        for (int i = 0; i < level/blockHorizontalAddLv+1; i++)
+        Vector3 startCorner = levelStartPoint + new Vector3(Math.Min(blockHorizontalInterval * (1 + level / blockHorizontalInterAddLv * blockHorizontalInterAddRate), blockHorizontalMaxInterval), 0);
+        for (int i = 0; i < level / blockHorizontalAddLv + 1; i++)
         {
-            for(int j = 0; j < level/blockVerticalAddLv+1; j++)
+            for (int j = 0; j < level / blockVerticalAddLv + 1; j++)
             {
-                result.Add(startCorner + new Vector3(Math.Min(blockHorizontalInterval * (1 + level / blockHorizontalInterAddLv*blockHorizontalInterAddRate), blockHorizontalMaxInterval) * i,
+                result.Add(startCorner + new Vector3(Math.Min(blockHorizontalInterval * (1 + level / blockHorizontalInterAddLv * blockHorizontalInterAddRate), blockHorizontalMaxInterval) * i,
                     Math.Min(blockVerticalInterval * (1 + level / blockVerticalInterAddLv * blockVerticalInterAddRate), blockVerticalMaxInterval) * j) + (Vector3)(pieceGenePositionRamdonBias * Random.insideUnitCircle));
             }
         }
@@ -383,8 +475,8 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     private void RefreshLevelEndPosition()
     {
-        levelEndPoint = levelStartPoint + new Vector3((Math.Min((level / blockHorizontalAddLv + 1), blockHorizontalMaxAmount)+2) * Math.Min(blockHorizontalInterval * (1 + level / blockHorizontalInterAddLv * blockHorizontalInterAddRate), blockHorizontalMaxInterval),
-            Math.Min((level / blockVerticalAddLv + 1), blockVerticalMaxAmount) * Math.Min(blockVerticalInterval * (1 + level / blockVerticalInterAddLv * blockVerticalInterAddRate), blockVerticalMaxInterval));
+        levelEndPoint = levelStartPoint + new Vector3((Math.Min((level / blockHorizontalAddLv), blockHorizontalMaxAmount) + 2) * Math.Min(blockHorizontalInterval * (1 + level / blockHorizontalInterAddLv * blockHorizontalInterAddRate), blockHorizontalMaxInterval),
+            Math.Min((level / blockVerticalAddLv), blockVerticalMaxAmount) * Math.Min(blockVerticalInterval * (1 + level / blockVerticalInterAddLv * blockVerticalInterAddRate), blockVerticalMaxInterval));
     }
 
     /// <summary>
@@ -410,16 +502,22 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     private void RefreshNodedLevelWeaveLength()
     {
-        if (Solution == null)
+        if (Solution == null||Solution.Count == 0)
             return;
 
-        Stack<Vector3> SolutionCopy = DeepCopyHelper.DeepCopy(Solution);
+        Stack<Vector3> SolutionCopy = new();
+        Vector3[] SolutionArrayCopy = new Vector3[Solution.Count];
+        Solution.CopyTo(SolutionArrayCopy, 0);
+        for (int i = 0; i < Solution.Count; i++)
+        {
+            SolutionCopy.Push(SolutionArrayCopy[i]);
+        }
         Vector3 LastNode = SolutionCopy.Pop();
         float result = 0;
-        while(SolutionCopy!= null)
+        while (SolutionCopy != null)
         {
             Vector3 NewNode = SolutionCopy.Pop();
-            if (NewNode != Vector3.positiveInfinity&&LastNode != Vector3.positiveInfinity)
+            if (NewNode != Vector3.positiveInfinity && LastNode != Vector3.positiveInfinity)
             {
                 result += (LastNode - NewNode).magnitude;
             }
@@ -435,7 +533,7 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     private void RefreshLevelWeaveLength()
     {
-        if(Solution.Count == 0)
+        if (Solution == null || Solution.Count == 0)
             return;
         levelWeaveLength = nodedLevelWeaveLength + (player.transform.position - Solution.Peek()).magnitude;
     }
@@ -452,29 +550,66 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// 图边，用于最长路径算法
+    /// </summary>
+    private struct Edge
+    {
+        public float weight;
+        public int nextId;
+        public int toId;
+
+        public Edge(float _weight,int _nextId,int _toId)
+        {
+            weight = _weight;
+            nextId = _nextId;
+            toId = _toId;
+        }
+        public Edge(float _weight, int _nextId)
+        {
+            weight = _weight;
+            nextId = _nextId;
+            toId = 0;
+        }
+        public Edge(float _weight)
+        {
+            weight = _weight;
+            nextId = 0;
+            toId = 0;
+        }
+
+
+    }
+
+    /// <summary>
     /// 依据当前起点、终点和所有待删碎片位置刷新最优解长度
     /// </summary>
     private void RefreshMaxWeaveLength()
     {
-        /*
-        不行了，搞不出来，放着
-        List<Vector3> generatedPiecesPos = new();
-        generatedPiecesPos.Add(readyToClearPieces.Find(t => t.isCheckPoint == true).transform.position);
-        foreach (var pos in readyToClearPieces.FindAll(t => t.isCheckPoint == false))
-        {
-            generatedPiecesPos.Add(pos.transform.position);
-        }
-        generatedPiecesPos.Add(readyToReadyToClearPieces.Find(t => t.isCheckPoint == true).transform.position);
-        float[,] distance = new float[generatedPiecesPos.Count, generatedPiecesPos.Count];
-        for (int i = 0; i < generatedPiecesPos.Count; i++)
-        {
-            for(int j = 0; j < i;j++)
-            {
-                distance[i,j] = (generatedPiecesPos[i] - generatedPiecesPos[j]).magnitude;
-            }
-        }
-        */
-        Debug.LogWarning("未完成最大路径算法。");
+        //    List<Edge> edges = new();
+        //    Vector3 startNode = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
+        //    Vector3 endNode = levelPieces.Find(t => t.transform.position == levelEndPoint).node.position;
+        //    List<Vector3> nodes = new();
+        //    foreach (var node in levelPieces.FindAll( t=> true))
+        //    {
+        //        nodes.Add(node.transform.position);
+        //    }
+        //    //储存数据
+
+        //    int Index = 0;
+        //    for (int i = 0; i < nodes.Count; i++)
+        //    {
+        //        for (int j = 0; j < nodes.Count; j++)
+        //        {
+        //            if (nodes[i] == nodes[j] || nodes[i] == endNode || nodes[j] == startNode)
+        //                continue;
+
+        //            edges.Add(new Edge((nodes[i] - nodes[j]).magnitude));
+
+        //        }
+        //    }
+
+
+
     }
 
     /// <summary>
@@ -482,15 +617,15 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void RefreshStars()
     {
-        if(levelWeaveLength>=star3RequiredRate*maxWeaveLength)
+        if (levelWeaveLength >= star3RequiredRate * maxWeaveLength)
         {
             stars = 3;
         }
-        else if(levelWeaveLength>=star2RequiredRate*maxWeaveLength)
+        else if (levelWeaveLength >= star2RequiredRate * maxWeaveLength)
         {
             stars = 2;
         }
-        else if(levelWeaveLength>=star3RequiredRate*maxWeaveLength)
+        else if (levelWeaveLength >= star3RequiredRate * maxWeaveLength)
         {
             stars = 1;
         }
@@ -511,6 +646,15 @@ public class GameController : MonoBehaviour
             score += scoreLevelModifier * Solution.Count * nodedLevelWeaveLength * unitScore;
     }
 
+    /// <summary>
+    /// 刷新每关重设的量
+    /// </summary>
+    private void RefreshOthers()
+    {
+        bonus = 0;
+        scoreLevelModifier = 0;
+    }
+
     #endregion
 
     #region Game&Level
@@ -521,7 +665,6 @@ public class GameController : MonoBehaviour
     {
         level = 0;
         player.gameObject.SetActive(true);
-        player.transform.position = Vector3.zero;
         RefreshStartPosition();
         RefreshLevelEndPosition();
         RefreshLevelCenterPosition();
@@ -530,10 +673,11 @@ public class GameController : MonoBehaviour
         RefreshEnabledPiece();
         RefreshOverallWeaveLength();
         RefreshScore();
+        RefreshOthers();
 
         onGameStart?.Invoke();
 
-        LevelStart();
+        StartLevel();
     }
     /// <summary>
     /// 暂停游戏，仅在未暂停游戏时生效
@@ -545,6 +689,8 @@ public class GameController : MonoBehaviour
 
         isPausing = true;
         onGamePause?.Invoke();
+
+
     }
     /// <summary>
     /// 继续游戏，仅在暂停游戏后生效
@@ -582,16 +728,16 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void QuitGame()
     {
-        #if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-        #else
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
             Application.Quit();
-        #endif
+#endif
     }
     /// <summary>
     /// 完成当前关卡
     /// </summary>
-    public void LevelComplete()
+    public void CompleteLevel()
     {
         level++;
 
@@ -603,16 +749,48 @@ public class GameController : MonoBehaviour
         RefreshEnabledPiece();
         RefreshOverallWeaveLength();
         RefreshScore();
+        RefreshOthers();
 
+        //InGameUIManager.Instance.OpenRoguePropPanel(bonus+stars);
         onLevelComplete?.Invoke();
     }
 
     /// <summary>
     /// 开始下一关
     /// </summary>
-    public void LevelStart()
+    public void StartLevel()
     {
+        GenenrateMap();
+        player.transform.position = levelPieces.Find(x => x.isCheckPoint).node.position;
         onLevelStart?.Invoke();
+    }
+
+    /// <summary>
+    /// 重置当前关卡
+    /// </summary>
+    public void ResetLevel()
+    {
+        Solution.Clear();
+        RefreshLevelWeaveLength();
+        RefreshNodedLevelWeaveLength();
+        RefreshScore();
+        RefreshStars();
+        RefreshOverallWeaveLength();
+        RefreshOthers();
+        onLevelReset?.Invoke();
+    }
+
+    /// <summary>
+    /// 重新开始关卡并重新生成地图
+    /// </summary>
+    public void RegenerateLevel()
+    {
+        ResetLevel();
+        ClearCurrentMap();
+        RefreshLevelPieceGenePosition();
+        RefreshPieceGeneMaxAmount();
+        RefreshEnabledPiece();
+        GenenrateMap();
     }
 
     /// <summary>
@@ -620,33 +798,60 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void CameraMoved()
     {
-        GenenrateMap();
         RefreshMaxWeaveLength();
         ClearMap();
-    }
-    /// <summary>
-    /// 重置当前关卡
-    /// </summary>
-    public void ResetLevel()
-    {
-        onLevelReset?.Invoke();
     }
 
 
     #endregion
 
     #region Interface
+
+    /// <summary>
+    /// 依照给定值增加分数修饰系数
+    /// </summary>
+    /// <remarks>
+    /// 一般加1而非加100
+    /// </remarks>
+    /// <param name="_addRate"></param>
+    public void AddScoreModifier(float _addRate)
+    {
+        scoreLevelModifier += _addRate;
+    }
+
+    /// <summary>
+    /// 依照给定值增加奖励
+    /// </summary>
+    /// <param name="_amount"></param>
+    public void AddBonue(int _amount)
+    {
+        bonus += _amount;
+    }
+
+    /// <summary>
+    /// 依照给定值储存黑洞
+    /// </summary>
+    /// <param name="_amount"></param>
+    public void AddBlackHole(int _amount)
+    {
+        blackHoleAmount += _amount;
+    }
+
+
     /// <summary>
     /// 连接节点。注意：通关也使用此方法完成，输入检查点碎片
     /// </summary>
     /// <param name="_piece">碎片引用</param>
     public void ConnectNode(Piece _piece)
     {
+        if (!_piece.allowLink)
+            return;
+
         Solution.Push(_piece.node.position);
         RefreshNodedLevelWeaveLength();
         if (_piece.isCheckPoint)
         {
-            LevelComplete();
+            CompleteLevel();
             Solution.Clear();
             Solution.Push(_piece.node.position);
             RefreshNodedLevelWeaveLength();
@@ -659,7 +864,7 @@ public class GameController : MonoBehaviour
     /// <returns>是否成功取消连接</returns>
     public bool TryDisconnectNode(Piece _piece)
     {
-        if (Solution.Peek() !=_piece.node.position||_piece.isCheckPoint)
+        if (Solution.Peek() != _piece.node.position || _piece.isCheckPoint)
             return false;
 
         Solution.Pop();
@@ -685,9 +890,9 @@ public class GameController : MonoBehaviour
     /// <returns>是否成功取消连接</returns>
     public bool TryDisconnectDoor(Piece_Door _door)
     {
-        if(Solution.Peek()!=_door.doorPosition)
+        if (Solution.Peek() != _door.doorPosition)
             return false;
- 
+
         Solution.Pop();
         Solution.Pop();
         Solution.Pop();
@@ -696,24 +901,4 @@ public class GameController : MonoBehaviour
         return true;
     }
     #endregion
-}
-
-public class DeepCopyHelper
-{
-    /// <summary>
-    /// 深拷贝方法
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="_object"></param>
-    /// <returns></returns>
-    public static T DeepCopy<T>(T _object)
-    {
-        using (MemoryStream memoryStream = new MemoryStream())
-        {
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(memoryStream, _object);
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            return (T)formatter.Deserialize(memoryStream);
-        }
-    }
 }

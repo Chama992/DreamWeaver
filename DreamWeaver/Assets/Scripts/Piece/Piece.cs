@@ -1,9 +1,11 @@
+using System;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum Theme
 { 
 }
-
+[Serializable]
 public class Piece : MonoBehaviour
 {
     /// <summary>
@@ -34,12 +36,16 @@ public class Piece : MonoBehaviour
     /// 随机参数，用于其机制
     /// </summary>
     [HideInInspector] public float ramdomInt;
+    /// <summary>
+    /// 是否允许被连接
+    /// </summary>
+    [HideInInspector] public bool allowLink = true;
 
-    private void Start()
+    protected virtual void Start()
     {
         ramdomInt = Random.Range(0f, 1f);
     }
-    public virtual void Update()
+    protected virtual void Update()
     {
 
     }

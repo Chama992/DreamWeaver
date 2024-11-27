@@ -33,11 +33,13 @@ public class MyCamera : MonoBehaviour
 
     private void Start()
     {
+        GameController.instance.onGameStart += RefreshMapRange;
         GameController.instance.onLevelComplete += RefreshMapRange;
     }
 
     private void OnDisable()
     {
+        GameController.instance.onGameStart -= RefreshMapRange;
         GameController.instance.onLevelComplete -= RefreshMapRange;
     }
     Vector3 cameraStartPosition = Vector3.zero, mouseStartPosition = Vector3.zero;
@@ -57,9 +59,9 @@ public class MyCamera : MonoBehaviour
 
         if(Input.GetMouseButton(1))
         {
-            transform.position = cameraStartPosition - (Input.mousePosition - mouseStartPosition)*mouseSensibility*0.01f;
+            transform.position = cameraStartPosition - mouseSensibility * 0.01f*(Input.mousePosition - mouseStartPosition);
         }
-        else if (Mathf.Abs(target.x - GameController.instance.levelCenterPoint.x) > Mathf.Abs(mapRange.x) || Mathf.Abs(transform.position.y - GameController.instance.levelCenterPoint.y) > Mathf.Abs(mapRange.y))
+        else if (Mathf.Abs(transform.position.x - GameController.instance.levelCenterPoint.x) > Mathf.Abs(mapRange.x) || Mathf.Abs(transform.position.y - GameController.instance.levelCenterPoint.y) > Mathf.Abs(mapRange.y))
         {
             target = GameController.instance.levelCenterPoint + new Vector3(0,0,z);
             transform.position = Vector3.Lerp(transform.position, target, maxDeltaMove * 0.01f);

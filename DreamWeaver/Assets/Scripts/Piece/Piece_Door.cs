@@ -13,11 +13,12 @@ public class Piece_Door : Piece
     [HideInInspector] public Piece_Door relatedDoor;
     [HideInInspector] public bool isOpen;
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         doorPosition = door.position;
     }
-    public override void Update()
+    protected override void Update()
     {
         base.Update();
         if(Input.GetKeyDown(KeyCode.E))

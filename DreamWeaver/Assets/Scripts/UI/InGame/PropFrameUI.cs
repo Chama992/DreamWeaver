@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class PropFrameUI : MonoBehaviour,IPointerClickHandler
 {
-    private int propId;
+    public int propId { get; private set; }
     private Image propImage;
     private TMP_Text propCountText;
     public void Initialize(PropData _propData,int _propCount)

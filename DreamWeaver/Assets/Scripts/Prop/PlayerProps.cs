@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerProps
 {
@@ -27,8 +28,18 @@ public class PlayerProps
             props.Add(propId, count);
         InGameUIManager.Instance.FreshPropPanel(propId,props[propId]);
     }
+
+    public void UsePropByIndex(int propIndex)
+    {
+        RectTransform content = InGameUIManager.Instance.propPanel.GetComponent<ScrollRect>().content;
+        if (propIndex > content.childCount)
+            return;
+        Transform child = InGameUIManager.Instance.propPanel.GetComponent<ScrollRect>().content.GetChild(propIndex - 1);
+        UseProp(child.GetComponent<PropFrameUI>().propId);
+    }
+
     /// <summary>
-    /// 使用道具
+    /// 使用对应ID的道具
     /// </summary>
     /// <param name="propId"></param>
     public void UseProp(int propId)

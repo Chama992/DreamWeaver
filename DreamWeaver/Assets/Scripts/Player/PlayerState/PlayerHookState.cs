@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerHookState : PlayerState
@@ -19,20 +20,21 @@ public class PlayerHookState : PlayerState
     public override void Update()
     {
         base.Update();
+        player.SetVelocity((hookPoint - (Vector2)player.transform.position).normalized * player.hookSpeed);
+        // Debug.Log((hookPoint - (Vector2)player.transform.position).normalized * player.hookSpeed);
+        if (Vector2.Distance(hookPoint,player.transform.position) / hookDistance < 0.1f)
+            StateMachine.ChangeState(player.IdleState);
+        if (player.IsGroundChecked() || player.IsWallChecked())
+            StateMachine.ChangeState(player.IdleState);
     }
 
     public override void Exit()
     {
         base.Exit();
-        
     }
     public void SetTarget(Vector2 _hookPoint)
     {
         hookPoint = _hookPoint;
-        player.SetVelocity((hookPoint - (Vector2)player.transform.position).normalized * player.hookSpeed);
-        if (Vector2.Distance(hookPoint,player.transform.position) / hookDistance > 0.9f)
-        {
-            StateMachine.ChangeState(player.IdleState);
-        }
+
     }
 }

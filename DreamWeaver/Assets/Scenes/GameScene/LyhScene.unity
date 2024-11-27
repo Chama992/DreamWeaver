@@ -405,7 +405,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -34.3, y: -4.3, z: -10}
+  m_LocalPosition: {x: -34.692413, y: -3.914322, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1056,7 +1056,7 @@ Transform:
   m_GameObject: {fileID: 1648056323}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -34.3, y: -4.3, z: -10}
+  m_LocalPosition: {x: -34.69, y: -2.71, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1130,7 +1130,7 @@ MonoBehaviour:
     m_Bits: 8
   wallCheck: {fileID: 55886495}
   wallCheckDistance: 0.2
-  hookSpeed: 0
+  hookSpeed: 15
 --- !u!50 &1770344353
 Rigidbody2D:
   serializedVersion: 4
@@ -1202,7 +1202,7 @@ Transform:
   m_GameObject: {fileID: 1770344350}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -34.3, y: -6.25, z: 0}
+  m_LocalPosition: {x: -34.69, y: -4.66, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

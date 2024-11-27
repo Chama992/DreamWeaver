@@ -50,6 +50,7 @@ public class Player : MonoBehaviour
     #endregion
     #region Props
     public PlayerProps Props { get; private set; } = new PlayerProps();
+    private List<KeyCode> propKeys = new List<KeyCode>() { KeyCode.Alpha1 ,KeyCode.Alpha2,KeyCode.Alpha3,KeyCode.Alpha4,KeyCode.Alpha5,KeyCode.Alpha6 };
     #endregion
 
     #region Hook
@@ -80,6 +81,7 @@ public class Player : MonoBehaviour
     {
         StateMachine.currentState.Update();
         CheckDashActive();
+        UsePropDetect();
     }
     #region Collision
     public  bool IsGroundChecked() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
@@ -135,6 +137,32 @@ public class Player : MonoBehaviour
         Rb.velocity = velocity;
         FlipControl(velocity.x);
     }
+    #endregion
+
+    #region Prop
+    private void UsePropDetect()
+    {
+        if (Input.anyKeyDown)
+        {
+            for (int i = 0; i < propKeys.Count; i++)
+            {
+                if (Input.GetKeyDown(propKeys[i]))
+                {
+                    Props.UsePropByIndex(CheckPropToUse(propKeys[i]));
+                    break;
+                }
+            }
+        }
+    }
+
+    private int CheckPropToUse(KeyCode _key)
+    {
+        string key = _key.ToString().Substring(_key.ToString().Length - 1,1);
+        int keyInt = int.Parse(key);
+        return keyInt;
+        // int propIndex = int.TryParse(_key.ToString());
+    }
+
     #endregion
     public void AnimationTrigger() => this.StateMachine.currentState.AnimationFinishTrigger();
     

@@ -1,15 +1,13 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     #region PlayerStates
-    public PlayerStateMachine StateMachine { get; private set;  }
+    public PlayerStateMachine StateMachine { get; private set; }
     public PlayerIdleState IdleState { get; private set; }
     public PlayerMoveState MoveState { get; private set; }
-    public PlayerAirState AirState { get; private set;}
+    public PlayerAirState AirState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
     public PlayerDashState DashState { get; private set; }
     public PlayerWallSlideState WallSlideState { get; private set; }
@@ -33,10 +31,15 @@ public class Player : MonoBehaviour
     [SerializeField] public float dashSpeed;
     [SerializeField] private float dashCoolDown;
     private float dashUsageTimer;
+    private Piece currentPiece;
     public float dashDir { get; private set; }
     #region Components
     public Animator Anim { get; private set; }
     public Rigidbody2D Rb { get; private set; }
+<<<<<<< Updated upstream
+=======
+    public PlayerNodeControl PlayerNodeControl { get; private set; }
+>>>>>>> Stashed changes
     #endregion
     [Header("CollisionCheck Info")]
     [SerializeField] protected Transform groundCheck;
@@ -50,13 +53,13 @@ public class Player : MonoBehaviour
     #endregion
     #region Props
     public PlayerProps Props { get; private set; } = new PlayerProps();
-    private List<KeyCode> propKeys = new List<KeyCode>() { KeyCode.Alpha1 ,KeyCode.Alpha2,KeyCode.Alpha3,KeyCode.Alpha4,KeyCode.Alpha5,KeyCode.Alpha6 };
+    private List<KeyCode> propKeys = new List<KeyCode>() { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6 };
     #endregion
 
     #region Hook
     public float hookSpeed;
     #endregion
-    private  void Awake()
+    private void Awake()
     {
         Anim = GetComponentInChildren<Animator>();
         Rb = GetComponent<Rigidbody2D>();
@@ -64,7 +67,7 @@ public class Player : MonoBehaviour
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine, "Idle");
         MoveState = new PlayerMoveState(this, StateMachine, "Move");
-        AirState = new PlayerAirState(this, StateMachine,"Jump");
+        AirState = new PlayerAirState(this, StateMachine, "Jump");
         JumpState = new PlayerJumpState(this, StateMachine, "Jump");
         DashState = new PlayerDashState(this, StateMachine, "Dash");
         WallSlideState = new PlayerWallSlideState(this, StateMachine, "WallSlide");
@@ -77,26 +80,42 @@ public class Player : MonoBehaviour
     {
         StateMachine.Initialize(IdleState);
     }
-    private  void Update()
+    private void Update()
     {
         StateMachine.currentState.Update();
         CheckDashActive();
         UsePropDetect();
+
+        if(Input.GetKeyDown(KeyCode.F)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
+        {
+            PlayerNodeControl.LinkNode(currentPiece.gameObject.GetInstanceID(), currentPiece);
+        }
+
     }
     #region Collision
-    public  bool IsGroundChecked() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
-    public  bool IsWallChecked() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
-    private  void OnDrawGizmos()
+    public bool IsGroundChecked() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+    public bool IsWallChecked() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+    private void OnDrawGizmos()
     {
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
     }
+<<<<<<< Updated upstream
+=======
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.GetComponent<Piece>()!=null)
+        {
+            currentPiece = other.GetComponent<Piece>();
+        }
+    }
+>>>>>>> Stashed changes
     #endregion
     #region Dash
     private void CheckDashActive()
     {
         dashUsageTimer -= Time.deltaTime;
-        if (this.IsWallChecked()) 
+        if (this.IsWallChecked())
             return;
         if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
         {
@@ -118,7 +137,7 @@ public class Player : MonoBehaviour
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
-    private  void FlipControl(float _x)
+    private void FlipControl(float _x)
     {
         if (_x > 0 && !facingRight)
             Flip();
@@ -157,7 +176,7 @@ public class Player : MonoBehaviour
 
     private int CheckPropToUse(KeyCode _key)
     {
-        string key = _key.ToString().Substring(_key.ToString().Length - 1,1);
+        string key = _key.ToString().Substring(_key.ToString().Length - 1, 1);
         int keyInt = int.Parse(key);
         return keyInt;
         // int propIndex = int.TryParse(_key.ToString());
@@ -165,5 +184,5 @@ public class Player : MonoBehaviour
 
     #endregion
     public void AnimationTrigger() => this.StateMachine.currentState.AnimationFinishTrigger();
-    
+
 }

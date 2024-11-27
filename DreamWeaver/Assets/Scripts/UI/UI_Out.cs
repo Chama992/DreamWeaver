@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class UI_Out : MonoBehaviour
 {
+    [SerializeField] private Transform inUI;
     [SerializeField] private Transform startGame;
     [SerializeField] private Transform pauseGame;
     [SerializeField] private Transform endGame;
@@ -20,7 +21,6 @@ public class UI_Out : MonoBehaviour
         GameController.instance.onGameContinue += RefreshUI_Continue;
         GameController.instance.onGameEnd += RefreshUI_End;
     }
-
     private void OnDisable()
     {
         GameController.instance.onGameStart -= RefreshUI_Start;
@@ -31,6 +31,7 @@ public class UI_Out : MonoBehaviour
 
     public void RefreshUI_Start()
     {
+        inUI.gameObject.SetActive(true);
         startGame.gameObject.SetActive(false);
     }
     public void RefreshUI_Continue()
@@ -43,6 +44,7 @@ public class UI_Out : MonoBehaviour
     }
     public void RefreshUI_End()
     {
+        inUI.gameObject.SetActive(false);
         level.text = GameController.instance.level.ToString();
         score.text = GameController.instance.score.ToString();
         weavelength.text = GameController.instance.overallWeaveLength.ToString();

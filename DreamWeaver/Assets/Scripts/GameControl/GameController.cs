@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -191,6 +192,11 @@ public class GameController : MonoBehaviour
     /// </summary>
     public bool isPausing { get; private set; }
 
+    /// <summary>
+    /// 游戏是否正在进行
+    /// </summary>
+    public bool isGaming {  get; private set; }
+
     #endregion
 
     #region Actions
@@ -232,7 +238,7 @@ public class GameController : MonoBehaviour
 
     #region Unity
 
-    private void Start()
+    private void Awake()
     {
         if (instance != null)
             Destroy(gameObject);
@@ -246,6 +252,17 @@ public class GameController : MonoBehaviour
         RefreshLevelWeaveLength();
         RefreshStars();
 
+        if(Input.GetKeyDown(KeyCode.Escape)&&isGaming)
+        {
+            if(isPausing)
+            {
+                ContinueGame();
+            }
+            else
+            {
+                PauseGame();
+            }
+        }
         //Debug
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -263,6 +280,7 @@ public class GameController : MonoBehaviour
         {
             StartGame();
         }
+
     }
     #endregion
 
@@ -514,7 +532,7 @@ public class GameController : MonoBehaviour
         }
         Vector3 LastNode = SolutionCopy.Pop();
         float result = 0;
-        while (SolutionCopy != null)
+        while (SolutionCopy != null &&SolutionCopy.Count != 0)
         {
             Vector3 NewNode = SolutionCopy.Pop();
             if (NewNode != Vector3.positiveInfinity && LastNode != Vector3.positiveInfinity)
@@ -550,63 +568,93 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// 图边，用于最长路径算法
-    /// </summary>
-    private struct Edge
-    {
-        public float weight;
-        public int nextId;
-        public int toId;
-
-        public Edge(float _weight,int _nextId,int _toId)
-        {
-            weight = _weight;
-            nextId = _nextId;
-            toId = _toId;
-        }
-        public Edge(float _weight, int _nextId)
-        {
-            weight = _weight;
-            nextId = _nextId;
-            toId = 0;
-        }
-        public Edge(float _weight)
-        {
-            weight = _weight;
-            nextId = 0;
-            toId = 0;
-        }
-
-
-    }
-
-    /// <summary>
     /// 依据当前起点、终点和所有待删碎片位置刷新最优解长度
     /// </summary>
     private void RefreshMaxWeaveLength()
     {
-        //    List<Edge> edges = new();
-        //    Vector3 startNode = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
-        //    Vector3 endNode = levelPieces.Find(t => t.transform.position == levelEndPoint).node.position;
-        //    List<Vector3> nodes = new();
-        //    foreach (var node in levelPieces.FindAll( t=> true))
-        //    {
-        //        nodes.Add(node.transform.position);
-        //    }
-        //    //储存数据
+        List<Edge> edges = new();
+        Vector3 startNode = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
+        Vector3 endNode = levelPieces.Find(t => t.transform.position == levelEndPoint).node.position;
+        List<Vector3> nodes = new();
+        foreach (var node in levelPieces.FindAll(t => !t.isCheckPoint))
+        {
+            nodes.Add(node.transform.position);
+        }
 
-        //    int Index = 0;
-        //    for (int i = 0; i < nodes.Count; i++)
-        //    {
-        //        for (int j = 0; j < nodes.Count; j++)
-        //        {
-        //            if (nodes[i] == nodes[j] || nodes[i] == endNode || nodes[j] == startNode)
-        //                continue;
 
-        //            edges.Add(new Edge((nodes[i] - nodes[j]).magnitude));
-
-        //        }
-        //    }
+        //计算距离作为权重
+        Dictionary<int, float[]> pathWeights = new Dictionary<int, float[]>();
+        List<Vector3> allNodes = new List<Vector3>();
+        allNodes.Add(startNode);
+        allNodes.AddRange(nodes);
+        allNodes.Add(endNode);
+        for (int i = 0; i < allNodes.Count; i++)
+        {
+            pathWeights[i] = new float[allNodes.Count];
+        }
+        for (int i = 0; i < allNodes.Count; i++)
+        {
+            for (int j = i + 1; j < allNodes.Count; j++)
+            {
+                float distance = Vector2.Distance(allNodes[i], allNodes[j]);
+                pathWeights[i][j] = distance;
+                pathWeights[j][i] = distance;
+            }
+        }
+        //防止直接从起始点跳到终点 
+        pathWeights[0][allNodes.Count - 1] = 0;
+        //初始化计算数组
+        int[] path = new int[allNodes.Count];//用于记录路径
+        float[] pathWeight = new float[allNodes.Count];//用于更新距离
+        bool[] flag = new bool[allNodes.Count];
+        for (int i = 0; i < allNodes.Count; i++)
+        {
+            flag[i] = false;
+            pathWeight[i] = pathWeights[0][i];
+            path[i] = 0;
+        }
+        flag[0] = true;
+        //开始计算
+        int calculateCount = 0;
+        while (true)
+        {
+            //避免死循环
+            calculateCount++;
+            if (calculateCount > allNodes.Count)
+            {
+                Debug.Log("计算有误");
+                break;
+            }
+            float maxDistance = float.MinValue;
+            int maxIndex = -1;
+            //找到当前权重最大的节点 记录距离以及其节点号
+            for (int j = 0; j < pathWeight.Length; j++)
+            {
+                if (flag[j] == false && pathWeight[j] > maxDistance)
+                {
+                    maxDistance = pathWeight[j];
+                    maxIndex = j;
+                }
+            }
+            if (maxIndex == -1)
+            {
+                break;
+            }
+            //更新标记
+            flag[maxIndex] = true;
+            //更新权重数组
+            for (int k = 0; k < allNodes.Count(); k++)
+            {
+                if (pathWeights[k][maxIndex] + pathWeight[maxIndex] > pathWeights[k][0] && flag[k] == false)
+                {
+                    pathWeight[k] = pathWeights[k][maxIndex] + pathWeight[maxIndex];
+                    path[k] = maxIndex;
+                }
+            }
+        }
+        //pathWeight[^1] += pathWeights[path[^1]][^1];
+        Debug.Log("最大距离:" + pathWeight[^1]);
+        maxWeaveLength = pathWeight[^1];
 
 
 
@@ -625,7 +673,7 @@ public class GameController : MonoBehaviour
         {
             stars = 2;
         }
-        else if (levelWeaveLength >= star3RequiredRate * maxWeaveLength)
+        else if (levelWeaveLength >= star1RequiredRate * maxWeaveLength)
         {
             stars = 1;
         }
@@ -663,7 +711,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
+        
         level = 0;
+        isGaming = true;
         player.gameObject.SetActive(true);
         RefreshStartPosition();
         RefreshLevelEndPosition();
@@ -674,7 +724,6 @@ public class GameController : MonoBehaviour
         RefreshOverallWeaveLength();
         RefreshScore();
         RefreshOthers();
-
         onGameStart?.Invoke();
 
         StartLevel();
@@ -687,6 +736,7 @@ public class GameController : MonoBehaviour
         if (isPausing)
             return;
 
+        Time.timeScale = 0;
         isPausing = true;
         onGamePause?.Invoke();
 
@@ -700,6 +750,7 @@ public class GameController : MonoBehaviour
         if (!isPausing)
             return;
 
+        Time.timeScale = 1;
         isPausing = false;
         onGameContinue?.Invoke();
     }
@@ -708,6 +759,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void EndGame()
     {
+        isGaming = false;
         player.gameObject.SetActive(false);
 
         if (!isPausing)
@@ -750,8 +802,8 @@ public class GameController : MonoBehaviour
         RefreshOverallWeaveLength();
         RefreshScore();
         RefreshOthers();
-
-        //InGameUIManager.Instance.OpenRoguePropPanel(bonus+stars);
+        InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus);
+        //player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
         onLevelComplete?.Invoke();
     }
 
@@ -761,6 +813,8 @@ public class GameController : MonoBehaviour
     public void StartLevel()
     {
         GenenrateMap();
+        player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
+        player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).node.gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
         player.transform.position = levelPieces.Find(x => x.isCheckPoint).node.position;
         onLevelStart?.Invoke();
     }
@@ -777,6 +831,8 @@ public class GameController : MonoBehaviour
         RefreshStars();
         RefreshOverallWeaveLength();
         RefreshOthers();
+        player.transform.position = levelStartPoint;
+        player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
         onLevelReset?.Invoke();
     }
 
@@ -791,6 +847,7 @@ public class GameController : MonoBehaviour
         RefreshPieceGeneMaxAmount();
         RefreshEnabledPiece();
         GenenrateMap();
+        player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
     }
 
     /// <summary>
@@ -798,8 +855,9 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void CameraMoved()
     {
+        StartLevel();
         RefreshMaxWeaveLength();
-        ClearMap();
+        //ClearMap();
     }
 
 
@@ -849,12 +907,15 @@ public class GameController : MonoBehaviour
 
         Solution.Push(_piece.node.position);
         RefreshNodedLevelWeaveLength();
-        if (_piece.isCheckPoint)
+        if (_piece.transform.position == levelEndPoint)
         {
             CompleteLevel();
             Solution.Clear();
             Solution.Push(_piece.node.position);
             RefreshNodedLevelWeaveLength();
+            
+            //debug;
+            CameraMoved();
         }
     }
     /// <summary>
@@ -864,7 +925,7 @@ public class GameController : MonoBehaviour
     /// <returns>是否成功取消连接</returns>
     public bool TryDisconnectNode(Piece _piece)
     {
-        if (Solution.Peek() != _piece.node.position || _piece.isCheckPoint)
+        if (_piece.isCheckPoint||Solution.Peek() != _piece.node.position)
             return false;
 
         Solution.Pop();

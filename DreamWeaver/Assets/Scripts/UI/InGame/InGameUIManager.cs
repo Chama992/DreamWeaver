@@ -7,7 +7,12 @@ using UnityEngine.UI;
 
 public class InGameUIManager : SingleTon<InGameUIManager>
 {
+<<<<<<< Updated upstream
     private Player player;
+=======
+    [SerializeField]private Player player;
+    [Header("Info")]
+>>>>>>> Stashed changes
     public TMP_Text levelDepthTmp;
     public TMP_Text threadLengthTmp;
     private int  levelDepth;
@@ -21,10 +26,6 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     public GameObject propFrame;
     public Dictionary<int, PropFrameUI> propFrameUIs = new();
     // private List<GameObject> propFrameObjectsPool = new();
-    private void Start()
-    {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
-    }
 
     private void Update()
     {
@@ -36,6 +37,13 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         {
             CloseRoguePropPanel();
         }
+<<<<<<< Updated upstream
+=======
+        SetThreadLength(GameController.instance.levelWeaveLength);
+        SetLevelDepth(GameController.instance.level);
+        SetScore(GameController.instance.score);
+        SetStars(GameController.instance.stars);
+>>>>>>> Stashed changes
     }
 
     /// <summary>
@@ -54,7 +62,35 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     private void SetThreadLength(float _threadLength)
     {
         threadLength = _threadLength;
+<<<<<<< Updated upstream
         threadLengthTmp.text = threadLength.ToString("P2");
+=======
+        threadLengthTmp.text ="Lengths" +  threadLength.ToString();
+    }
+    /// <summary>
+    /// 设置关卡分数
+    /// </summary>
+    /// <param name="_scores"></param>
+    private void SetScore(float _scores)
+    {
+        scores = _scores;
+        ScoreTmp.text = "Scores" +  scores.ToString();
+    }
+    /// <summary>
+    /// 设置星星个数
+    /// </summary>
+    /// <param name="_starCount"></param>
+    private void SetStars(int _starCount)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if( i < _starCount)
+                Stars[i].color = Color.red;
+            else
+                Stars[i].color = Color.white;
+
+        }
+>>>>>>> Stashed changes
     }
     /// <summary>
     /// 打开肉鸽面板

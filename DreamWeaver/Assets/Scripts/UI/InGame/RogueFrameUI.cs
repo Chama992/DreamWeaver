@@ -24,6 +24,14 @@ public class RogueFrameUI : MonoBehaviour,IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
+            if (PropDataManager.Instance.GetPropTypeEffectorType(propId) == PropEffectorType.Special)
+            {
+                GameController.instance.AddBonue(1);
+                GameController.instance.AddBlackHole(1);
+                GameController.instance.AddScoreModifier(1);
+                InGameUIManager.Instance.CloseRoguePropPanel();
+                return;
+            }
             FindObjectOfType<Player>().Props.GetProps(propId,1);
             InGameUIManager.Instance.CloseRoguePropPanel();
         }

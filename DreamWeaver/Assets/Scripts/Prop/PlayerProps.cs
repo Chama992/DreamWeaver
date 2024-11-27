@@ -17,11 +17,11 @@ public class PlayerProps
     /// <param name="propId"></param>
     public void GetProps(int propId,int count)
     {
-        if (PropDataManager.Instance.GetPropTypeEffectorType(propId) == PropEffectorType.Special)
-        {
-            //TODO: Ð´ÌØÊâµÀ¾ßÂß¼­
-            return;
-        }
+        //if (PropDataManager.Instance.GetPropTypeEffectorType(propId) == PropEffectorType.Special)
+        //{
+            
+        //    return;
+        //}
         if (props.ContainsKey(propId))
             props[propId] += count;
         else
@@ -73,13 +73,12 @@ public class PlayerProps
                 propEffectorManager.AddPropEffector<Bomb>();
                 break;
             case PropType.Reset:
-                propEffectorManager.AddPropEffector<Feather>();
+                propEffectorManager.AddPropEffector<Reset>();
                 break;
             case PropType.Hammer:
-                propEffectorManager.AddPropEffector<Feather>();
+                propEffectorManager.AddPropEffector<Hammer>();
                 break;
-            case PropType.BlackHole:
-                propEffectorManager.AddPropEffector<Feather>();
+            default:
                 break;
         }
     }

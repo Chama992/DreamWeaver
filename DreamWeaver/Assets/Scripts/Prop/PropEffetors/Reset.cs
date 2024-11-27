@@ -11,6 +11,6 @@ public class Reset : PropEffector
     public override void Instant()
     {
         base.Instant();
-        //TODO: GameControl给一个接口，重新生成该关卡
+        GameController.instance.RegenerateLevel();
     }
 }

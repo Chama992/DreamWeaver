@@ -8,10 +8,14 @@ using UnityEngine.UI;
 public class InGameUIManager : SingleTon<InGameUIManager>
 {
     private Player player;
+    [Header("Info")]
     public TMP_Text levelDepthTmp;
     public TMP_Text threadLengthTmp;
+    public TMP_Text ScoreTmp;
+    public List<Image> Stars;
     private int  levelDepth;
     private float threadLength;
+    private float scores;
     [Header("RoguePanel")]
     public GameObject roguePropPanel;
     public GameObject roguePropFrame;
@@ -36,6 +40,10 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         {
             CloseRoguePropPanel();
         }
+        // SetThreadLength(GameController.instance.levelWeaveLength);
+        // SetLevelDepth(GameController.instance.level);
+        // SetScore(GameController.instance.score);
+        // SetStars(GameController.instance.stars);
     }
 
     /// <summary>
@@ -45,7 +53,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     private void SetLevelDepth( int _levelDepth )
     {
         levelDepth = _levelDepth;
-        levelDepthTmp.text = levelDepth.ToString();
+        levelDepthTmp.text = "Depth:" + levelDepth.ToString();
     }
     /// <summary>
     /// 设置线的长度
@@ -54,7 +62,27 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     private void SetThreadLength(float _threadLength)
     {
         threadLength = _threadLength;
-        threadLengthTmp.text = threadLength.ToString("P2");
+        threadLengthTmp.text ="Lengths" +  threadLength.ToString("P2");
+    }
+    /// <summary>
+    /// 设置关卡分数
+    /// </summary>
+    /// <param name="_scores"></param>
+    private void SetScore(float _scores)
+    {
+        scores = _scores;
+        ScoreTmp.text = "Scores" +  scores.ToString("P2");
+    }
+    /// <summary>
+    /// 设置星星个数
+    /// </summary>
+    /// <param name="_starCount"></param>
+    private void SetStars(float _starCount)
+    {
+        for (int i = 0; i < _starCount; i++)
+        {
+            Stars[i].color = Color.red;
+        }
     }
     /// <summary>
     /// 打开肉鸽面板

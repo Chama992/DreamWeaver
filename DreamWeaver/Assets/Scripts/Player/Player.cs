@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -37,6 +38,7 @@ public class Player : MonoBehaviour
     #region Components
     public Animator Anim { get; private set; }
     public Rigidbody2D Rb { get; private set; }
+    public PlayerNodeControl  PlayerNodeControl { get; private set; }
     #endregion
     [Header("CollisionCheck Info")]
     [SerializeField] protected Transform groundCheck;
@@ -60,6 +62,7 @@ public class Player : MonoBehaviour
     {
         Anim = GetComponentInChildren<Animator>();
         Rb = GetComponent<Rigidbody2D>();
+        PlayerNodeControl = GetComponentInChildren<PlayerNodeControl>();
         //use statemachine,player can switch to any state
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine, "Idle");
@@ -90,6 +93,18 @@ public class Player : MonoBehaviour
     {
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
+    }
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Node"))
+        {
+            if (Input.GetKeyDown(KeyCode.E)) //BUG: 老是检测不出来？？？？
+            {
+                // GameController.instance.ConnectNode();
+                //TODO: 判断是连接节点还是取消连接节点
+                PlayerNodeControl.LinkNode(other.transform.position,other.gameObject.GetInstanceID());
+            }
+        }
     }
     #endregion
     #region Dash

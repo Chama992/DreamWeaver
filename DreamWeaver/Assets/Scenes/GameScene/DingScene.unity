@@ -5032,6 +5032,7 @@ MonoBehaviour:
   dashDuration: 0.3
   dashSpeed: 25
   dashCoolDown: 1
+  PlayerNodeControl: {fileID: 1565954044}
   groundCheck: {fileID: 1775420676}
   groundCheckDistance: 0.1
   whatIsGround:

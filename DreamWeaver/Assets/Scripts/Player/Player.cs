@@ -36,10 +36,8 @@ public class Player : MonoBehaviour
     #region Components
     public Animator Anim { get; private set; }
     public Rigidbody2D Rb { get; private set; }
-<<<<<<< Updated upstream
-=======
-    public PlayerNodeControl PlayerNodeControl { get; private set; }
->>>>>>> Stashed changes
+    [Header("Node Info")]
+    public PlayerNodeControl PlayerNodeControl;
     #endregion
     [Header("CollisionCheck Info")]
     [SerializeField] protected Transform groundCheck;
@@ -100,8 +98,6 @@ public class Player : MonoBehaviour
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
     }
-<<<<<<< Updated upstream
-=======
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.GetComponent<Piece>()!=null)
@@ -109,7 +105,6 @@ public class Player : MonoBehaviour
             currentPiece = other.GetComponent<Piece>();
         }
     }
->>>>>>> Stashed changes
     #endregion
     #region Dash
     private void CheckDashActive()

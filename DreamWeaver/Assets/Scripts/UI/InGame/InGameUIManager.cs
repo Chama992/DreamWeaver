@@ -7,14 +7,13 @@ using UnityEngine.UI;
 
 public class InGameUIManager : SingleTon<InGameUIManager>
 {
-<<<<<<< Updated upstream
-    private Player player;
-=======
     [SerializeField]private Player player;
     [Header("Info")]
->>>>>>> Stashed changes
     public TMP_Text levelDepthTmp;
     public TMP_Text threadLengthTmp;
+    public TMP_Text ScoreTmp;
+    public List<Image> Stars;
+    private float scores;
     private int  levelDepth;
     private float threadLength;
     [Header("RoguePanel")]
@@ -37,13 +36,10 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         {
             CloseRoguePropPanel();
         }
-<<<<<<< Updated upstream
-=======
         SetThreadLength(GameController.instance.levelWeaveLength);
         SetLevelDepth(GameController.instance.level);
         SetScore(GameController.instance.score);
         SetStars(GameController.instance.stars);
->>>>>>> Stashed changes
     }
 
     /// <summary>
@@ -62,9 +58,6 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     private void SetThreadLength(float _threadLength)
     {
         threadLength = _threadLength;
-<<<<<<< Updated upstream
-        threadLengthTmp.text = threadLength.ToString("P2");
-=======
         threadLengthTmp.text ="Lengths" +  threadLength.ToString();
     }
     /// <summary>
@@ -90,7 +83,6 @@ public class InGameUIManager : SingleTon<InGameUIManager>
                 Stars[i].color = Color.white;
 
         }
->>>>>>> Stashed changes
     }
     /// <summary>
     /// ´ò¿ªÈâ¸ëÃæ°å

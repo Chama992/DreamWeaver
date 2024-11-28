@@ -29,11 +29,11 @@ public class RogueFrameUI : MonoBehaviour,IPointerClickHandler
                 GameController.instance.AddBonue(1);
                 GameController.instance.AddBlackHole(1);
                 GameController.instance.AddScoreModifier(1);
-                InGameUIManager.Instance.CloseRoguePropPanel();
+                InGameUIManager.Instance.ChoseRogue();
                 return;
             }
             FindObjectOfType<Player>().Props.GetProps(propId,1);
-            InGameUIManager.Instance.CloseRoguePropPanel();
+            InGameUIManager.Instance.ChoseRogue();
         }
     }
 }

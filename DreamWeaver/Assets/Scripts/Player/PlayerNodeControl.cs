@@ -22,6 +22,8 @@ public class PlayerNodeControl : MonoBehaviour
         lineRenderer.material = Material;
         lineRenderer.startColor = Color.red;
         lineRenderer.endColor = Color.blue;
+        lineRenderer.startColor = Color.red;
+        lineRenderer.endColor = Color.blue;
     }
     private void Update()
     {

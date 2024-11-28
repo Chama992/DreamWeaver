@@ -20,22 +20,29 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     public GameObject roguePropPanel;
     public GameObject roguePropFrame;
     private List<GameObject> propRogueFrameObjectsPool = new();
+    private int chooseCount;
     [Header("PropPanel")]
     public GameObject propPanel;
     public GameObject propFrame;
     public Dictionary<int, PropFrameUI> propFrameUIs = new();
     // private List<GameObject> propFrameObjectsPool = new();
+    public Dictionary<int, int> propFrameUISave = new();
 
+    private void Start()
+    {
+        GameController.instance.onLevelStart += OnLevelBegin;
+        GameController.instance.onLevelReset += onLevelReset;
+    }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            OpenRoguePropPanel(1);
-        }
-        if (Input.GetKeyDown(KeyCode.CapsLock))
-        {
-            CloseRoguePropPanel();
-        }
+        // if (Input.GetKeyDown(KeyCode.Tab))
+        // {
+        //     OpenRoguePropPanel(1);
+        // }
+        // if (Input.GetKeyDown(KeyCode.CapsLock))
+        // {
+        //     CloseRoguePropPanel();
+        // }
         SetThreadLength(GameController.instance.levelWeaveLength);
         SetLevelDepth(GameController.instance.level);
         SetScore(GameController.instance.score);
@@ -90,6 +97,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     public void OpenRoguePropPanel(int count)
     {
         roguePropPanel.SetActive(true);
+        chooseCount = count;
         GenerateRoguePropPanel();
     }
     /// <summary>
@@ -98,22 +106,36 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     public void GenerateRoguePropPanel()
     {
         List<PropData> propDatas = PropDataManager.Instance.GetRandomProps();
-        for (int i = 0; i < propDatas.Count; i++)
+        for (int i = 0; i < 3; i++)
         {
             GameObject roguePropFrame = GetFromRoguePropFramePool();
+            roguePropFrame.transform.SetAsFirstSibling();
             roguePropFrame.GetComponent<RogueFrameUI>().Initialize(propDatas[i]);
         }
+    }
+
+    public void ChoseRogue()
+    {
+        chooseCount--;
+        CloseRoguePropPanel();
+        if (chooseCount > 0)
+        {
+            GenerateRoguePropPanel();
+        }
+        else
+            roguePropPanel.SetActive(false);
     }
     /// <summary>
     /// 关闭肉鸽面板
     /// </summary>
     public void CloseRoguePropPanel()
     {
-        roguePropPanel.SetActive(false);
+        // roguePropPanel.SetActive(false);
         Transform rogueGroup = roguePropPanel.transform.Find("RogueGroup");
-        for (int i = 0; i < rogueGroup.childCount; i++)
+        for (int i = 0; i < 3; i++)
         {
             GameObject roguePropFrame = rogueGroup.GetChild(i).gameObject;
+            roguePropFrame.transform.SetAsLastSibling();
             InRoguePropFramePool(roguePropFrame);
         }
     }
@@ -173,7 +195,42 @@ public class InGameUIManager : SingleTon<InGameUIManager>
             propFrameUIs.Add(propId,newProp);
         }
     }
-    #if 框框对象池有bug
+    public void FreshPropPanelComplete()
+    {
+        
+        Transform props = propPanel.GetComponent<ScrollRect>().content;
+        for (int i = 0; i < props.childCount; i++)
+            Destroy(props.GetChild(i).gameObject);
+        propFrameUIs.Clear();
+        foreach (var pair in propFrameUISave)
+        {
+            if (pair.Value != 0)
+            {
+                PropFrameUI newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content).GetComponent<PropFrameUI>();
+                newProp.Initialize(PropDataManager.Instance.GetPropData(pair.Key), pair.Value);
+                propFrameUIs.Add(pair.Key,newProp); 
+            }
+        }
+    }
+
+    private void OnLevelBegin()
+    {
+        propFrameUISave = new Dictionary<int, int>(player.Props.props);
+    }
+    private void onLevelReset()
+    {
+        FreshPropPanelComplete();
+        player.Props.props = new Dictionary<int, int>(propFrameUISave);
+        foreach (int key in player.Props.props.Keys)
+        {
+            if (player.Props.props[key] == 0)
+            {
+                player.Props.props.Remove(key);
+            }
+        }
+    }
+    
+#if 框框对象池有bug
     // /// <summary>
     // /// 框框对象池入池
     // /// </summary>

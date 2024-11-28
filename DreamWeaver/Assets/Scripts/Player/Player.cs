@@ -9,9 +9,9 @@ public class Player : MonoBehaviour
     public PlayerMoveState MoveState { get; private set; }
     public PlayerAirState AirState { get; private set; }
     public PlayerJumpState JumpState { get; private set; }
-    public PlayerDashState DashState { get; private set; }
-    public PlayerWallSlideState WallSlideState { get; private set; }
-    public PlayerWallJumpState WallJumpState { get; private set; }
+    // public PlayerDashState DashState { get; private set; }
+    // public PlayerWallSlideState WallSlideState { get; private set; }
+    // public PlayerWallJumpState WallJumpState { get; private set; }
     public PlayerDeadState DeadState { get; private set; }
     public PlayerHookState HookState { get; private set; }
     #endregion
@@ -67,9 +67,9 @@ public class Player : MonoBehaviour
         MoveState = new PlayerMoveState(this, StateMachine, "Move");
         AirState = new PlayerAirState(this, StateMachine, "Jump");
         JumpState = new PlayerJumpState(this, StateMachine, "Jump");
-        DashState = new PlayerDashState(this, StateMachine, "Dash");
-        WallSlideState = new PlayerWallSlideState(this, StateMachine, "WallSlide");
-        WallJumpState = new PlayerWallJumpState(this, StateMachine, "Jump");
+        // DashState = new PlayerDashState(this, StateMachine, "Dash");
+        // WallSlideState = new PlayerWallSlideState(this, StateMachine, "WallSlide");
+        // WallJumpState = new PlayerWallJumpState(this, StateMachine, "Jump");
         DeadState = new PlayerDeadState(this, StateMachine, "Dead");
         HookState = new PlayerHookState(this, StateMachine, "Jump");
         Props.Initialize(this);
@@ -81,7 +81,7 @@ public class Player : MonoBehaviour
     private void Update()
     {
         StateMachine.currentState.Update();
-        CheckDashActive();
+        // CheckDashActive();
         UsePropDetect();
 
         if(Input.GetKeyDown(KeyCode.F)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
@@ -106,25 +106,25 @@ public class Player : MonoBehaviour
         }
     }
     #endregion
-    #region Dash
-    private void CheckDashActive()
-    {
-        dashUsageTimer -= Time.deltaTime;
-        if (this.IsWallChecked())
-            return;
-        if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
-        {
-            dashUsageTimer = dashCoolDown;
-            // ????????????????
-            dashDir = Input.GetAxisRaw("Horizontal");
-            if (dashDir == 0)
-                dashDir = facingDir;
-            if (dashDir != facingDir)
-                Flip();
-            StateMachine.ChangeState(this.DashState);
-        }
-    }
-    #endregion
+    // #region Dash
+    // private void CheckDashActive()
+    // {
+    //     dashUsageTimer -= Time.deltaTime;
+    //     if (this.IsWallChecked())
+    //         return;
+    //     if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
+    //     {
+    //         dashUsageTimer = dashCoolDown;
+    //         // ????????????????
+    //         dashDir = Input.GetAxisRaw("Horizontal");
+    //         if (dashDir == 0)
+    //             dashDir = facingDir;
+    //         if (dashDir != facingDir)
+    //             Flip();
+    //         StateMachine.ChangeState(this.DashState);
+    //     }
+    // }
+    // #endregion
     #region Flip
     public void Flip()
     {

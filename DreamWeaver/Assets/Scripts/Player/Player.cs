@@ -80,6 +80,12 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
+        if (GameController.instance.isCounting)
+        {
+            Rb.velocity = Vector2.zero;
+            return;
+        }
+
         StateMachine.currentState.Update();
         // CheckDashActive();
         UsePropDetect();

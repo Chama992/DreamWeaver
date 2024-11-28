@@ -22,8 +22,6 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
-        if (GameController.instance.isCounting)
-            return;
 
         if (StateMachine.currentState != player.IdleState)
             return;

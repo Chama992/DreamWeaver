@@ -260,7 +260,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (isGaming)
+        if (isGaming&&!isCounting)
         {
             RefreshLevelWeaveLength();
             RefreshStars();
@@ -277,6 +277,7 @@ public class GameController : MonoBehaviour
                 PauseGame();
             }
         }
+
         //Debug
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -489,7 +490,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 依据上次终点刷新起点位置，首次直接设为世界原点
     /// </summary>
-    private void RefreshStartPosition()
+    private void RefreshLevelStartPosition()
     {
         if (level == 0)
         {
@@ -765,7 +766,7 @@ public class GameController : MonoBehaviour
         isCounting = true;
         Time.timeScale = 1;
         player.gameObject.SetActive(true);
-        GeneratePiece(checkPoint, levelStartPoint, true);
+        levelPieces.Add(GeneratePiece(checkPoint, levelStartPoint, true));
 
         ReadyLevel();
         onGameStart?.Invoke();
@@ -844,7 +845,7 @@ public class GameController : MonoBehaviour
     public void ReadyLevel()
     {
         Time.timeScale = 1;
-        RefreshStartPosition();
+        RefreshLevelStartPosition();
         RefreshLevelEndPosition();
         RefreshLevelCenterPosition();
         RefreshLevelPieceGenePosition();
@@ -852,7 +853,9 @@ public class GameController : MonoBehaviour
         RefreshEnabledPiece();
         RefreshOverallWeaveLength();
         RefreshScore();
-        RefreshOthers();
+        RefreshOthers(); 
+        
+        player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
         onLevelReady?.Invoke();
     }
 
@@ -870,7 +873,7 @@ public class GameController : MonoBehaviour
         }
         player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
         player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).node.gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
-        player.transform.position = levelPieces.Find(x => x.isCheckPoint).node.position;
+
         onLevelStart?.Invoke();
     }
 

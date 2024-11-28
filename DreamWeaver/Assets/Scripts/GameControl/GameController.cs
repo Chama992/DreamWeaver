@@ -596,8 +596,6 @@ public class GameController : MonoBehaviour
         {
             nodes.Add(node.transform.position);
         }
-
-
         //计算距离作为权重
         Dictionary<int, float[]> pathWeights = new Dictionary<int, float[]>();
         List<Vector3> allNodes = new List<Vector3>();
@@ -617,14 +615,12 @@ public class GameController : MonoBehaviour
                 pathWeights[j][i] = distance;
             }
         }
-
         float[] originPathWeightToFinal = new float[allNodes.Count - 1];
         //防止直接从起始点跳到终点
         for (int i = 0; i < allNodes.Count - 1; i++)
         {
             originPathWeightToFinal[i] = pathWeights[i][allNodes.Count - 1];
             pathWeights[i][allNodes.Count - 1] = 0;
-            
         }
         //初始化计算数组
         int[] path = new int[allNodes.Count];//用于记录路径
@@ -675,8 +671,8 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-        pathWeight[^1] += originPathWeightToFinal[path[^1]];
-        Debug.Log("最大距离:" + pathWeight[^1]);
+        // pathWeight[^1] += originPathWeightToFinal[path[^1]];
+        Debug.Log("最大距离:" + pathWeight[^1]);//找到一条貌似是最长的 可能比最长的短一点 但绝对不会长 不想改这个了
         maxWeaveLength = pathWeight[^1];
     }
 
@@ -903,6 +899,7 @@ public class GameController : MonoBehaviour
         RefreshPieceGeneMaxAmount();
         RefreshEnabledPiece();
         GenenrateMap();
+        player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
         player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
     }
 

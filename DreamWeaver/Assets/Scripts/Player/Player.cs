@@ -26,13 +26,7 @@ public class Player : MonoBehaviour
     [SerializeField] public float wallJumpXMoveSpeed;
     [SerializeField] public float wallJumpDuration;
     [SerializeField] public float wallJumpForce;
-    [Header("Dash Info")]
-    [SerializeField] public float dashDuration;
-    [SerializeField] public float dashSpeed;
-    [SerializeField] private float dashCoolDown;
-    private float dashUsageTimer;
     private Piece currentPiece;
-    public float dashDir { get; private set; }
     #region Components
     public Animator Anim { get; private set; }
     public Rigidbody2D Rb { get; private set; }
@@ -106,25 +100,6 @@ public class Player : MonoBehaviour
         }
     }
     #endregion
-    // #region Dash
-    // private void CheckDashActive()
-    // {
-    //     dashUsageTimer -= Time.deltaTime;
-    //     if (this.IsWallChecked())
-    //         return;
-    //     if (Input.GetKeyDown(KeyCode.LeftShift) && dashUsageTimer < 0)
-    //     {
-    //         dashUsageTimer = dashCoolDown;
-    //         // ????????????????
-    //         dashDir = Input.GetAxisRaw("Horizontal");
-    //         if (dashDir == 0)
-    //             dashDir = facingDir;
-    //         if (dashDir != facingDir)
-    //             Flip();
-    //         StateMachine.ChangeState(this.DashState);
-    //     }
-    // }
-    // #endregion
     #region Flip
     public void Flip()
     {
@@ -152,7 +127,6 @@ public class Player : MonoBehaviour
         FlipControl(velocity.x);
     }
     #endregion
-
     #region Prop
     private void UsePropDetect()
     {

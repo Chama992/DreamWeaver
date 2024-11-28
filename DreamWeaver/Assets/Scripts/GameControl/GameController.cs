@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
@@ -197,6 +198,10 @@ public class GameController : MonoBehaviour
     /// </summary>
     public bool isGaming { get; private set; }
 
+    /// <summary>
+    /// 是否在关卡过渡阶段（开始选择道具到下一关展示完毕）
+    /// </summary>
+    public bool isCounting { get;set; }
     #endregion
 
     #region Actions
@@ -226,14 +231,20 @@ public class GameController : MonoBehaviour
     public Action onLevelComplete;
 
     /// <summary>
-    /// 关卡重置瞬间调用
+    /// 道具完成选择瞬间调用
     /// </summary>
-    public Action onLevelReset;
+    public Action onLevelReady;
 
     /// <summary>
     /// 关卡开始瞬间调用
     /// </summary>
     public Action onLevelStart;
+
+    /// <summary>
+    /// 关卡重置瞬间调用
+    /// </summary>
+    public Action onLevelReset;
+
     #endregion
 
     #region Unity
@@ -698,6 +709,10 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void RefreshStars()
     {
+        if (isCounting)
+            return;
+
+
         if (levelWeaveLength >= star3RequiredRate * maxWeaveLength)
         {
             stars = 3;
@@ -733,7 +748,7 @@ public class GameController : MonoBehaviour
     private void RefreshOthers()
     {
         bonus = 0;
-        scoreLevelModifier = 0;
+        scoreLevelModifier = 1;
     }
 
     #endregion
@@ -747,19 +762,13 @@ public class GameController : MonoBehaviour
 
         level = 0;
         isGaming = true;
+        isCounting = true;
+        Time.timeScale = 1;
         player.gameObject.SetActive(true);
-        RefreshStartPosition();
-        RefreshLevelEndPosition();
-        RefreshLevelCenterPosition();
-        RefreshLevelPieceGenePosition();
-        RefreshPieceGeneMaxAmount();
-        RefreshEnabledPiece();
-        RefreshOverallWeaveLength();
-        RefreshScore();
-        RefreshOthers();
-        onGameStart?.Invoke();
+        GeneratePiece(checkPoint, levelStartPoint, true);
 
-        StartLevel();
+        ReadyLevel();
+        onGameStart?.Invoke();
     }
     /// <summary>
     /// 暂停游戏，仅在未暂停游戏时生效
@@ -792,13 +801,11 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void EndGame()
     {
-        isGaming = false;
-        player.gameObject.SetActive(false);
-
         if (!isPausing)
             return;
-
-        isPausing = false;
+        isGaming = false;
+        player.gameObject.SetActive(false);
+        isPausing = true;
         onGameEnd?.Invoke();
     }
     /// <summary>
@@ -826,6 +833,17 @@ public class GameController : MonoBehaviour
     {
         level++;
 
+        InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus);
+        onLevelComplete?.Invoke();
+        Time.timeScale = 0;
+    }
+
+    /// <summary>
+    /// 道具已选完，准备开始下一关
+    /// </summary>
+    public void ReadyLevel()
+    {
+        Time.timeScale = 1;
         RefreshStartPosition();
         RefreshLevelEndPosition();
         RefreshLevelCenterPosition();
@@ -835,8 +853,7 @@ public class GameController : MonoBehaviour
         RefreshOverallWeaveLength();
         RefreshScore();
         RefreshOthers();
-        InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus);
-        onLevelComplete?.Invoke();
+        onLevelReady?.Invoke();
     }
 
     /// <summary>
@@ -844,6 +861,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartLevel()
     {
+        ClearMap();
         GenenrateMap();
         RefreshMaxWeaveLength();
         if (level == 0)
@@ -862,6 +880,7 @@ public class GameController : MonoBehaviour
     public void ResetLevel()
     {
         Solution.Clear();
+        Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
         RefreshLevelWeaveLength();
         RefreshNodedLevelWeaveLength();
         RefreshScore();
@@ -869,6 +888,7 @@ public class GameController : MonoBehaviour
         RefreshOthers();
         player.transform.position = levelStartPoint;
         player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
+        player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).node.gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
         onLevelReset?.Invoke();
     }
 
@@ -884,15 +904,6 @@ public class GameController : MonoBehaviour
         RefreshEnabledPiece();
         GenenrateMap();
         player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
-    }
-
-    /// <summary>
-    /// 相机位置到位时调用，正式开始关卡；
-    /// </summary>
-    public void CameraMoved()
-    {
-        StartLevel();
-        //ClearMap();
     }
 
 
@@ -949,8 +960,6 @@ public class GameController : MonoBehaviour
             Solution.Push(_piece.node.position);
             RefreshNodedLevelWeaveLength();
 
-            //debug;
-            CameraMoved();
         }
     }
     /// <summary>

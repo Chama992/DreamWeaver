@@ -30,7 +30,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
 
     private void Start()
     {
-        GameController.instance.onLevelStart += OnLevelBegin;
+        GameController.instance.onLevelComplete += OnLevelBegin;
         GameController.instance.onLevelReset += onLevelReset;
     }
     private void Update()
@@ -116,6 +116,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
 
     public void ChoseRogue()
     {
+        GameController.instance.isCounting = true;
         chooseCount--;
         CloseRoguePropPanel();
         if (chooseCount > 0)
@@ -123,7 +124,11 @@ public class InGameUIManager : SingleTon<InGameUIManager>
             GenerateRoguePropPanel();
         }
         else
+        {
+            GameController.instance.ReadyLevel();
             roguePropPanel.SetActive(false);
+        }
+
     }
     /// <summary>
     /// πÿ±’»‚∏Î√Ê∞Â

@@ -11,6 +11,8 @@ public class UI_Out : MonoBehaviour
     [SerializeField] private Transform pauseGame;
     [SerializeField] private Transform endGame;
     [SerializeField] private Transform setting;
+    [SerializeField] private TextMeshProUGUI hint;
+    [SerializeField] private TextMeshProUGUI hintLevel;
     [SerializeField] private TextMeshProUGUI level;
     [SerializeField] private TextMeshProUGUI weavelength;
     [SerializeField] private TextMeshProUGUI score;
@@ -20,6 +22,8 @@ public class UI_Out : MonoBehaviour
         GameController.instance.onGamePause += RefreshUI_Pause;
         GameController.instance.onGameContinue += RefreshUI_Continue;
         GameController.instance.onGameEnd += RefreshUI_End;
+        GameController.instance.onLevelReady += RefreshHint;
+        GameController.instance.onLevelStart += CloseHint;
     }
     private void OnDisable()
     {
@@ -27,6 +31,8 @@ public class UI_Out : MonoBehaviour
         GameController.instance.onGamePause -= RefreshUI_Pause;
         GameController.instance.onGameContinue -= RefreshUI_Continue;
         GameController.instance.onGameEnd -= RefreshUI_End;
+        GameController.instance.onLevelReady -= RefreshHint;
+        GameController.instance.onLevelStart -= CloseHint;
     }
 
     public void RefreshUI_Start()
@@ -51,6 +57,20 @@ public class UI_Out : MonoBehaviour
         pauseGame.gameObject.SetActive(false);
         endGame.gameObject.SetActive(true);
     }
+    public void RefreshHint()
+    {
+        FX.instance.SmoothAppear<TextMeshProUGUI>(hint);
+        FX.instance.SmoothAppear<TextMeshProUGUI>(hintLevel);
+        hintLevel.text = GameController.instance.level.ToString();
+    }
+
+    public void CloseHint()
+    {
+        FX.instance.SmoothDisappear<TextMeshProUGUI>(hint);
+        FX.instance.SmoothDisappear<TextMeshProUGUI>(hintLevel);
+
+    }
+
     public void OpenSetting()
     {
         setting.gameObject.SetActive(true);

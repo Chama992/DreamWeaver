@@ -5034,7 +5034,7 @@ MonoBehaviour:
   dashCoolDown: 1
   PlayerNodeControl: {fileID: 1565954044}
   groundCheck: {fileID: 1775420676}
-  groundCheckDistance: 0.1
+  groundCheckDistance: 0.3
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
@@ -5669,7 +5669,7 @@ MonoBehaviour:
   - {fileID: 1738280222397847876, guid: e0c052c1f3982d549949ecc6dfb20663, type: 3}
   - {fileID: 1975627078552454185, guid: c74259336ceea094ab9a9dc8df076599, type: 3}
   - {fileID: 1302710236246886096, guid: cecae4158388ea04383e516d68f68179, type: 3}
-  - {fileID: 3542097361331478441, guid: 36013a13f0e765d44b4c6c4f08ca837a, type: 3}
+  - {fileID: 5759850538299065577, guid: 36013a13f0e765d44b4c6c4f08ca837a, type: 3}
   - {fileID: 2160053503464275932, guid: 2738a628912aec544b69489678c73ffb, type: 3}
   - {fileID: 171858177791979971, guid: 7d5eb5c41dfead3438a5cf0af953108c, type: 3}
   - {fileID: 5942468317046697950, guid: f0ebd7abb0ff171428e9d97c6b648bb6, type: 3}
@@ -5680,17 +5680,17 @@ MonoBehaviour:
   pieceGenePositionRamdonBias: 2
   pieceGeneAmountAddLv: 1
   pieceGeneMaxAmount: 5
-  blockHorizontalInterval: 30
-  blockHorizontalInterAddRate: 1.1
-  blockHorizontalInterAddLv: 3
-  blockHorizontalMaxInterval: 10
-  blockVerticalInterval: 30
-  blockVerticalInterAddRate: 1.1
-  blockVerticalInterAddLv: 3
-  blockVerticalMaxInterval: 10
-  blockHorizontalAddLv: 5
+  blockHorizontalInterval: 15
+  blockHorizontalInterAddRate: 0.1
+  blockHorizontalInterAddLv: 10
+  blockHorizontalMaxInterval: 100
+  blockVerticalInterval: 8
+  blockVerticalInterAddRate: 0.1
+  blockVerticalInterAddLv: 10
+  blockVerticalMaxInterval: 100
+  blockHorizontalAddLv: 1
   blockHorizontalMaxAmount: 5
-  blockVerticalAddLv: 5
+  blockVerticalAddLv: 1
   blockVerticalMaxAmount: 5
   unitScore: 100
   star1RequiredRate: 0.5

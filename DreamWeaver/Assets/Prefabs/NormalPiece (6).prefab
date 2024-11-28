@@ -349,7 +349,7 @@ MonoBehaviour:
   id: 0
   theme: 0
   node: {fileID: 6566566723440183045}
-  difficulty: 0
+  difficulty: 1
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0

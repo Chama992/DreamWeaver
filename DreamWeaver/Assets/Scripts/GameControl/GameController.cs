@@ -120,12 +120,12 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 进入下一关动画结束后清除的碎片
     /// </summary>
-    public List<Piece> readyToClearPieces { get; private set; } = new();
+    public List<GameObject> readyToClear { get; private set; } = new();
 
     /// <summary>
     /// 进入下一关先不清楚，加入到下下一关清除列表中的碎片
     /// </summary>
-    public List<Piece> readyToReadyToClearPieces { get; private set; } = new();
+    public List<GameObject> readyToReadyToClear { get; private set; } = new();
 
     /// <summary>
     /// 关卡碎片生成量
@@ -195,7 +195,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 游戏是否正在进行
     /// </summary>
-    public bool isGaming {  get; private set; }
+    public bool isGaming { get; private set; }
 
     #endregion
 
@@ -249,12 +249,15 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        RefreshLevelWeaveLength();
-        RefreshStars();
-
-        if(Input.GetKeyDown(KeyCode.Escape)&&isGaming)
+        if (isGaming)
         {
-            if(isPausing)
+            RefreshLevelWeaveLength();
+            RefreshStars();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && isGaming)
+        {
+            if (isPausing)
             {
                 ContinueGame();
             }
@@ -272,7 +275,7 @@ public class GameController : MonoBehaviour
         {
             StartLevel();
         }
-        if(Input.GetKeyDown(KeyCode.Y))
+        if (Input.GetKeyDown(KeyCode.Y))
         {
             RegenerateLevel();
         }
@@ -295,9 +298,9 @@ public class GameController : MonoBehaviour
     {
         Piece piece = Instantiate(pieces.Find(t => t.id == _id).gameObject, _position, Quaternion.identity).GetComponent<Piece>();
         if (_readyToBeClear)
-            readyToClearPieces.Add(piece);
+            readyToClear.Add(piece.gameObject);
         else
-            readyToReadyToClearPieces.Add(piece);
+            readyToReadyToClear.Add(piece.gameObject);
         return piece;
     }
     /// <summary>
@@ -310,9 +313,9 @@ public class GameController : MonoBehaviour
     {
         Piece piece = Instantiate(_piece.gameObject, _position, Quaternion.identity).GetComponent<Piece>();
         if (_readyToBeClear)
-            readyToClearPieces.Add(piece);
+            readyToClear.Add(piece.gameObject);
         else
-            readyToReadyToClearPieces.Add(piece);
+            readyToReadyToClear.Add(piece.gameObject);
         return piece;
     }
     /// <summary>
@@ -413,7 +416,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < Math.Min(blackHoleAmount, levelPiecesCopy.Count); i++)
         {
             int index = Random.Range(0, levelPiecesCopy.Count);
-            Instantiate(blackHole, levelPiecesCopy[index].transform.position, Quaternion.identity);
+            readyToClear.Add(Instantiate(blackHole, levelPiecesCopy[index].transform.position, Quaternion.identity));
             levelPiecesCopy.RemoveAt(index);
         }
     }
@@ -423,12 +426,12 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void ClearMap()
     {
-        for (int i = 0; i < readyToClearPieces.Count; i++)
+        for (int i = 0; i < readyToClear.Count; i++)
         {
-            Destroy(readyToClearPieces[i].gameObject);
+            Destroy(readyToClear[i].gameObject);
         }
-        readyToClearPieces = readyToReadyToClearPieces.FindAll(t => true);
-        readyToReadyToClearPieces.Clear();
+        readyToClear = readyToReadyToClear.FindAll(t => true);
+        readyToReadyToClear.Clear();
     }
 
     /// <summary>
@@ -436,7 +439,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void ClearCurrentMap()
     {
-        foreach (var pieces in levelPieces.FindAll(t=>t.transform.position != levelStartPoint))
+        foreach (var pieces in levelPieces.FindAll(t => t.transform.position != levelStartPoint))
         {
             Destroy(pieces.gameObject);
         }
@@ -520,8 +523,11 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     private void RefreshNodedLevelWeaveLength()
     {
-        if (Solution == null||Solution.Count == 0)
+        if (Solution == null || Solution.Count == 0) 
+        {
+            nodedLevelWeaveLength = 0;
             return;
+        }
 
         Stack<Vector3> SolutionCopy = new();
         Vector3[] SolutionArrayCopy = new Vector3[Solution.Count];
@@ -532,7 +538,7 @@ public class GameController : MonoBehaviour
         }
         Vector3 LastNode = SolutionCopy.Pop();
         float result = 0;
-        while (SolutionCopy != null &&SolutionCopy.Count != 0)
+        while (SolutionCopy != null && SolutionCopy.Count != 0)
         {
             Vector3 NewNode = SolutionCopy.Pop();
             if (NewNode != Vector3.positiveInfinity && LastNode != Vector3.positiveInfinity)
@@ -568,11 +574,10 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// 依据当前起点、终点和所有待删碎片位置刷新最优解长度
+    /// 依据当前起点、终点和所有碎片位置刷新最优解长度
     /// </summary>
     private void RefreshMaxWeaveLength()
     {
-        List<Edge> edges = new();
         Vector3 startNode = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
         Vector3 endNode = levelPieces.Find(t => t.transform.position == levelEndPoint).node.position;
         List<Vector3> nodes = new();
@@ -711,7 +716,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        
+
         level = 0;
         isGaming = true;
         player.gameObject.SetActive(true);
@@ -803,7 +808,6 @@ public class GameController : MonoBehaviour
         RefreshScore();
         RefreshOthers();
         InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus);
-        //player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
         onLevelComplete?.Invoke();
     }
 
@@ -813,6 +817,11 @@ public class GameController : MonoBehaviour
     public void StartLevel()
     {
         GenenrateMap();
+        RefreshMaxWeaveLength();
+        if (level == 0)
+        {
+            Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
+        }
         player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
         player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).node.gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
         player.transform.position = levelPieces.Find(x => x.isCheckPoint).node.position;
@@ -829,7 +838,6 @@ public class GameController : MonoBehaviour
         RefreshNodedLevelWeaveLength();
         RefreshScore();
         RefreshStars();
-        RefreshOverallWeaveLength();
         RefreshOthers();
         player.transform.position = levelStartPoint;
         player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
@@ -856,7 +864,6 @@ public class GameController : MonoBehaviour
     public void CameraMoved()
     {
         StartLevel();
-        RefreshMaxWeaveLength();
         //ClearMap();
     }
 
@@ -913,7 +920,7 @@ public class GameController : MonoBehaviour
             Solution.Clear();
             Solution.Push(_piece.node.position);
             RefreshNodedLevelWeaveLength();
-            
+
             //debug;
             CameraMoved();
         }
@@ -925,7 +932,7 @@ public class GameController : MonoBehaviour
     /// <returns>是否成功取消连接</returns>
     public bool TryDisconnectNode(Piece _piece)
     {
-        if (_piece.isCheckPoint||Solution.Peek() != _piece.node.position)
+        if (_piece.isCheckPoint || Solution.Peek() != _piece.node.position)
             return false;
 
         Solution.Pop();

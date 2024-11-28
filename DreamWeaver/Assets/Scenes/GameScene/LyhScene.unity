@@ -5677,17 +5677,17 @@ MonoBehaviour:
   - {fileID: 7147170602978764790, guid: 3b40685caa4524648ab136aae052006c, type: 3}
   - {fileID: 4483154995877738420, guid: 1be11094c8eb18f4ba4efd9152004d49, type: 3}
   checkPoint: {fileID: 6494587954851134752, guid: 35eff9f1089e58a4594fcb7c6e220de8, type: 3}
-  pieceGenePositionRamdonBias: 2
+  pieceGenePositionRamdonBias: 0
   pieceGeneAmountAddLv: 1
   pieceGeneMaxAmount: 5
-  blockHorizontalInterval: 30
-  blockHorizontalInterAddRate: 1.1
-  blockHorizontalInterAddLv: 3
-  blockHorizontalMaxInterval: 10
-  blockVerticalInterval: 30
-  blockVerticalInterAddRate: 1.1
-  blockVerticalInterAddLv: 3
-  blockVerticalMaxInterval: 10
+  blockHorizontalInterval: 10
+  blockHorizontalInterAddRate: 0.1
+  blockHorizontalInterAddLv: 10
+  blockHorizontalMaxInterval: 100
+  blockVerticalInterval: 10
+  blockVerticalInterAddRate: 0.1
+  blockVerticalInterAddLv: 10
+  blockVerticalMaxInterval: 100
   blockHorizontalAddLv: 5
   blockHorizontalMaxAmount: 5
   blockVerticalAddLv: 5

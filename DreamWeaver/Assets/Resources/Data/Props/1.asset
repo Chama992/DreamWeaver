@@ -15,4 +15,6 @@ MonoBehaviour:
   propID: 1
   propName: "\u70DF\u82B1"
   propDescription: 
-  propIcon: {fileID: 21300000, guid: 7bae39282af46fa449bb7fd77041f40d, type: 3}
+  propIcon: {fileID: 1540853969, guid: 32725baabad5dce41bc59a9c656790c4, type: 3}
+  propType: 0
+  propEffectorType: 0

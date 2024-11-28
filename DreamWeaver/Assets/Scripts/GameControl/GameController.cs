@@ -606,8 +606,15 @@ public class GameController : MonoBehaviour
                 pathWeights[j][i] = distance;
             }
         }
-        //防止直接从起始点跳到终点 
-        pathWeights[0][allNodes.Count - 1] = 0;
+
+        float[] originPathWeightToFinal = new float[allNodes.Count - 1];
+        //防止直接从起始点跳到终点
+        for (int i = 0; i < allNodes.Count - 1; i++)
+        {
+            originPathWeightToFinal[i] = pathWeights[i][allNodes.Count - 1];
+            pathWeights[i][allNodes.Count - 1] = 0;
+            
+        }
         //初始化计算数组
         int[] path = new int[allNodes.Count];//用于记录路径
         float[] pathWeight = new float[allNodes.Count];//用于更新距离
@@ -657,14 +664,35 @@ public class GameController : MonoBehaviour
                 }
             }
         }
-        //pathWeight[^1] += pathWeights[path[^1]][^1];
+        pathWeight[^1] += originPathWeightToFinal[path[^1]];
         Debug.Log("最大距离:" + pathWeight[^1]);
         maxWeaveLength = pathWeight[^1];
-
-
-
     }
 
+    private void BfsSearchMaxLength(Vector2 startPoint, Vector2 endPoint, List<Vector2> points)
+    {
+        float max = float.MinValue;
+        //计算距离作为权重
+        Dictionary<int, float[]> pathWeights = new Dictionary<int, float[]>();
+        List<Vector3> allNodes = new List<Vector3>();
+        allNodes.Add(startPoint);
+        allNodes.AddRange(points);
+        allNodes.Add(endPoint);
+        for (int i = 0; i < allNodes.Count; i++)
+        {
+            pathWeights[i] = new float[allNodes.Count];
+        }
+        for (int i = 0; i < allNodes.Count; i++)
+        {
+            for (int j = i + 1; j < allNodes.Count; j++)
+            {
+                float distance = Vector2.Distance(allNodes[i], allNodes[j]);
+                pathWeights[i][j] = distance;
+                pathWeights[j][i] = distance;
+            }
+        }
+        
+    }
     /// <summary>
     /// 刷新当前星数，每帧更新
     /// </summary>

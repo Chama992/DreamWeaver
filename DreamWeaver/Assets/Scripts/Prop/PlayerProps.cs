@@ -10,7 +10,7 @@ public class PlayerProps
         player = _player;
     }
 
-    private Dictionary<int, int> props = new Dictionary<int, int>();//前一个是id 后一个是数量
+    public Dictionary<int, int> props = new Dictionary<int, int>();//前一个是id 后一个是数量
     /// <summary>
     /// 获得道具
     /// </summary>
@@ -73,6 +73,7 @@ public class PlayerProps
                 propEffectorManager.AddPropEffector<Bomb>();
                 break;
             case PropType.Reset:
+                InGameUIManager.Instance.propFrameUISave[propId]--;
                 propEffectorManager.AddPropEffector<Reset>();
                 break;
             case PropType.Hammer:

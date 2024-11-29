@@ -30,7 +30,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
 
     private void Start()
     {
-        GameController.instance.onLevelComplete += OnLevelBegin;
+        GameController.instance.onLevelStart += OnLevelBegin;
         GameController.instance.onLevelReset += onLevelReset;
     }
     private void Update()
@@ -56,7 +56,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     private void SetLevelDepth( int _levelDepth )
     {
         levelDepth = _levelDepth;
-        levelDepthTmp.text = levelDepth.ToString();
+        levelDepthTmp.text ="Depth:" +  levelDepth.ToString();
     }
     /// <summary>
     /// 设置线的长度
@@ -221,7 +221,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     private void OnLevelBegin()
     {
         propFrameUISave = new Dictionary<int, int>(player.Props.props);
-    }
+     }
     private void onLevelReset()
     {
         FreshPropPanelComplete();

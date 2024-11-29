@@ -81,6 +81,7 @@ public class PlayerNodeControl : MonoBehaviour
     {
         lineRenderer.positionCount = 0;
         pointCount = 0;
+        piecesSequences.Clear();
         startDrawLineFlag = false;
     }
 }

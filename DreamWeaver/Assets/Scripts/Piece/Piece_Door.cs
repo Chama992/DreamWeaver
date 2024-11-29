@@ -1,45 +1,70 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Piece_Door : Piece
 {
     public static Action onOpenDoor;
     public static Action onCloseDoor;
+    public static bool isInteracting;
 
-    [SerializeField] private Transform door;
-    [HideInInspector] public Vector3 doorPosition;
+    public Transform door;
+    [SerializeField] private Sprite OpenSprite;
+    [SerializeField] private Sprite CloseSprite;
+    [HideInInspector] private SpriteRenderer doorSr;
     [HideInInspector] public Piece_Door relatedDoor;
-    [HideInInspector] public bool isOpen;
+    [HideInInspector] public bool isOpen = false;
 
     protected override void Start()
     {
         base.Start();
-        doorPosition = door.position;
+        doorSr = door.GetComponent<SpriteRenderer>();
+        isInteracting = false;
+        doorSr.sprite = CloseSprite;
     }
     protected override void Update()
     {
         base.Update();
-        if(Input.GetKeyDown(KeyCode.E)&&(GameController.instance.player.transform.position-doorPosition).magnitude<GameController.instance.interactRatio)
+        if (Input.GetKeyDown(KeyCode.E) && !isInteracting && (GameController.instance.player.transform.position - door.position).magnitude < GameController.instance.interactRatio )
         {
-            if(!isOpen)
+            if (!isOpen)
             {
+                isInteracting = true;
                 isOpen = true;
+                doorSr.sprite = OpenSprite;
                 relatedDoor.isOpen = true;
-                GameController.instance.player.transform.position = relatedDoor.doorPosition;
+                relatedDoor.doorSr.sprite = OpenSprite;
+                GameController.instance.player.transform.position = relatedDoor.door.position;
                 GameController.instance.ConnectDoor(this);
                 onOpenDoor?.Invoke();
+                StartCoroutine(DoorCD());
             }
-            else
+            else if (isOpen && GameController.instance.TryDisconnectDoor(this))
             {
+                isInteracting = true;
                 isOpen = false;
+                doorSr.sprite = CloseSprite;
                 relatedDoor.isOpen = false;
-                GameController.instance.player.transform.position = relatedDoor.doorPosition;
-                GameController.instance.TryDisconnectDoor(this);
+                relatedDoor.doorSr.sprite = CloseSprite;
+                GameController.instance.player.transform.position = relatedDoor.door.position;
                 onCloseDoor?.Invoke();
-            }    
+                StartCoroutine(DoorCD());
+            }
         }
+    }
+
+    public IEnumerator DoorCD()
+    {
+        yield return new WaitForSeconds(.5f);
+        isInteracting = false;
+    }
+
+    protected override void ResetPiece()
+    {
+        base.ResetPiece();
+        isOpen = false;
+        isInteracting = false;
+        doorSr.sprite = CloseSprite;
     }
 
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Unity.VisualScripting;
@@ -119,14 +120,19 @@ public class GameController : MonoBehaviour
     public List<Piece> levelPieces { get; private set; } = new();
 
     /// <summary>
-    /// 进入下一关动画结束后清除的碎片
+    /// 下一次清除的碎片
     /// </summary>
     public List<GameObject> readyToClear { get; private set; } = new();
 
     /// <summary>
-    /// 进入下一关先不清楚，加入到下下一关清除列表中的碎片
+    /// 下下一次清除的碎片
     /// </summary>
-    public List<GameObject> readyToReadyToClear { get; private set; } = new();
+    public List<GameObject> readyToClear_2 { get; private set; } = new();
+
+    /// <summary>
+    /// 下下下一次清除的碎片
+    /// </summary>
+    public List<GameObject> readyToClear_3 { get; private set; } = new();
 
     /// <summary>
     /// 关卡碎片生成量
@@ -281,7 +287,10 @@ public class GameController : MonoBehaviour
         //Debug
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            CompleteLevel();
+            foreach ( var nodes in Solution)
+            {
+                Debug.Log(nodes);
+            }
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
@@ -301,21 +310,6 @@ public class GameController : MonoBehaviour
 
     #region Generate
     /// <summary>
-    /// 按照id在指定位置生成地图，仅当需要针对性生成地图时独立调用，或用于随机生成方法中
-    /// </summary>
-    /// <param name="_id">地图id</param>
-    /// <param name="_position">世界位置</param>
-    /// <param name="_readyToBeClear">是否在关卡结束时清除</param>
-    public Piece GeneratePiece(int _id, Vector3 _position, bool _readyToBeClear)
-    {
-        Piece piece = Instantiate(pieces.Find(t => t.id == _id).gameObject, _position, Quaternion.identity).GetComponent<Piece>();
-        if (_readyToBeClear)
-            readyToClear.Add(piece.gameObject);
-        else
-            readyToReadyToClear.Add(piece.gameObject);
-        return piece;
-    }
-    /// <summary>
     /// 按照引用在指定位置生成地图，仅当需要针对性生成地图时独立调用，或用于随机生成方法中
     /// </summary>
     /// <param name="_piece">地图引用</param>
@@ -323,11 +317,11 @@ public class GameController : MonoBehaviour
     /// <param name="_readyToBeClear">是否在关卡结束时清除</param>
     public Piece GeneratePiece(Piece _piece, Vector3 _position, bool _readyToBeClear)
     {
-        Piece piece = Instantiate(_piece.gameObject, _position, Quaternion.identity).GetComponent<Piece>();
+        Piece piece = FX.instance.SmoothInstantiate(_piece.gameObject,_position).GetComponent<Piece>();
         if (_readyToBeClear)
-            readyToClear.Add(piece.gameObject);
+            readyToClear_2.Add(piece.gameObject);
         else
-            readyToReadyToClear.Add(piece.gameObject);
+            readyToClear_3.Add(piece.gameObject);
         return piece;
     }
     /// <summary>
@@ -419,6 +413,49 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
+    /// 生成地图动画
+    /// </summary>
+    public IEnumerator GenenrateMap_Smooth()
+    {
+        if (level == 0)
+        {
+            levelPieces.Clear();
+            Piece piece = GeneratePiece(checkPoint, levelStartPoint, true);
+            if (piece != null)
+                levelPieces.Add(piece);
+        }
+        else
+        {
+            Piece checkPoint = levelPieces.Find(t => t.transform.position == levelStartPoint);
+            levelPieces.Clear();
+            levelPieces.Add(checkPoint);
+        }
+        levelPieces.Add(GeneratePiece(checkPoint, levelEndPoint, false));
+        yield return new WaitForSeconds(.4f);
+        List<Piece> enabledPieceCopy = enabledPieces.FindAll(t => true);
+        List<Vector3> genePositionsCopy = pieceGenePositions.FindAll(t => true);
+        for (int i = 0; i < pieceGeneAmount; i++)
+        {
+            if (Math.Min(pieceGeneAmount - i, genePositionsCopy.Count) < 2)
+            {
+                enabledPieceCopy.RemoveAll(t => t is Piece_Door);
+            }
+            Piece extraDoor = null;
+            Piece newPiece = GenerateRandomPiece(enabledPieceCopy, genePositionsCopy, true, false, out extraDoor);
+            if (newPiece != null)
+                levelPieces.Add(newPiece);
+            if (extraDoor != null)
+                levelPieces.Add(extraDoor);
+            yield return new WaitForSeconds(.4f);
+        }
+
+        GenerateBlackHole();
+        yield return new WaitForSeconds(1f);
+        ClearMap();
+        StartLevel();
+    }
+
+    /// <summary>
     /// 在地图完成生成后生成黑洞
     /// </summary>
     public void GenerateBlackHole()
@@ -442,8 +479,9 @@ public class GameController : MonoBehaviour
         {
             Destroy(readyToClear[i].gameObject);
         }
-        readyToClear = readyToReadyToClear.FindAll(t => true);
-        readyToReadyToClear.Clear();
+        readyToClear = readyToClear_2.FindAll(t => true);
+        readyToClear_2 = readyToClear_3.FindAll(t => true);
+        readyToClear_3.Clear();
     }
 
     /// <summary>
@@ -553,7 +591,7 @@ public class GameController : MonoBehaviour
         while (SolutionCopy != null && SolutionCopy.Count != 0)
         {
             Vector3 NewNode = SolutionCopy.Pop();
-            if (NewNode != Vector3.positiveInfinity && LastNode != Vector3.positiveInfinity)
+            if ((NewNode != -Vector3.one) && (LastNode != -Vector3.one))
             {
                 result += (LastNode - NewNode).magnitude;
             }
@@ -864,8 +902,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartLevel()
     {
-        ClearMap();
-        GenenrateMap();
+        isCounting = false;
         RefreshMaxWeaveLength();
         if (level == 0)
         {
@@ -951,7 +988,7 @@ public class GameController : MonoBehaviour
     /// <param name="_piece">碎片引用</param>
     public void ConnectNode(Piece _piece)
     {
-        if (!_piece.allowLink)
+        if (!_piece.allowLink||_piece.node == null)
             return;
 
         Solution.Push(_piece.node.position);
@@ -986,10 +1023,11 @@ public class GameController : MonoBehaviour
     /// <param name="_door">门引用</param>
     public void ConnectDoor(Piece_Door _door)
     {
-        Solution.Push(_door.doorPosition);
-        Solution.Push(Vector3.positiveInfinity);
-        Solution.Push(_door.relatedDoor.doorPosition);
+        Solution.Push(_door.door.position);
+        Solution.Push(-Vector3.one);
+        Solution.Push(_door.relatedDoor.door.position);
         RefreshNodedLevelWeaveLength();
+ 
     }
     /// <summary>
     /// 取消连接门，返回成功与否
@@ -998,7 +1036,7 @@ public class GameController : MonoBehaviour
     /// <returns>是否成功取消连接</returns>
     public bool TryDisconnectDoor(Piece_Door _door)
     {
-        if (Solution.Peek() != _door.doorPosition)
+        if (Solution.Peek() != _door.door.position)
             return false;
 
         Solution.Pop();

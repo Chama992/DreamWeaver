@@ -1209,7 +1209,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 13.59
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -1252,7 +1252,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 337bbc5c1c7a55b41a5fd91f7f28bcc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxCameraSize: 10
+  minCameraSize: 10
   mouseSensibility: 1
+  mouseScrollSensibility: 1
   maxDeltaMove: 1
   z: -10
 --- !u!1 &279773539
@@ -3259,12 +3262,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1077912950}
+  - component: {fileID: 1077912947}
   - component: {fileID: 1077912949}
   - component: {fileID: 1077912948}
-  - component: {fileID: 1077912947}
   - component: {fileID: 1077912946}
   m_Layer: 6
-  m_Name: MyPlayer (1)
+  m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3307,7 +3310,7 @@ MonoBehaviour:
   dashCoolDown: 1
   PlayerNodeControl: {fileID: 1239572739}
   groundCheck: {fileID: 1607509471}
-  groundCheckDistance: 0.1
+  groundCheckDistance: 0.2
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
@@ -3373,7 +3376,7 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.35230064, y: -0.122458935}
+  m_Offset: {x: 0, y: -0.122458935}
   m_Size: {x: 1.4622536, y: 2.5809326}
   m_Direction: 0
 --- !u!4 &1077912950
@@ -3390,9 +3393,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1951088995}
-  - {fileID: 1607509471}
   - {fileID: 900543409}
   - {fileID: 1239572740}
+  - {fileID: 1607509471}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1142415706
@@ -5119,8 +5122,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1607509470}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.61, y: -1.46, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.46, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5519,7 +5522,7 @@ Transform:
   m_GameObject: {fileID: 1951088994}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.1, y: 0, z: 0}
+  m_LocalPosition: {x: -0.49, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5782,11 +5785,11 @@ MonoBehaviour:
   - {fileID: 1975627078552454185, guid: c74259336ceea094ab9a9dc8df076599, type: 3}
   - {fileID: 1302710236246886096, guid: cecae4158388ea04383e516d68f68179, type: 3}
   - {fileID: 5759850538299065577, guid: 36013a13f0e765d44b4c6c4f08ca837a, type: 3}
-  - {fileID: 2160053503464275932, guid: 2738a628912aec544b69489678c73ffb, type: 3}
-  - {fileID: 171858177791979971, guid: 7d5eb5c41dfead3438a5cf0af953108c, type: 3}
-  - {fileID: 5942468317046697950, guid: f0ebd7abb0ff171428e9d97c6b648bb6, type: 3}
-  - {fileID: 7871006665547838031, guid: b0786f9f658b56247a94c6a619d4c383, type: 3}
-  - {fileID: 7147170602978764790, guid: 3b40685caa4524648ab136aae052006c, type: 3}
+  - {fileID: 9212022621244838059, guid: 2738a628912aec544b69489678c73ffb, type: 3}
+  - {fileID: 1806886934509409297, guid: 7d5eb5c41dfead3438a5cf0af953108c, type: 3}
+  - {fileID: 284421843422116301, guid: f0ebd7abb0ff171428e9d97c6b648bb6, type: 3}
+  - {fileID: 2429406929109523268, guid: b0786f9f658b56247a94c6a619d4c383, type: 3}
+  - {fileID: 3045860814608198831, guid: 3b40685caa4524648ab136aae052006c, type: 3}
   - {fileID: 4483154995877738420, guid: 1be11094c8eb18f4ba4efd9152004d49, type: 3}
   checkPoint: {fileID: 6494587954851134752, guid: 35eff9f1089e58a4594fcb7c6e220de8, type: 3}
   pieceGenePositionRamdonBias: 2

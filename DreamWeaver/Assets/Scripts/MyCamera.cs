@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MyCamera : MonoBehaviour
 {
-    private Camera camera;
+    private Camera myCamera;
 
     [Tooltip("初始最大镜头大小")]
     [SerializeField] private float maxCameraSize;
@@ -26,11 +26,6 @@ public class MyCamera : MonoBehaviour
     private Vector3 playerPosition;
 
     /// <summary>
-    /// 目标移动地点
-    /// </summary>
-    private Vector3 target;
-
-    /// <summary>
     /// 地图范围
     /// </summary>
     private Vector3 mapRange;
@@ -48,15 +43,13 @@ public class MyCamera : MonoBehaviour
 
     private void Start()
     {
-        camera = GetComponent<Camera>();
-        camera.orthographicSize = minCameraSize;
-        GameController.instance.onGameStart += RefreshAndShowMapRange;
+        myCamera = GetComponent<Camera>();
+        myCamera.orthographicSize = minCameraSize;
         GameController.instance.onLevelReady += RefreshAndShowMapRange;
     }
 
     private void OnDisable()
     {
-        GameController.instance.onGameStart -= RefreshAndShowMapRange;
         GameController.instance.onLevelReady -= RefreshAndShowMapRange;
     }
     Vector3 cameraStartPosition = Vector3.zero, mouseStartPosition = Vector3.zero;
@@ -66,13 +59,13 @@ public class MyCamera : MonoBehaviour
         {
             return;
         }
-        Vector3 playerViewPos = camera.WorldToViewportPoint(GameController.instance.player.transform.position);
+        Vector3 playerViewPos = myCamera.WorldToViewportPoint(GameController.instance.player.transform.position);
         if (GameController.instance.isCounting)
         {
-            if (playerViewPos.x < .1 || playerViewPos.y < .1 || playerViewPos.x > .9 || playerViewPos.y > .9)
+            if (playerViewPos.x < .05 || playerViewPos.y < .05 || playerViewPos.x > .95 || playerViewPos.y > .95)
             {
-                camera.orthographicSize += Time.deltaTime*10;
-                maxCameraSize = camera.orthographicSize;
+                myCamera.orthographicSize += Time.deltaTime*10;
+                maxCameraSize = myCamera.orthographicSize;
             }
             return;
         }
@@ -105,7 +98,7 @@ public class MyCamera : MonoBehaviour
 
         if (Input.mouseScrollDelta != Vector2.zero)
         {
-            camera.orthographicSize = Mathf.Clamp(camera.orthographicSize + Input.mouseScrollDelta.y * mouseScrollSensibility, minCameraSize, maxCameraSize);
+            myCamera.orthographicSize = Mathf.Clamp(myCamera.orthographicSize + Input.mouseScrollDelta.y * mouseScrollSensibility, minCameraSize, maxCameraSize);
         }
 
         if (Input.GetMouseButtonDown(1))
@@ -129,27 +122,26 @@ public class MyCamera : MonoBehaviour
     {
         mapRange = GameController.instance.levelEndPoint - GameController.instance.levelCenterPoint + new Vector3(GameController.instance.blockHorizontalInterval, GameController.instance.blockVerticalInterval);
         StartCoroutine(ShowMap());
+        StartCoroutine(GameController.instance.GenenrateMap_Smooth());
     }
 
     private IEnumerator ShowMap()
     {
         while (true)
         {
-            transform.position = Vector3.Lerp(transform.position, GameController.instance.levelCenterPoint + new Vector3(0, 0, z), maxDeltaMove * Time.deltaTime);
-            if ((transform.position - (GameController.instance.levelCenterPoint + new Vector3(0, 0, z))).magnitude < 1)
+            transform.position = Vector3.Lerp(transform.position, GameController.instance.levelCenterPoint + new Vector3(0, 0, z), maxDeltaMove * Time.deltaTime * 2);
+            if ((transform.position - (GameController.instance.levelCenterPoint + new Vector3(0, 0, z))).magnitude < 10)
             {
                 break;
             }
             yield return null;
         }
-        float waitTime = 1f;
-        while (waitTime > 0)
+        while (true)
         {
-            transform.position = Vector3.Lerp(transform.position, GameController.instance.levelCenterPoint + new Vector3(0, 0, z), maxDeltaMove * Time.deltaTime);
-            waitTime -= Time.deltaTime;
+            transform.position = Vector3.Lerp(transform.position, GameController.instance.levelCenterPoint + new Vector3(0, 0, z), maxDeltaMove * Time.deltaTime * 2);
+            if (!GameController.instance.isCounting) 
+                break;
             yield return null;
         }
-        GameController.instance.StartLevel();
-        GameController.instance.isCounting = false;
     }
 }

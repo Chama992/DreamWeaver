@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,6 +56,29 @@ public class FX : MonoBehaviour
                 sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, sr.color.a + Time.deltaTime * _appearOrDisappear);
                 if ((sr.color.a > 1 && _appearOrDisappear > 0) || (sr.color.a < 0 && _appearOrDisappear < 0))
                     break;
+            }
+            yield return null;
+        }
+    }
+
+    public GameObject SmoothInstantiate(GameObject _gameObject, Vector3 _position)
+    {
+        GameObject myObject = Instantiate(_gameObject, _position, Quaternion.identity);
+        StartCoroutine(SmoothInstantiateAnim(myObject, _position));
+        return myObject;
+    }
+    public IEnumerator SmoothInstantiateAnim(GameObject _gameObject, Vector3 _position)
+    {
+        _gameObject.transform.localScale = Vector3.zero;
+        while (true)
+        {
+            if (_gameObject.IsDestroyed())
+                break;
+            _gameObject.transform.localScale = Vector3.Lerp(_gameObject.transform.localScale, Vector3.one, Time.deltaTime*5);
+            if (_gameObject.transform.localScale.x > .99f)
+            {
+                _gameObject.transform.localScale = Vector3.one;
+                break;
             }
             yield return null;
         }

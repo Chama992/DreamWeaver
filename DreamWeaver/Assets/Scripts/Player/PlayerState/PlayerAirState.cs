@@ -27,10 +27,7 @@ public class PlayerAirState : PlayerState
         }
         // if (player.IsWallChecked())
         //     StateMachine.ChangeState(player.WallSlideState);
-        if (xInput != 0)
-            player.SetVelocity(xInput * player.airMoveSpeed, rb.velocity.y);
-        else
-            player.SetVelocity(0, rb.velocity.y);
+        player.SetVelocity(xInput * player.airMoveSpeed, rb.velocity.y);
 
     }
 }

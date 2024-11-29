@@ -9,8 +9,9 @@ public class Piece_Wheel : Piece
     [SerializeField] private float speed;
     private int amount;
     private List<Transform> cds = new();
-    private void OnValidate()
+    protected override void Start()
     {
+        base.Start();
         cds.Clear();
         amount = colliders.childCount;
         Quaternion unitRotation = Quaternion.Euler(0, 0, 360 / amount);
@@ -29,11 +30,6 @@ public class Piece_Wheel : Piece
             }
             cds[i].transform.position = colliders.transform.position + relativePosition;
         }
-    }
-    protected override void Start()
-    {
-        base.Start();
-        OnValidate();
     }
 
     List<Vector3> nextCdsRelaPosition = new();

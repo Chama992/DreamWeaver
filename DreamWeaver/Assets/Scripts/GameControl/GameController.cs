@@ -865,9 +865,10 @@ public class GameController : MonoBehaviour
     public void CompleteLevel()
     {
         level++;
+        Time.timeScale = 0;
+        isPausing = true;
         InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus);
         onLevelComplete?.Invoke();
-        Time.timeScale = 0;
     }
 
     /// <summary>
@@ -876,6 +877,7 @@ public class GameController : MonoBehaviour
     public void ReadyLevel()
     {
         Time.timeScale = 1;
+        isPausing = false;
         RefreshLevelStartPosition();
         RefreshLevelEndPosition();
         RefreshLevelCenterPosition();
@@ -886,6 +888,7 @@ public class GameController : MonoBehaviour
         RefreshScore();
         RefreshOthers();
         Solution.Clear();
+        RefreshNodedLevelWeaveLength();
 
         player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
         onLevelReady?.Invoke();
@@ -896,6 +899,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartLevel()
     {
+        RefreshOverallWeaveLength();
         Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
         RefreshMaxWeaveLength();
         player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
@@ -920,7 +924,6 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(2);
         Solution.Clear();
         Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
-        RefreshLevelWeaveLength();
         RefreshNodedLevelWeaveLength();
         RefreshScore();
         RefreshStars();
@@ -986,6 +989,9 @@ public class GameController : MonoBehaviour
     /// <param name="_piece">碎片引用</param>
     public void ConnectNode(Piece _piece)
     {
+        if (isPausing)
+            return;
+
         if (!_piece.allowLink || _piece.node == null)
             return;
 
@@ -994,9 +1000,6 @@ public class GameController : MonoBehaviour
         if (_piece.transform.position == levelEndPoint)
         {
             CompleteLevel();
-            Solution.Push(_piece.node.position);
-            RefreshNodedLevelWeaveLength();
-
         }
     }
     /// <summary>
@@ -1006,6 +1009,9 @@ public class GameController : MonoBehaviour
     /// <returns>是否成功取消连接</returns>
     public bool TryDisconnectNode(Piece _piece)
     {
+        if (isPausing)
+            return false;
+
         if (_piece.isCheckPoint || Solution.Peek() != _piece.node.position)
             return false;
 

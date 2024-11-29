@@ -109,17 +109,23 @@ public class FX : MonoBehaviour
     }
     private IEnumerator SmoothSize(GameObject _gameObject, int _appearOrDisappear,bool _isGenerated)
     {
-        if(_gameObject!=null)
+        if (_gameObject.layer == LayerMask.NameToLayer("UI"))
+            GameController.instance.isAnimating = true;
+        if (_gameObject!=null)
         {
             Vector3 originScale = _gameObject.transform.localScale;
             if (!_isGenerated)
             {
                 originScale = Vector3.one;
             }
-            if (_appearOrDisappear == 1)
+            if(_appearOrDisappear == 1)
+            {
                 _gameObject.transform.localScale = Vector3.zero;
+            }
             else
+            {
                 _gameObject.transform.localScale = originScale;
+            }
             while (true)
             {
                 _gameObject.transform.localScale = Vector3.Lerp(_gameObject.transform.localScale, originScale * _appearOrDisappear, Time.unscaledDeltaTime * 5);
@@ -136,5 +142,7 @@ public class FX : MonoBehaviour
                 yield return null;
             }
         }
+        if (_gameObject.layer == LayerMask.NameToLayer("UI")&&_appearOrDisappear == 1)
+            GameController.instance.isAnimating = false;
     }
 }

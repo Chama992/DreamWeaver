@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
         // CheckDashActive();
         UsePropDetect();
 
-        if(currentPiece.node != null&&Input.GetKeyDown(KeyCode.Mouse0)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
+        if(!GameController.instance.isPausing&&currentPiece.node != null&&Input.GetKeyDown(KeyCode.Mouse0)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
         {
             PlayerNodeControl.LinkNode(currentPiece.gameObject.GetInstanceID(), currentPiece);
         }

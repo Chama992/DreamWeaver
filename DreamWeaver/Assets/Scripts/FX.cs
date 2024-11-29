@@ -1,13 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class FX : MonoBehaviour
 {
     public static FX instance;
+
 
     private void Awake()
     {
@@ -23,26 +24,37 @@ public class FX : MonoBehaviour
 
     private void Update()
     {
-        
+
     }
 
-    public void SmoothAppear<T>(T _object)
+    /// <summary>
+    /// 平滑淡入一个图像
+    /// </summary>
+    /// <typeparam name="T">Image,Sr,Tmp</typeparam>
+    /// <param name="_object"></param>
+    public void SmoothColorAppear<T>(T _object)
     {
         StartCoroutine(SmoothTrans<T>(_object, 1));
     }
-    public void SmoothDisappear<T>(T _object)
+
+    /// <summary>
+    /// 平滑淡出一个图像
+    /// </summary>
+    /// <typeparam name="T">Image,Sr,Tmp</typeparam>
+    /// <param name="_object"></param>
+    public void SmoothColorDisappear<T>(T _object)
     {
         StartCoroutine(SmoothTrans<T>(_object, -1));
     }
 
-    private IEnumerator SmoothTrans<T>(T _object,int _appearOrDisappear)
+    private IEnumerator SmoothTrans<T>(T _object, int _appearOrDisappear)
     {
         while (true)
         {
             if (_object is TextMeshProUGUI tmp)
             {
                 tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, tmp.color.a + Time.deltaTime * _appearOrDisappear);
-                if ((tmp.color.a > 1 && _appearOrDisappear>0)||(tmp.color.a < 0 &&_appearOrDisappear<0))
+                if ((tmp.color.a > 1 && _appearOrDisappear > 0) || (tmp.color.a < 0 && _appearOrDisappear < 0))
                     break;
             }
             else if (_object is Image img)
@@ -61,26 +73,68 @@ public class FX : MonoBehaviour
         }
     }
 
-    public GameObject SmoothInstantiate(GameObject _gameObject, Vector3 _position)
+    /// <summary>
+    /// 平滑放大生成一个GO
+    /// </summary>
+    /// <param name="_gameObject"></param>
+    /// <param name="_position"></param>
+    /// <returns></returns>
+    public GameObject SmoothSizeInstantiate(GameObject _gameObject, Vector3 _position)
     {
         GameObject myObject = Instantiate(_gameObject, _position, Quaternion.identity);
-        StartCoroutine(SmoothInstantiateAnim(myObject, _position));
+        StartCoroutine(SmoothSize(myObject, 1, true));
         return myObject;
     }
-    public IEnumerator SmoothInstantiateAnim(GameObject _gameObject, Vector3 _position)
+
+    /// <summary>
+    /// 平滑放大出现一个已有GO
+    /// </summary>
+    /// <param name="_gameObject"></param>
+    /// <param name="_position"></param>
+    /// <returns></returns>
+    public void SmoothSizeAppear(GameObject _gameObject)
     {
-        _gameObject.transform.localScale = Vector3.zero;
-        while (true)
+        StartCoroutine(SmoothSize(_gameObject, 1,false));
+    }
+
+    /// <summary>
+    /// 平滑缩小消失一个已有GO
+    /// </summary>
+    /// <param name="_gameObject"></param>
+    /// <param name="_position"></param>
+    /// <returns></returns>
+    public void SmoothSizeDisappear(GameObject _gameObject)
+    {
+        StartCoroutine(SmoothSize(_gameObject, 0, false));
+    }
+    private IEnumerator SmoothSize(GameObject _gameObject, int _appearOrDisappear,bool _isGenerated)
+    {
+        if(_gameObject!=null)
         {
-            if (_gameObject.IsDestroyed())
-                break;
-            _gameObject.transform.localScale = Vector3.Lerp(_gameObject.transform.localScale, Vector3.one, Time.deltaTime*5);
-            if (_gameObject.transform.localScale.x > .99f)
+            Vector3 originScale = _gameObject.transform.localScale;
+            if (!_isGenerated)
             {
-                _gameObject.transform.localScale = Vector3.one;
-                break;
+                originScale = Vector3.one;
             }
-            yield return null;
+            if (_appearOrDisappear == 1)
+                _gameObject.transform.localScale = Vector3.zero;
+            else
+                _gameObject.transform.localScale = originScale;
+            while (true)
+            {
+                _gameObject.transform.localScale = Vector3.Lerp(_gameObject.transform.localScale, originScale * _appearOrDisappear, Time.unscaledDeltaTime * 5);
+                if (_gameObject.transform.localScale.x > .99f && _appearOrDisappear == 1)
+                {
+                    _gameObject.transform.localScale = originScale;
+                    break;
+                }
+                if (_gameObject.transform.localScale.x < .01f && _appearOrDisappear == 0)
+                {
+                    _gameObject.transform.localScale = Vector3.zero;
+                    break;
+                }
+                yield return null;
+            }
         }
     }
 }

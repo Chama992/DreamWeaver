@@ -96,7 +96,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     /// </summary>
     public void OpenRoguePropPanel(int count)
     {
-        roguePropPanel.SetActive(true);
+        FX.instance.SmoothSizeAppear(roguePropPanel);
         chooseCount = count;
         GenerateRoguePropPanel();
     }
@@ -116,7 +116,6 @@ public class InGameUIManager : SingleTon<InGameUIManager>
 
     public void ChoseRogue()
     {
-        GameController.instance.isCounting = true;
         chooseCount--;
         CloseRoguePropPanel();
         if (chooseCount > 0)
@@ -126,7 +125,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         else
         {
             GameController.instance.ReadyLevel();
-            roguePropPanel.SetActive(false);
+            FX.instance.SmoothSizeDisappear(roguePropPanel);
         }
 
     }

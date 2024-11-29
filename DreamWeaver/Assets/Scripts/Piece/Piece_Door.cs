@@ -25,7 +25,7 @@ public class Piece_Door : Piece
     protected override void Update()
     {
         base.Update();
-        if (Input.GetKeyDown(KeyCode.E) && !isInteracting && (GameController.instance.player.transform.position - door.position).magnitude < GameController.instance.interactRatio )
+        if (Input.GetKeyDown(KeyCode.F) && !isInteracting && (GameController.instance.player.transform.position - door.position).magnitude < GameController.instance.interactRatio )
         {
             if (!isOpen)
             {

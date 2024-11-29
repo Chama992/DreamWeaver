@@ -182,13 +182,13 @@ MonoBehaviour:
   id: 0
   theme: 0
   node: {fileID: 2844707695318386751}
-  difficulty: 0
+  difficulty: 6
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0
   allowLink: 1
   spring: {fileID: 3499207392435176616}
-  force: 35
+  force: 50
   detectRange: 1
 --- !u!61 &-7943474532286645347
 BoxCollider2D:

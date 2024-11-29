@@ -59,15 +59,15 @@ public class UI_Out : MonoBehaviour
     }
     public void RefreshHint()
     {
-        FX.instance.SmoothAppear<TextMeshProUGUI>(hint);
-        FX.instance.SmoothAppear<TextMeshProUGUI>(hintLevel);
+        FX.instance.SmoothColorAppear<TextMeshProUGUI>(hint);
+        FX.instance.SmoothColorAppear<TextMeshProUGUI>(hintLevel);
         hintLevel.text = GameController.instance.level.ToString();
     }
 
     public void CloseHint()
     {
-        FX.instance.SmoothDisappear<TextMeshProUGUI>(hint);
-        FX.instance.SmoothDisappear<TextMeshProUGUI>(hintLevel);
+        FX.instance.SmoothColorDisappear<TextMeshProUGUI>(hint);
+        FX.instance.SmoothColorDisappear<TextMeshProUGUI>(hintLevel);
 
     }
 

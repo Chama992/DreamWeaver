@@ -18,11 +18,17 @@ public class GameController : MonoBehaviour
     [Tooltip("玩家")]
     public Player player;
 
+    [Tooltip("重置动画")]
+    public UI_ResetAnim resetAnim;
+
     [Tooltip("黑洞")]
     public GameObject blackHole;
 
     [Tooltip("可交互半径")]
     public float interactRatio;
+
+    [Tooltip("交互器")]
+    public StandaloneInputModule InputModule;
 
     [Header("地图相关")]
     [Tooltip("全局碎片数据列表")]
@@ -207,7 +213,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 是否在关卡过渡阶段（开始选择道具到下一关展示完毕）
     /// </summary>
-    public bool isCounting { get;set; }
+    public bool isAnimating { get; set; }
     #endregion
 
     #region Actions
@@ -266,10 +272,19 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (isGaming&&!isCounting)
+        if (isGaming && !isAnimating)
         {
             RefreshLevelWeaveLength();
             RefreshStars();
+        }
+
+        if (isAnimating)
+        {
+            InputModule.DeactivateModule();
+        }
+        else
+        {
+            InputModule.ActivateModule();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape) && isGaming)
@@ -287,22 +302,14 @@ public class GameController : MonoBehaviour
         //Debug
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            foreach ( var nodes in Solution)
+            foreach (var nodes in Solution)
             {
                 Debug.Log(nodes);
             }
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
-            StartLevel();
-        }
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
             RegenerateLevel();
-        }
-        if (Input.GetKeyDown(KeyCode.Z))
-        {
-            StartGame();
         }
 
     }
@@ -317,7 +324,7 @@ public class GameController : MonoBehaviour
     /// <param name="_readyToBeClear">是否在关卡结束时清除</param>
     public Piece GeneratePiece(Piece _piece, Vector3 _position, bool _readyToBeClear)
     {
-        Piece piece = FX.instance.SmoothInstantiate(_piece.gameObject,_position).GetComponent<Piece>();
+        Piece piece = FX.instance.SmoothSizeInstantiate(_piece.gameObject, _position).GetComponent<Piece>();
         if (_readyToBeClear)
             readyToClear_2.Add(piece.gameObject);
         else
@@ -413,10 +420,11 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// 生成地图动画
+    /// 生成地图并播放动画
     /// </summary>
     public IEnumerator GenenrateMap_Smooth()
     {
+        isAnimating = true;
         if (level == 0)
         {
             levelPieces.Clear();
@@ -451,6 +459,7 @@ public class GameController : MonoBehaviour
 
         GenerateBlackHole();
         yield return new WaitForSeconds(1f);
+        isAnimating = false;
         ClearMap();
         StartLevel();
     }
@@ -465,7 +474,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < Math.Min(blackHoleAmount, levelPiecesCopy.Count); i++)
         {
             int index = Random.Range(0, levelPiecesCopy.Count);
-            readyToClear.Add(Instantiate(blackHole, levelPiecesCopy[index].transform.position, Quaternion.identity));
+            readyToClear_2.Add(FX.instance.SmoothSizeInstantiate(blackHole, levelPiecesCopy[index].transform.position));
             levelPiecesCopy.RemoveAt(index);
         }
     }
@@ -482,17 +491,6 @@ public class GameController : MonoBehaviour
         readyToClear = readyToClear_2.FindAll(t => true);
         readyToClear_2 = readyToClear_3.FindAll(t => true);
         readyToClear_3.Clear();
-    }
-
-    /// <summary>
-    /// 清除当前地图，包括终点，用于重新生成
-    /// </summary>
-    private void ClearCurrentMap()
-    {
-        foreach (var pieces in levelPieces.FindAll(t => t.transform.position != levelStartPoint))
-        {
-            Destroy(pieces.gameObject);
-        }
     }
 
     #endregion
@@ -573,7 +571,7 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     private void RefreshNodedLevelWeaveLength()
     {
-        if (Solution == null || Solution.Count == 0) 
+        if (Solution == null || Solution.Count == 0)
         {
             nodedLevelWeaveLength = 0;
             return;
@@ -613,7 +611,7 @@ public class GameController : MonoBehaviour
     }
 
     /// <summary>
-    /// 刷新全局线长，首次设为0
+    /// 依据已连接总长，刷新全局线长，首次设为0
     /// </summary>
     private void RefreshOverallWeaveLength()
     {
@@ -737,14 +735,14 @@ public class GameController : MonoBehaviour
                 pathWeights[j][i] = distance;
             }
         }
-        
+
     }
     /// <summary>
     /// 刷新当前星数，每帧更新
     /// </summary>
     private void RefreshStars()
     {
-        if (isCounting)
+        if (isAnimating)
             return;
 
 
@@ -797,7 +795,7 @@ public class GameController : MonoBehaviour
 
         level = 0;
         isGaming = true;
-        isCounting = true;
+        isAnimating = true;
         Time.timeScale = 1;
         player.gameObject.SetActive(true);
         levelPieces.Add(GeneratePiece(checkPoint, levelStartPoint, true));
@@ -867,7 +865,6 @@ public class GameController : MonoBehaviour
     public void CompleteLevel()
     {
         level++;
-
         InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus);
         onLevelComplete?.Invoke();
         Time.timeScale = 0;
@@ -887,8 +884,9 @@ public class GameController : MonoBehaviour
         RefreshEnabledPiece();
         RefreshOverallWeaveLength();
         RefreshScore();
-        RefreshOthers(); 
-        
+        RefreshOthers();
+        Solution.Clear();
+
         player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
         onLevelReady?.Invoke();
     }
@@ -898,12 +896,8 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartLevel()
     {
-        isCounting = false;
+        Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
         RefreshMaxWeaveLength();
-        if (level == 0)
-        {
-            Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
-        }
         player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
         player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).node.gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
 
@@ -915,6 +909,15 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void ResetLevel()
     {
+        StartCoroutine(ResetLevelAnim());
+    }
+
+    private IEnumerator ResetLevelAnim()
+    {
+        isAnimating = true;
+        resetAnim.gameObject.SetActive(true);
+        onLevelReset?.Invoke();
+        yield return new WaitForSeconds(2);
         Solution.Clear();
         Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
         RefreshLevelWeaveLength();
@@ -922,25 +925,23 @@ public class GameController : MonoBehaviour
         RefreshScore();
         RefreshStars();
         RefreshOthers();
-        player.transform.position = levelStartPoint;
-        player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
-        player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).node.gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
-        onLevelReset?.Invoke();
+        player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
+        StartLevel();
+        resetAnim.anim.SetBool("isStart", false);
+        isAnimating = false;
     }
 
     /// <summary>
-    /// 重新开始关卡并重新生成地图
+    /// 重新开始关卡并重新生成地图，返回是否允许重新生成
     /// </summary>
-    public void RegenerateLevel()
+    public bool RegenerateLevel()
     {
+        if (!GameController.instance.isGaming)
+            return false;
+
         ResetLevel();
-        ClearCurrentMap();
-        RefreshLevelPieceGenePosition();
-        RefreshPieceGeneMaxAmount();
-        RefreshEnabledPiece();
-        GenenrateMap();
-        player.GetComponentInChildren<PlayerNodeControl>().ResetLine();
-        player.GetComponentInChildren<PlayerNodeControl>().SetLevelStartPoint(levelPieces.Find(t => t.transform.position == levelStartPoint).gameObject.GetInstanceID(), levelPieces.Find(t => t.transform.position == levelStartPoint));
+        ReadyLevel();
+        return true;
     }
 
 
@@ -985,7 +986,7 @@ public class GameController : MonoBehaviour
     /// <param name="_piece">碎片引用</param>
     public void ConnectNode(Piece _piece)
     {
-        if (!_piece.allowLink||_piece.node == null)
+        if (!_piece.allowLink || _piece.node == null)
             return;
 
         Solution.Push(_piece.node.position);
@@ -993,7 +994,6 @@ public class GameController : MonoBehaviour
         if (_piece.transform.position == levelEndPoint)
         {
             CompleteLevel();
-            Solution.Clear();
             Solution.Push(_piece.node.position);
             RefreshNodedLevelWeaveLength();
 
@@ -1024,7 +1024,7 @@ public class GameController : MonoBehaviour
         Solution.Push(-Vector3.one);
         Solution.Push(_door.relatedDoor.door.position);
         RefreshNodedLevelWeaveLength();
- 
+
     }
     /// <summary>
     /// 取消连接门，返回成功与否

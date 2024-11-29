@@ -51,8 +51,8 @@ MonoBehaviour:
   id: 0
   theme: 0
   node: {fileID: 852502152587726304}
-  difficulty: 2
-  isCheckPoint: 1
+  difficulty: 4
+  isCheckPoint: 0
   canFilp: 1
   ramdomInt: 0
   allowLink: 1

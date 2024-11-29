@@ -60,7 +60,7 @@ public class MyCamera : MonoBehaviour
             return;
         }
         Vector3 playerViewPos = myCamera.WorldToViewportPoint(GameController.instance.player.transform.position);
-        if (GameController.instance.isCounting)
+        if (GameController.instance.isAnimating)
         {
             if (playerViewPos.x < .05 || playerViewPos.y < .05 || playerViewPos.x > .95 || playerViewPos.y > .95)
             {
@@ -76,7 +76,7 @@ public class MyCamera : MonoBehaviour
             else
                 isPlayerFollowOpen = true;
         }
-        if (isPlayerFollowOpen && !GameController.instance.isCounting)
+        if (isPlayerFollowOpen && !GameController.instance.isAnimating)
         {
             isPlayerFollowing = true;
         }
@@ -139,7 +139,7 @@ public class MyCamera : MonoBehaviour
         while (true)
         {
             transform.position = Vector3.Lerp(transform.position, GameController.instance.levelCenterPoint + new Vector3(0, 0, z), maxDeltaMove * Time.deltaTime * 2);
-            if (!GameController.instance.isCounting) 
+            if (!GameController.instance.isAnimating) 
                 break;
             yield return null;
         }

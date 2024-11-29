@@ -512,7 +512,7 @@ MonoBehaviour:
   id: 0
   theme: 0
   node: {fileID: 0}
-  difficulty: 2
+  difficulty: 9
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0

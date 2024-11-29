@@ -52,7 +52,6 @@ public class PlayerNodeControl : MonoBehaviour
             GameController.instance.TryDisconnectNode(piece);
             return;
         }
-        Debug.Log("Á¬½Óµ½node");
         GameController.instance.ConnectNode(piece);
         pointCount++;
         lineRenderer.positionCount = pointCount;

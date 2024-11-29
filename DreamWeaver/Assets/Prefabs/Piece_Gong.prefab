@@ -181,7 +181,7 @@ MonoBehaviour:
   id: 0
   theme: 0
   node: {fileID: 6932725170917787050}
-  difficulty: 3
+  difficulty: 2
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0

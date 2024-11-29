@@ -74,7 +74,7 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
-        if (GameController.instance.isCounting)
+        if (GameController.instance.isAnimating||!GameController.instance.isGaming)
         {
             Rb.velocity = Vector2.zero;
             return;
@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
         // CheckDashActive();
         UsePropDetect();
 
-        if(currentPiece.node != null&&Input.GetKeyDown(KeyCode.F)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
+        if(currentPiece.node != null&&Input.GetKeyDown(KeyCode.Mouse0)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
         {
             PlayerNodeControl.LinkNode(currentPiece.gameObject.GetInstanceID(), currentPiece);
         }

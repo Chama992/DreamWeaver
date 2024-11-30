@@ -69,7 +69,7 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
-        if (GameController.instance.isAnimating||!GameController.instance.isGaming)
+        if (GameController.instance.isResetAnimating||GameController.instance.isReadyAnimating||!GameController.instance.isGaming || GameController.instance.isPausing)
         {
             Rb.velocity = Vector2.zero;
             return;

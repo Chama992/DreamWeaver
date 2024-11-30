@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Piece_Wheel : Piece
 {
+    [SerializeField] private Transform wheel;
     [SerializeField] private Transform colliders;
     [SerializeField] private float ratio;
     [SerializeField] private float speed;
@@ -22,10 +23,6 @@ public class Piece_Wheel : Piece
             if (cds[i].GetComponent<Collider2D>() == null)
             {
                 cds[i].AddComponent<BoxCollider2D>().usedByEffector = true;
-            }
-            if (cds[i].GetComponent<PlatformEffector2D>() == null)
-            {
-                cds[i].AddComponent<PlatformEffector2D>();
             }
             cds[i].transform.position = colliders.transform.position + relativePosition;
             relativePosition = unitRotation * relativePosition;
@@ -73,6 +70,7 @@ public class Piece_Wheel : Piece
             Transform thisCd = cds[i];
             Vector3 thisRelativePosition = thisCd.transform.position - colliders.transform.position;
             thisRelativePosition = Vector3.RotateTowards(thisRelativePosition, nextCdsRelaPosition[i], speed * Time.deltaTime,0);
+            wheel.transform.Rotate(0, 0, speed * Time.deltaTime);
             thisCd.transform.position = thisRelativePosition + colliders.transform.position;
 
             if (cds[i].GetComponent<BoxCollider2D>().IsTouching(GameController.instance.player.GetComponent<Collider2D>()) && GameController.instance.player.transform.parent != cds[i])

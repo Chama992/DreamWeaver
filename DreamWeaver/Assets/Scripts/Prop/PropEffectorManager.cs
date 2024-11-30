@@ -8,7 +8,7 @@ public class PropEffectorManager : MonoBehaviour
     private List<PropEffector> propEffectors = new();
     private void Update()
     {
-        if (propEffectors.Count == 0 || GameController.instance.isPausing || GameController.instance.isAnimating || !GameController.instance.isGaming)
+        if (propEffectors.Count == 0 || GameController.instance.isPausing ||GameController.instance.isReadyAnimating|| GameController.instance.isResetAnimating || !GameController.instance.isGaming)
             return;
         List<PropEffector> propRemoveEffectors = new List<PropEffector>();
         for (int i = 0; i < propEffectors.Count; i++)

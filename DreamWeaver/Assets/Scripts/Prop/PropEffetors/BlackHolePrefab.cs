@@ -9,7 +9,7 @@ public class BlackHolePrefab : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             GameController.instance.PauseGame();
-            GameController.instance.EndGame();
+            GameController.instance.ResetLevel();
         }
     }
 }

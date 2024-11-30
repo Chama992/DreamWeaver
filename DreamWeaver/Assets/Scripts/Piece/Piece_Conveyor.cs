@@ -23,5 +23,9 @@ public class Piece_Conveyor : Piece
             anim.speed *= -1;
             se.speed *= -1;
         }
+        if(Random.Range(0,2)==1)
+        {
+            GetComponentInChildren<SurfaceEffector2D>().gameObject.transform.Rotate(180, 0, 0);
+        }
     }
 }

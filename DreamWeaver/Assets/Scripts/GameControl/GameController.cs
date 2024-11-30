@@ -40,6 +40,9 @@ public class GameController : MonoBehaviour
     [Tooltip("关卡碎片生成位置偏移量")]
     public float pieceGenePositionRamdonBias;
 
+    [Tooltip("黑洞生成位置偏移量")]
+    public float blackHoleGenePositionRamdonBias;
+
     [Tooltip("关卡碎片生成量增加所需关卡数")]
     public int pieceGeneAmountAddLv;
 
@@ -211,9 +214,14 @@ public class GameController : MonoBehaviour
     public bool isGaming { get; private set; }
 
     /// <summary>
-    /// 是否在关卡过渡阶段（开始选择道具到下一关展示完毕）
+    /// 是否正在播放重置动画
     /// </summary>
-    public bool isAnimating { get; set; }
+    public bool isResetAnimating { get; set; }
+
+    /// <summary>
+    /// 是否正在播放转关卡动画
+    /// </summary>
+    public bool isReadyAnimating {  get; set; }
     #endregion
 
     #region Actions
@@ -272,13 +280,13 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (isGaming && !isAnimating)
+        if (isGaming && !isResetAnimating && !isReadyAnimating)
         {
             RefreshLevelWeaveLength();
             RefreshStars();
         }
 
-        if (isAnimating)
+        if (isResetAnimating||isReadyAnimating)
         {
             InputModule.DeactivateModule();
         }
@@ -424,7 +432,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public IEnumerator GenenrateMap_Smooth()
     {
-        isAnimating = true;
+        isReadyAnimating = true;
         if (level == 0)
         {
             levelPieces.Clear();
@@ -459,7 +467,7 @@ public class GameController : MonoBehaviour
 
         GenerateBlackHole();
         yield return new WaitForSeconds(1f);
-        isAnimating = false;
+        isReadyAnimating = false;
         ClearMap();
         StartLevel();
     }
@@ -474,7 +482,7 @@ public class GameController : MonoBehaviour
         for (int i = 0; i < Math.Min(blackHoleAmount, levelPiecesCopy.Count); i++)
         {
             int index = Random.Range(0, levelPiecesCopy.Count);
-            readyToClear_2.Add(FX.instance.SmoothSizeInstantiate(blackHole, levelPiecesCopy[index].transform.position));
+            readyToClear_2.Add(FX.instance.SmoothSizeInstantiate(blackHole, levelPiecesCopy[index].transform.position+(Vector3)Random.insideUnitCircle * blackHoleGenePositionRamdonBias));
             levelPiecesCopy.RemoveAt(index);
         }
     }
@@ -742,9 +750,6 @@ public class GameController : MonoBehaviour
     /// </summary>
     private void RefreshStars()
     {
-        if (isAnimating)
-            return;
-
 
         if (levelWeaveLength >= star3RequiredRate * maxWeaveLength)
         {
@@ -795,7 +800,6 @@ public class GameController : MonoBehaviour
 
         level = 0;
         isGaming = true;
-        isAnimating = true;
         Time.timeScale = 1;
         player.gameObject.SetActive(true);
         levelPieces.Add(GeneratePiece(checkPoint, levelStartPoint, true));
@@ -918,7 +922,7 @@ public class GameController : MonoBehaviour
 
     private IEnumerator ResetLevelAnim()
     {
-        isAnimating = true;
+        isResetAnimating = true;
         resetAnim.gameObject.SetActive(true);
         onLevelReset?.Invoke();
         yield return new WaitForSeconds(2);
@@ -931,7 +935,8 @@ public class GameController : MonoBehaviour
         player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
         StartLevel();
         resetAnim.anim.SetBool("isStart", false);
-        isAnimating = false;
+        isResetAnimating = false;
+        
     }
 
     /// <summary>
@@ -995,6 +1000,7 @@ public class GameController : MonoBehaviour
         if (!_piece.allowLink || _piece.node == null)
             return;
 
+        _piece.isLinked = true;
         Solution.Push(_piece.node.position);
         RefreshNodedLevelWeaveLength();
         if (_piece.transform.position == levelEndPoint)
@@ -1015,6 +1021,7 @@ public class GameController : MonoBehaviour
         if (_piece.isCheckPoint || Solution.Peek() != _piece.node.position)
             return false;
 
+        _piece.isLinked = false;
         Solution.Pop();
         RefreshNodedLevelWeaveLength();
 

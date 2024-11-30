@@ -40,7 +40,6 @@ public class MyCamera : MonoBehaviour
     /// </summary>
     private bool isPlayerFollowing;
 
-
     private void Start()
     {
         Camera = GetComponent<Camera>();
@@ -60,7 +59,7 @@ public class MyCamera : MonoBehaviour
             return;
         }
         Vector3 playerViewPos = Camera.WorldToViewportPoint(GameController.instance.player.transform.position);
-        if (GameController.instance.isAnimating)
+        if (GameController.instance.isReadyAnimating)
         {
             if (playerViewPos.x < .05 || playerViewPos.y < .05 || playerViewPos.x > .95 || playerViewPos.y > .95)
             {
@@ -76,7 +75,7 @@ public class MyCamera : MonoBehaviour
             else
                 isPlayerFollowOpen = true;
         }
-        if (isPlayerFollowOpen && !GameController.instance.isAnimating)
+        if (isPlayerFollowOpen && !GameController.instance.isReadyAnimating)
         {
             isPlayerFollowing = true;
         }
@@ -88,7 +87,7 @@ public class MyCamera : MonoBehaviour
         {
             isPlayerFollowing = true;
         }
-        if ( -(GameController.instance.player.transform.position - GameController.instance.levelCenterPoint).y > mapRange.y * 1.2)
+        if ( !GameController.instance.isResetAnimating &&-(GameController.instance.player.transform.position - GameController.instance.levelCenterPoint).y > mapRange.y * 1.2)
         {
             //Íæ¼ÒËÀÍöº¯Êý
             GameController.instance.ResetLevel();
@@ -139,7 +138,7 @@ public class MyCamera : MonoBehaviour
         while (true)
         {
             transform.position = Vector3.Lerp(transform.position, GameController.instance.levelCenterPoint + new Vector3(0, 0, z), maxDeltaMove * Time.deltaTime * 2);
-            if (!GameController.instance.isAnimating) 
+            if (!GameController.instance.isReadyAnimating) 
                 break;
             yield return null;
         }

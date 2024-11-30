@@ -70,10 +70,13 @@ public class PlayerProps
                 return true;
                 break;
             case PropType.HookLock:
-                if (player.GetComponent<LineRenderer>())
+                if (!player.canGrap)
                     useProp = false;
                 else
+                {
                     propEffectorManager.AddPropEffector<HookLock>();
+                    player.canGrap = false;
+                }
                 break;
             case PropType.Bomb:
                 if (player.IsGroundChecked())
@@ -86,6 +89,8 @@ public class PlayerProps
                 propEffectorManager.AddPropEffector<Reset>();
                 break;
             case PropType.Hammer:
+                if (!player.canBuild)
+                    useProp = false;
                 propEffectorManager.AddPropEffector<Hammer>();
                 break;
             default:

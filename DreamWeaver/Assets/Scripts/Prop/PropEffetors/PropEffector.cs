@@ -30,9 +30,7 @@ public  class PropEffector
     {
         
     }
-
 }
-
 public enum PropEffectorType
 {
     Instant,

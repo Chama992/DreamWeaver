@@ -114,7 +114,10 @@ public class GameController : MonoBehaviour
     /// 可用碎片列表
     /// </summary>
     public List<Piece> enabledPieces { get; private set; } = new();
-
+    /// <summary>
+    /// 玩家生成的piece
+    /// </summary>
+    public List<Piece> otherPieces { get; private set; } = new();
     /// <summary>
     /// 关卡碎片可生成位置
     /// </summary>
@@ -385,7 +388,6 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void GenenrateMap()
     {
-
         if (level == 0)
         {
             levelPieces.Clear();
@@ -401,15 +403,15 @@ public class GameController : MonoBehaviour
         }
         levelPieces.Add(GeneratePiece(checkPoint, levelEndPoint, false));
         List<Piece> enabledPieceCopy = enabledPieces.FindAll(t => true);
-        List<Vector3> genePositionsCopy = pieceGenePositions.FindAll(t => true);
+        // List<Vector3> genePositionsCopy = pieceGenePositions.FindAll(t => true);
         for (int i = 0; i < pieceGeneAmount; i++)
         {
-            if (Math.Min(pieceGeneAmount - i, genePositionsCopy.Count) < 2)
+            if (Math.Min(pieceGeneAmount - i, pieceGenePositions.Count) < 2)
             {
                 enabledPieceCopy.RemoveAll(t => t is Piece_Door);
             }
             Piece extraDoor = null;
-            Piece newPiece = GenerateRandomPiece(enabledPieceCopy, genePositionsCopy, true, false, out extraDoor);
+            Piece newPiece = GenerateRandomPiece(enabledPieceCopy, pieceGenePositions, true, false, out extraDoor);
             if (newPiece != null)
                 levelPieces.Add(newPiece);
             if (extraDoor != null)
@@ -441,15 +443,15 @@ public class GameController : MonoBehaviour
         levelPieces.Add(GeneratePiece(checkPoint, levelEndPoint, false));
         yield return new WaitForSeconds(.4f);
         List<Piece> enabledPieceCopy = enabledPieces.FindAll(t => true);
-        List<Vector3> genePositionsCopy = pieceGenePositions.FindAll(t => true);
+        // List<Vector3> genePositionsCopy = pieceGenePositions.FindAll(t => true);
         for (int i = 0; i < pieceGeneAmount; i++)
         {
-            if (Math.Min(pieceGeneAmount - i, genePositionsCopy.Count) < 2)
+            if (Math.Min(pieceGeneAmount - i, pieceGenePositions.Count) < 2)
             {
                 enabledPieceCopy.RemoveAll(t => t is Piece_Door);
             }
             Piece extraDoor = null;
-            Piece newPiece = GenerateRandomPiece(enabledPieceCopy, genePositionsCopy, true, false, out extraDoor);
+            Piece newPiece = GenerateRandomPiece(enabledPieceCopy, pieceGenePositions, true, false, out extraDoor);
             if (newPiece != null)
                 levelPieces.Add(newPiece);
             if (extraDoor != null)
@@ -576,7 +578,6 @@ public class GameController : MonoBehaviour
             nodedLevelWeaveLength = 0;
             return;
         }
-
         Stack<Vector3> SolutionCopy = new();
         Vector3[] SolutionArrayCopy = new Vector3[Solution.Count];
         Solution.CopyTo(SolutionArrayCopy, 0);
@@ -913,6 +914,11 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void ResetLevel()
     {
+        GameController.instance.player.StateMachine.ChangeState(GameController.instance.player.IdleState);
+        for (int i = 0; i < otherPieces.Count; i++)
+        {
+            Destroy(otherPieces[i].gameObject);
+        }
         StartCoroutine(ResetLevelAnim());
     }
 

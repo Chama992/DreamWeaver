@@ -17,7 +17,10 @@ public class PropEffectorManager : MonoBehaviour
     [SerializeField]public float featherPropDuration;
     [Header("HookLock")]
     [SerializeField]public float radius;
+    [SerializeField]public float hookSpeed;
     [SerializeField]public float hookLockPropDuration;
+    [Header("Hammer")]
+    [SerializeField]public float hammerPropDuration;
     private void Start()
     {
         GameController.instance.onLevelReset += OnGameReset;

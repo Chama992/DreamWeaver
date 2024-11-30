@@ -8,7 +8,7 @@ public class Firework : PropEffector
     {
         base.Initialize(_manager);
         PropEffectorType = PropEffectorType.Instant;
-        force = 40f;
+        force = _manager.force;
     }
     
     public override void Instant()

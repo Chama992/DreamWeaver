@@ -26,6 +26,8 @@ public class Player : MonoBehaviour
     public Animator Anim { get; private set; }
     public Rigidbody2D Rb { get; private set; }
     public CapsuleCollider2D Cc2 { get; private set; }
+    public DistanceJoint2D DistanceJoint2D { get; private set; }
+    public LineRenderer LineRenderer { get; private set; }
     [Header("Node Info")]
     public PlayerNodeControl PlayerNodeControl;
     #endregion
@@ -44,15 +46,19 @@ public class Player : MonoBehaviour
     public PlayerProps Props { get; private set; } = new PlayerProps();
     private List<KeyCode> propKeys = new List<KeyCode>() { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6 };
     #endregion
-    #region Hook
-    public float hookSpeed;
-    #endregion
+
+    public bool canGrap = true;
+    public bool canBuild = true;
     public Action<Vector2,Vector2> CrossDoor;
     private void Awake()
     {
         Anim = GetComponentInChildren<Animator>();
         Rb = GetComponent<Rigidbody2D>();
         Cc2 = GetComponent<CapsuleCollider2D>();
+        DistanceJoint2D = GetComponent<DistanceJoint2D>();
+        DistanceJoint2D.enabled = false;
+        LineRenderer = GetComponent<LineRenderer>();
+        canGrap = true;
         //use statemachine,player can switch to any state
         StateMachine = new PlayerStateMachine();
         IdleState = new PlayerIdleState(this, StateMachine, "Idle");

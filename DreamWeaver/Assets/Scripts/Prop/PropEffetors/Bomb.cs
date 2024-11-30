@@ -15,7 +15,7 @@ public class Bomb : PropEffector
         propEffectCounter = propDuration;
         force = _manager.bombforce;
         forceUp = _manager.bombforceUp;
-        radius = _manager.radius;
+        radius = _manager.bombradius;
         GameObject bombPrefab = Resources.Load<GameObject>("Prefab/Bomb");
         bomb =  GameObject.Instantiate(bombPrefab,player.transform.position,Quaternion.identity);
         bomb.GetComponent<Animator>().speed =  0.625f/ propDuration;

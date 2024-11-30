@@ -11,7 +11,7 @@ public class UI_Out : MonoBehaviour
     [SerializeField] private Transform startGame;
     [SerializeField] private Transform pauseGame;
     [SerializeField] private Transform endGame;
-    [SerializeField] private Transform setting;
+    [SerializeField] private Transform info;
     [SerializeField] private TextMeshProUGUI hint;
     [SerializeField] private TextMeshProUGUI hintLevel;
     [SerializeField] private TextMeshProUGUI level;
@@ -73,12 +73,12 @@ public class UI_Out : MonoBehaviour
 
     }
 
-    public void OpenSetting()
+    public void OpenInfo()
     {
-        setting.gameObject.SetActive(true);
+        info.gameObject.SetActive(true);
     }
-    public void CloseSetting()
+    public void CloseInfo()
     {
-        setting.gameObject.SetActive(false);
+        info.gameObject.SetActive(false);
     }
 }

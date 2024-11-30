@@ -163,7 +163,7 @@ public class Player : MonoBehaviour
     #region Prop
     private void UsePropDetect()
     {
-        if (!GameController.instance.isGaming && GameController.instance.isAnimating && GameController.instance.isPausing)
+        if (!GameController.instance.isGaming && GameController.instance.isReadyAnimating &&GameController.instance.isResetAnimating && GameController.instance.isPausing)
         {
             return;
         }

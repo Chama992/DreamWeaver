@@ -895,7 +895,14 @@ public class GameController : MonoBehaviour
         Solution.Clear();
         RefreshNodedLevelWeaveLength();
 
-        player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
+        if(level == 0)
+        {
+            player.transform.position = new Vector3(0,5);
+        }
+        else
+        {
+            player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
+        }
         onLevelReady?.Invoke();
     }
 

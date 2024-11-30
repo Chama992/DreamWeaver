@@ -145,7 +145,7 @@ public class FX : MonoBehaviour
             }
         }
 
-        if (_gameObject.GetComponent<Image>() != null)
+        if (_gameObject.GetComponent<Image>() != null && _appearOrDisappear == 1)
             GameController.instance.isReadyAnimating = false;
     }
 }

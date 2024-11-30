@@ -7,6 +7,7 @@ using UnityEngine;
 public class UI_Out : MonoBehaviour
 {
     [SerializeField] private Transform inUI;
+    [SerializeField] private Transform inGameBG;
     [SerializeField] private Transform startGame;
     [SerializeField] private Transform pauseGame;
     [SerializeField] private Transform endGame;
@@ -38,6 +39,7 @@ public class UI_Out : MonoBehaviour
     public void RefreshUI_Start()
     {
         inUI.gameObject.SetActive(true);
+        inGameBG.gameObject.SetActive(true);
         startGame.gameObject.SetActive(false);
     }
     public void RefreshUI_Continue()

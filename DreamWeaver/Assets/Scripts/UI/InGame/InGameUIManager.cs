@@ -50,7 +50,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     }
 
     /// <summary>
-    /// ÉèÖÃ¹Ø¿¨Éî¶È
+    /// ï¿½ï¿½ï¿½Ã¹Ø¿ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// <param name="_levelDepth"></param>
     private void SetLevelDepth( int _levelDepth )
@@ -59,25 +59,25 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         levelDepthTmp.text ="Depth:" +  levelDepth.ToString();
     }
     /// <summary>
-    /// ÉèÖÃÏßµÄ³¤¶È
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ßµÄ³ï¿½ï¿½ï¿½
     /// </summary>
     /// <param name="_threadLength"></param>
     private void SetThreadLength(float _threadLength)
     {
         threadLength = _threadLength;
-        threadLengthTmp.text ="Lengths" +  threadLength.ToString();
+        threadLengthTmp.text ="Lengths:" +  threadLength.ToString("F2");
     }
     /// <summary>
-    /// ÉèÖÃ¹Ø¿¨·ÖÊý
+    /// ï¿½ï¿½ï¿½Ã¹Ø¿ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// <param name="_scores"></param>
     private void SetScore(float _scores)
     {
         scores = _scores;
-        ScoreTmp.text = "Scores" +  scores.ToString();
+        ScoreTmp.text = "Scores:" +  scores.ToString("F2");
     }
     /// <summary>
-    /// ÉèÖÃÐÇÐÇ¸öÊý
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç¸ï¿½ï¿½ï¿½
     /// </summary>
     /// <param name="_starCount"></param>
     private void SetStars(int _starCount)
@@ -92,7 +92,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         }
     }
     /// <summary>
-    /// ´ò¿ªÈâ¸ëÃæ°å
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void OpenRoguePropPanel(int count)
     {
@@ -101,7 +101,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         GenerateRoguePropPanel();
     }
     /// <summary>
-    /// Éú³ÉÈâ¸ëÃæ°å
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void GenerateRoguePropPanel()
     {
@@ -130,7 +130,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
 
     }
     /// <summary>
-    /// ¹Ø±ÕÈâ¸ëÃæ°å
+    /// ï¿½Ø±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void CloseRoguePropPanel()
     {
@@ -144,7 +144,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         }
     }
     /// <summary>
-    /// Èâ¸ë¿ò¿ò¶ÔÏó³ØÈë³Ø
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     /// <param name="propFrameObject"></param>
     private void InRoguePropFramePool(GameObject _propRogueFrameObject)
@@ -153,7 +153,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         _propRogueFrameObject.SetActive(false);
     }
     /// <summary>
-    /// Èâ¸ë¿ò¿ò¶ÔÏó³Ø³ö³Ø
+    /// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ø³ï¿½ï¿½ï¿½
     /// </summary>
     /// <returns></returns>
     private GameObject GetFromRoguePropFramePool()
@@ -172,7 +172,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         return newProp;
     }
     /// <summary>
-    /// Ë¢ÐÂ¾ÖÄÚµÀ¾ßÃæ°å
+    /// Ë¢ï¿½Â¾ï¿½ï¿½Úµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     /// </summary>
     public void FreshPropPanel(int propId,int propCount)
     {
@@ -233,34 +233,4 @@ public class InGameUIManager : SingleTon<InGameUIManager>
             }
         }
     }
-    
-#if ¿ò¿ò¶ÔÏó³ØÓÐbug
-    // /// <summary>
-    // /// ¿ò¿ò¶ÔÏó³ØÈë³Ø
-    // /// </summary>
-    // /// <param name="propFrameObject"></param>
-    // private void InPropFramePool(GameObject propFrameObject)
-    // {
-    //     propFrameObjectsPool.Add(propFrameObject);
-    //     propFrameObject.SetActive(false);
-    // }
-    // /// <summary>
-    // /// ¿ò¿ò¶ÔÏó³Ø³ö³Ø
-    // /// </summary>
-    // /// <returns></returns>
-    // private GameObject GetFromPropFramePool()
-    // {
-    //     GameObject newProp;
-    //     if (propFrameObjectsPool.Count != 0)
-    //     {
-    //         newProp = propFrameObjectsPool[0];
-    //         newProp.transform.SetAsLastSibling();
-    //         newProp.SetActive(true);
-    //         propFrameObjectsPool.RemoveAt(0);
-    //         return newProp;
-    //     }
-    //     newProp = Instantiate(propFrame, propPanel.GetComponent<ScrollRect>().content);
-    //     return newProp;
-    // }
-    #endif
 }

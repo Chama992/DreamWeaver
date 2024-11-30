@@ -15,13 +15,12 @@ public class PlayerNodeControl : MonoBehaviour
     private void Awake()
     {
         player = gameObject.GetComponentInParent<Player>();
+        player.CrossDoor += OnCrossDoor;
         lineRenderer = gameObject.AddComponent<LineRenderer>();
         lineRenderer.startWidth = 0.03f;
         lineRenderer.endWidth = 0.03f;
         lineRenderer.sortingLayerName = "Player";
         lineRenderer.material = Material;
-        lineRenderer.startColor = Color.red;
-        lineRenderer.endColor = Color.blue;
         lineRenderer.startColor = Color.red;
         lineRenderer.endColor = Color.blue;
     }
@@ -32,6 +31,12 @@ public class PlayerNodeControl : MonoBehaviour
             lineRenderer.SetPosition(pointCount - 1, player.transform.position);
         }
     }
+
+    private void OnDisable()
+    {
+        player.CrossDoor -= OnCrossDoor;
+    }
+
     public void SetLevelStartPoint(int pieceIndex,Piece piece)
     {
         pointCount = 2;
@@ -75,12 +80,26 @@ public class PlayerNodeControl : MonoBehaviour
         piecesSequences.Remove(pieceIndex);
         lineRenderer.SetPosition(pointCount-1, player.transform.position);
     }
-
+    public void LinkDoor(Vector2  doorPos,Vector2 endDoorPos)
+    {
+        pointCount += 2;
+        lineRenderer.positionCount = pointCount;
+        lineRenderer.SetPosition(pointCount - 3, doorPos);
+        lineRenderer.SetPosition(pointCount - 2, endDoorPos);
+        lineRenderer.SetPosition(pointCount-1, player.transform.position);
+    }
     public void ResetLine()
     {
         lineRenderer.positionCount = 0;
         pointCount = 0;
         piecesSequences.Clear();
         startDrawLineFlag = false;
+    }
+
+    public void OnCrossDoor( Vector2 startPosition, Vector2 endPosition)
+    {
+        Debug.Log("穿的们的位置" + startPosition );
+        
+        Debug.Log("到达们的位置" + endPosition );
     }
 }

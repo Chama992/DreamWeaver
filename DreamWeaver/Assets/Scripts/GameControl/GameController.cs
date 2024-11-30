@@ -846,7 +846,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void ResetGame()
     {
-        SceneManager.LoadScene(0);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     /// <summary>
     /// 退出游戏进程

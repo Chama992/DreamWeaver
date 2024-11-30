@@ -36,6 +36,7 @@ public class Piece_Door : Piece
                 relatedDoor.doorSr.sprite = OpenSprite;
                 GameController.instance.player.transform.position = relatedDoor.door.position;
                 GameController.instance.ConnectDoor(this);
+                GameController.instance.player.CrossDoor?.Invoke(relatedDoor.transform.position,relatedDoor.door.position);
                 onOpenDoor?.Invoke();
                 StartCoroutine(DoorCD());
             }
@@ -47,6 +48,7 @@ public class Piece_Door : Piece
                 relatedDoor.isOpen = false;
                 relatedDoor.doorSr.sprite = CloseSprite;
                 GameController.instance.player.transform.position = relatedDoor.door.position;
+                GameController.instance.player.CrossDoor?.Invoke(relatedDoor.transform.position,relatedDoor.door.position);
                 onCloseDoor?.Invoke();
                 StartCoroutine(DoorCD());
             }

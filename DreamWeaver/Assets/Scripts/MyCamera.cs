@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class MyCamera : MonoBehaviour
 {
-    private Camera myCamera;
+    private Camera Camera;
 
     [Tooltip("初始最大镜头大小")]
     [SerializeField] private float maxCameraSize;
@@ -43,8 +43,8 @@ public class MyCamera : MonoBehaviour
 
     private void Start()
     {
-        myCamera = GetComponent<Camera>();
-        myCamera.orthographicSize = minCameraSize;
+        Camera = GetComponent<Camera>();
+        Camera.orthographicSize = minCameraSize;
         GameController.instance.onLevelReady += RefreshAndShowMapRange;
     }
 
@@ -59,13 +59,13 @@ public class MyCamera : MonoBehaviour
         {
             return;
         }
-        Vector3 playerViewPos = myCamera.WorldToViewportPoint(GameController.instance.player.transform.position);
+        Vector3 playerViewPos = Camera.WorldToViewportPoint(GameController.instance.player.transform.position);
         if (GameController.instance.isAnimating)
         {
             if (playerViewPos.x < .05 || playerViewPos.y < .05 || playerViewPos.x > .95 || playerViewPos.y > .95)
             {
-                myCamera.orthographicSize += Time.deltaTime*10;
-                maxCameraSize = myCamera.orthographicSize;
+                Camera.orthographicSize += Time.deltaTime*10;
+                maxCameraSize = Camera.orthographicSize;
             }
             return;
         }
@@ -98,7 +98,7 @@ public class MyCamera : MonoBehaviour
 
         if (Input.mouseScrollDelta != Vector2.zero)
         {
-            myCamera.orthographicSize = Mathf.Clamp(myCamera.orthographicSize + Input.mouseScrollDelta.y * mouseScrollSensibility, minCameraSize, maxCameraSize);
+            Camera.orthographicSize = Mathf.Clamp(Camera.orthographicSize + Input.mouseScrollDelta.y * mouseScrollSensibility, minCameraSize, maxCameraSize);
         }
 
         if (Input.GetMouseButtonDown(1))

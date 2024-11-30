@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Hammer : PropEffector
 {
+
     public override void Initialize()
     {
         base.Initialize();
@@ -12,11 +13,13 @@ public class Hammer : PropEffector
     public override void Instant()
     {
         base.Instant();
-        //GameController.instance.GenerateRandomPiece(GameController.instance.enabledPieces);
+        // GameController.instance.GenerateRandomPiece(GameController.instance.enabledPieces);
+
     }
 
     public override void Update()
     {
         base.Update();
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
     }
 }

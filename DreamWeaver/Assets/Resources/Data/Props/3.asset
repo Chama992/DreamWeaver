@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   propID: 3
   propName: "\u94A9\u9501"
-  propDescription: 
-  propIcon: {fileID: 21300000, guid: 4e2da48b5e1016949bda3d6c29a82d6a, type: 3}
+  propDescription: "\u5728\u4E00\u5B9A\u5706\u5F62\u8303\u56F4\u5185\uFF0C\u5411\u4EFB\u610F\u65B9\u5411\u5C04\u51FA\u94A9\u7D22\uFF0C\u82E5\u80FD\u78B0\u5230\u78B0\u649E\u7BB1\uFF0C\u5219\u671D\u5BF9\u5E94\u65B9\u5411\u98DE\u53BB"
+  propIcon: {fileID: -62483875, guid: f065c9a4455306549b5df1deff5a5246, type: 3}
   propType: 2
   propEffectorType: 0

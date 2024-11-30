@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -20,12 +21,6 @@ public class Player : MonoBehaviour
     [Header("JumpFall Info")]
     [SerializeField] public float jumpForce;
     [SerializeField] public float airMoveSpeed;
-    [Header("WallSlide Info")]
-    [SerializeField] public float wallSlideYSlowSpeedCoefficient;
-    [SerializeField] public float wallSlideYFastSpeedCoefficient;
-    [SerializeField] public float wallJumpXMoveSpeed;
-    [SerializeField] public float wallJumpDuration;
-    [SerializeField] public float wallJumpForce;
     private Piece currentPiece;
     #region Components
     public Animator Anim { get; private set; }
@@ -47,10 +42,10 @@ public class Player : MonoBehaviour
     public PlayerProps Props { get; private set; } = new PlayerProps();
     private List<KeyCode> propKeys = new List<KeyCode>() { KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4, KeyCode.Alpha5, KeyCode.Alpha6 };
     #endregion
-
     #region Hook
     public float hookSpeed;
     #endregion
+    public Action<Vector2,Vector2> CrossDoor;
     private void Awake()
     {
         Anim = GetComponentInChildren<Animator>();
@@ -83,14 +78,28 @@ public class Player : MonoBehaviour
         StateMachine.currentState.Update();
         // CheckDashActive();
         UsePropDetect();
-
-        if(!GameController.instance.isPausing&&currentPiece.node != null&&Input.GetKeyDown(KeyCode.Mouse0)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
-        {
-            PlayerNodeControl.LinkNode(currentPiece.gameObject.GetInstanceID(), currentPiece);
-        }
+        
+        LinkNodeChekc();
 
     }
+
+    private void LinkNodeChekc()
+    {
+        RaycastHit2D hit = IsPieceChecked();
+        if (hit)
+        {
+            currentPiece = hit.transform.gameObject.GetComponentInParent<Piece>();
+        }
+        if (currentPiece != null)
+        {
+            if(!GameController.instance.isPausing&&currentPiece.node != null&&Input.GetKeyDown(KeyCode.Mouse0)&&(transform.position-currentPiece.node.position).magnitude<GameController.instance.interactRatio)
+            {
+                PlayerNodeControl.LinkNode(currentPiece.gameObject.GetInstanceID(), currentPiece);
+            }
+        }
+    }
     #region Collision
+    public RaycastHit2D IsPieceChecked() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
     public bool IsGroundChecked() => Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
     public bool IsWallChecked() => Physics2D.Raycast(wallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
     private void OnDrawGizmos()
@@ -98,13 +107,13 @@ public class Player : MonoBehaviour
         Gizmos.DrawLine(groundCheck.position, new Vector3(groundCheck.position.x, groundCheck.position.y - groundCheckDistance));
         Gizmos.DrawLine(wallCheck.position, new Vector3(wallCheck.position.x + wallCheckDistance * facingDir, wallCheck.position.y));
     }
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.GetComponent<Piece>()!=null)
-        {
-            currentPiece = other.GetComponent<Piece>();
-        }
-    }
+    // private void OnTriggerEnter2D(Collider2D other)
+    // {
+    //     if (other.GetComponent<Piece>()!=null)
+    //     {
+    //         currentPiece = other.GetComponent<Piece>();
+    //     }
+    // }
     #endregion
     #region Flip
     public void Flip()

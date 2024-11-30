@@ -7,13 +7,14 @@ public class Feather : PropEffector
     {
         base.Initialize();
         PropEffectorType = PropEffectorType.Constant;
-        propDuration = 1.5f;
+        propDuration = 5f;
         propEffectCounter = propDuration;
-        decreaseScale = 0.75f;
+        decreaseScale = 0.5f;
     }
     public override void Update()
     {
         base.Update();
+        propEffectCounter -= Time.deltaTime;
         if (propEffectCounter < 0)
         {
             propActive = false;

@@ -18,7 +18,7 @@ public  class PropEffector
 
     public virtual void Update()
     {
-        propEffectCounter -= Time.deltaTime;
+        
     }
 
     public virtual void Instant()

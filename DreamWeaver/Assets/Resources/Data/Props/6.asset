@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 6
   m_EditorClassIdentifier: 
   propID: 6
-  propName: "\u5DE5\u7A0B\u9524"
-  propDescription: "\u5728\u6307\u5B9A\u4F4D\u7F6E\u751F\u6210\u4E00\u4E2A\u968F\u673A\u7684\u788E\u7247"
+  propName: EngineeringHammer
+  propDescription: Generates a random map fragment at the specified location
   propIcon: {fileID: 1137387939, guid: f065c9a4455306549b5df1deff5a5246, type: 3}
   propType: 5
-  propEffectorType: 0
+  propEffectorType: 1

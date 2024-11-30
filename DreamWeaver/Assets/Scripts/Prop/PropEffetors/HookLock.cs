@@ -19,6 +19,8 @@ public class HookLock : PropEffector
         playerLineRender.endWidth = 0.25f;
         playerLineRender.positionCount = 2;
         playerLineRender.material = Resources.Load<Material>("Materials/Lock");
+        playerLineRender.startColor = new Color(105,105,105);
+        playerLineRender.endColor = new Color(47,79,79);
         player.LineRenderer.enabled = true;
     }
     public override void Instant()

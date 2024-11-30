@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Out : MonoBehaviour
 {
@@ -38,9 +39,36 @@ public class UI_Out : MonoBehaviour
 
     public void RefreshUI_Start()
     {
-        inUI.gameObject.SetActive(true);
+        StartCoroutine(this.FadeInOut());
+        // inUI.gameObject.SetActive(true);
+        // inGameBG.gameObject.SetActive(true);
+        // startGame.gameObject.SetActive(false);
+    }
+    /// <summary>
+    /// 用于游戏开始
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator FadeInOut()
+    {
+        CanvasGroup canvasGroup  =  startGame.gameObject.GetComponent<CanvasGroup>();
+        CanvasGroup inCanvasGroup =  inUI.gameObject.GetComponent<CanvasGroup>();
+        Image image = inGameBG.GetComponentInChildren<Image>();
+        float alpha = 1;
+        float speed = 1.5f;
         inGameBG.gameObject.SetActive(true);
+        inUI.gameObject.SetActive(true);
+        while (alpha > 0.1)
+        {
+            alpha = Mathf.MoveTowards(alpha, 0, Time.deltaTime * speed);
+            canvasGroup.alpha = alpha;
+            inCanvasGroup.alpha = 1-alpha;
+            image.color = new Color(image.color.r, image.color.g, image.color.b, 1-alpha);
+            yield return null;
+        }
         startGame.gameObject.SetActive(false);
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 1);
+        inCanvasGroup.alpha = 1;
+        canvasGroup.alpha = 1;
     }
     public void RefreshUI_Continue()
     {

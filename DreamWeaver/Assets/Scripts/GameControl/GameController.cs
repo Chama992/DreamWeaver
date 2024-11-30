@@ -798,7 +798,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-
+        
         level = 0;
         isGaming = true;
         Time.timeScale = 1;

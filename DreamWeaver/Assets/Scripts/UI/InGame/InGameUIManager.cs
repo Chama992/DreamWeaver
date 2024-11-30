@@ -107,9 +107,10 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         List<PropData> propDatas = PropDataManager.Instance.GetRandomProps();
         for (int i = 0; i < 3; i++)
         {
-            GameObject roguePropFrame = GetFromRoguePropFramePool();
-            roguePropFrame.transform.SetAsFirstSibling();
-            roguePropFrame.GetComponent<RogueFrameUI>().Initialize(propDatas[i]);
+            // GameObject roguePropFrame = GetFromRoguePropFramePool();
+            GameObject roguePropFrameGo = Instantiate(roguePropFrame, roguePropPanel.transform.Find("RogueGroup"));
+            roguePropFrameGo.transform.SetAsFirstSibling();
+            roguePropFrameGo.GetComponent<RogueFrameUI>().Initialize(propDatas[i]);
         }
     }
 
@@ -137,9 +138,10 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         Transform rogueGroup = roguePropPanel.transform.Find("RogueGroup");
         for (int i = 0; i < 3; i++)
         {
-            GameObject roguePropFrame = rogueGroup.GetChild(i).gameObject;
-            roguePropFrame.transform.SetAsLastSibling();
-            InRoguePropFramePool(roguePropFrame);
+            // GameObject roguePropFrame = rogueGroup.GetChild(i).gameObject;
+            // roguePropFrame.transform.SetAsLastSibling();
+            // InRoguePropFramePool(roguePropFrame);
+            Destroy(rogueGroup.GetChild(i).gameObject);
         }
     }
     /// <summary>
@@ -169,6 +171,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         }
         newProp = Instantiate(roguePropFrame, roguePropPanel.transform.Find("RogueGroup"));
         return newProp;
+        
     }
     /// <summary>
     /// ˢ�¾��ڵ������

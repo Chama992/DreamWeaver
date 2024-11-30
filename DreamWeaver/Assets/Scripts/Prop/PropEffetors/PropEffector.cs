@@ -10,7 +10,7 @@ public  class PropEffector
     public bool propActive;
     protected Player player;
 
-    public virtual void Initialize()
+    public virtual void Initialize(PropEffectorManager _manager)
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         propActive = true;
@@ -26,8 +26,11 @@ public  class PropEffector
         propActive = false;
     }
 
+    public virtual void Destroy()
+    {
+        
+    }
 }
-
 public enum PropEffectorType
 {
     Instant,

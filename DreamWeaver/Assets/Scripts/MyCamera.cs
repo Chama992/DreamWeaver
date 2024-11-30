@@ -113,8 +113,6 @@ public class MyCamera : MonoBehaviour
         {
             transform.position = Vector3.Lerp(transform.position, playerPosition, maxDeltaMove * Time.deltaTime);
         }
-
-
     }
 
     private void RefreshAndShowMapRange()

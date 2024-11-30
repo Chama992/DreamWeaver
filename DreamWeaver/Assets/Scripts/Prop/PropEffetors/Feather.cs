@@ -3,13 +3,14 @@ using UnityEngine;
 public class Feather : PropEffector
 {
     private float decreaseScale;
-    public override void Initialize()
+    private float propDuration;
+    public override void Initialize(PropEffectorManager _manager)
     {
-        base.Initialize();
+        base.Initialize(_manager);
         PropEffectorType = PropEffectorType.Constant;
-        propDuration = 5f;
+        propDuration = _manager.featherPropDuration;
         propEffectCounter = propDuration;
-        decreaseScale = 0.5f;
+        decreaseScale = _manager.decreaseScale;
     }
     public override void Update()
     {

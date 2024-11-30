@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 
@@ -12,7 +13,6 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     public TMP_Text levelDepthTmp;
     public TMP_Text threadLengthTmp;
     public TMP_Text ScoreTmp;
-    public List<Image> Stars;
     private float scores;
     private int  levelDepth;
     private float threadLength;
@@ -27,7 +27,10 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     public Dictionary<int, PropFrameUI> propFrameUIs = new();
     // private List<GameObject> propFrameObjectsPool = new();
     public Dictionary<int, int> propFrameUISave = new();
-
+    [Header("Star")]
+    public List<Image> Stars;
+    public Sprite starFullSprite;
+    [FormerlySerializedAs("staremptySprite")] public Sprite starEmptySprite;
     private void Start()
     {
         GameController.instance.onLevelStart += OnLevelBegin;
@@ -35,14 +38,10 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     }
     private void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.Tab))
-        // {
-        //     OpenRoguePropPanel(1);
-        // }
-        // if (Input.GetKeyDown(KeyCode.CapsLock))
-        // {
-        //     CloseRoguePropPanel();
-        // }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            OpenRoguePropPanel(1);
+        }
         SetThreadLength(GameController.instance.levelWeaveLength);
         SetLevelDepth(GameController.instance.level);
         SetScore(GameController.instance.score);
@@ -85,9 +84,9 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         for (int i = 0; i < 3; i++)
         {
             if( i < _starCount)
-                Stars[i].color = Color.red;
+                Stars[i].sprite = starFullSprite;
             else
-                Stars[i].color = Color.white;
+                Stars[i].sprite = starEmptySprite;
 
         }
     }

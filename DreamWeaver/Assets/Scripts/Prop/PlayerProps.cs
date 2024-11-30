@@ -70,7 +70,10 @@ public class PlayerProps
                 return true;
                 break;
             case PropType.HookLock:
-                propEffectorManager.AddPropEffector<HookLock>();
+                if (player.GetComponent<LineRenderer>())
+                    useProp = false;
+                else
+                    propEffectorManager.AddPropEffector<HookLock>();
                 break;
             case PropType.Bomb:
                 if (player.IsGroundChecked())

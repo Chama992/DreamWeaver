@@ -1965,6 +1965,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &620634180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 620634181}
+  m_Layer: 6
+  m_Name: GroundCheck2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &620634181
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620634180}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.404, y: -1.46, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1077912950}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &645550432
 GameObject:
   m_ObjectHideFlags: 0
@@ -3554,6 +3585,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bdab708ad37488985a82c83ade1259c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  force: 40
+  bombforce: 30
+  bombforceUp: 20
+  bombradius: 10
+  decreaseScale: 0.5
+  featherPropDuration: 5
+  radius: 30
+  hookLockPropDuration: 10
 --- !u!114 &1077912947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3570,7 +3609,8 @@ MonoBehaviour:
   jumpForce: 30
   airMoveSpeed: 15
   PlayerNodeControl: {fileID: 1239572739}
-  groundCheck: {fileID: 1607509471}
+  groundCheck1: {fileID: 1607509471}
+  groundCheck2: {fileID: 620634181}
   groundCheckDistance: 0.2
   whatIsGround:
     serializedVersion: 2
@@ -3657,6 +3697,7 @@ Transform:
   - {fileID: 900543409}
   - {fileID: 1239572740}
   - {fileID: 1607509471}
+  - {fileID: 620634181}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1142415706
@@ -5371,7 +5412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1607509471}
   m_Layer: 6
-  m_Name: GroundCheck
+  m_Name: GroundCheck1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -7,15 +7,15 @@ public class Bomb : PropEffector
     private float forceUp;
     private float radius;
     private GameObject bomb;
-    public override void Initialize()
+    public override void Initialize(PropEffectorManager _manager)
     {
-        base.Initialize();
+        base.Initialize(_manager);
         PropEffectorType = PropEffectorType.Constant;
         propDuration = 1.5f;
         propEffectCounter = propDuration;
-        force = 20f;
-        forceUp = 20f;
-        radius = 10;
+        force = _manager.bombforce;
+        forceUp = _manager.bombforceUp;
+        radius = _manager.radius;
         GameObject bombPrefab = Resources.Load<GameObject>("Prefab/Bomb");
         bomb =  GameObject.Instantiate(bombPrefab,player.transform.position,Quaternion.identity);
         bomb.GetComponent<Animator>().speed =  0.625f/ propDuration;

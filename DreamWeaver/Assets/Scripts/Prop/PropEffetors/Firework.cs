@@ -4,9 +4,9 @@ using UnityEngine;
 public class Firework : PropEffector
 {
     private float force;
-    public override void Initialize()
+    public override void Initialize(PropEffectorManager _manager)
     {
-        base.Initialize();
+        base.Initialize(_manager);
         PropEffectorType = PropEffectorType.Instant;
         force = 40f;
     }

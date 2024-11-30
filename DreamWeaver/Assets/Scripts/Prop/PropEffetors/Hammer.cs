@@ -5,9 +5,9 @@ using UnityEngine;
 public class Hammer : PropEffector
 {
 
-    public override void Initialize()
+    public override void Initialize(PropEffectorManager _manager)
     {
-        base.Initialize();
+        base.Initialize(_manager);
     }
 
     public override void Instant()

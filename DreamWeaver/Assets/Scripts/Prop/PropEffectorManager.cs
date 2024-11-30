@@ -6,6 +6,22 @@ using UnityEngine;
 public class PropEffectorManager : MonoBehaviour
 {
     private List<PropEffector> propEffectors = new();
+    [Header("Firework")]
+    [SerializeField]public float force;
+    [Header("Bomb")]
+    [SerializeField]public float bombforce;
+    [SerializeField]public float bombforceUp;
+    [SerializeField]public float bombradius;
+    [Header("Feather")]
+    [SerializeField]public float decreaseScale;
+    [SerializeField]public float featherPropDuration;
+    [Header("HookLock")]
+    [SerializeField]public float radius;
+    [SerializeField]public float hookLockPropDuration;
+    private void Start()
+    {
+        GameController.instance.onLevelReset += OnGameReset;
+    }
     private void Update()
     {
         if (propEffectors.Count == 0 || GameController.instance.isPausing || GameController.instance.isAnimating || !GameController.instance.isGaming)
@@ -36,10 +52,24 @@ public class PropEffectorManager : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        GameController.instance.onLevelReset -= OnGameReset;
+    }
+
     public void AddPropEffector<T>() where T : PropEffector,new()
     {
         T newPropEffector = new T();
-        newPropEffector.Initialize();
+        newPropEffector.Initialize(this);
         propEffectors.Add(newPropEffector);
+    }
+
+    private void OnGameReset()
+    {
+        foreach (var effect in propEffectors)
+        {
+            effect.Destroy();
+        }
+       
     }
 }

@@ -6,6 +6,7 @@ public class PlayerHookState : PlayerState
     private Vector2 hookPoint;
     private Vector2 hookOriginPoint;
     private float hookDistance;
+    private Collider2D other;
     public PlayerHookState(Player _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
     {
     }
@@ -22,7 +23,7 @@ public class PlayerHookState : PlayerState
         base.Update();
         player.SetVelocity((hookPoint - (Vector2)player.transform.position).normalized * player.hookSpeed);
         // Debug.Log((hookPoint - (Vector2)player.transform.position).normalized * player.hookSpeed);
-        if (Vector2.Distance(hookPoint,player.transform.position) / hookDistance < 0.1f)
+        if (player.Cc2.IsTouching(other))
             StateMachine.ChangeState(player.IdleState);
         if (player.IsGroundChecked() || player.IsWallChecked())
             StateMachine.ChangeState(player.IdleState);
@@ -32,9 +33,9 @@ public class PlayerHookState : PlayerState
     {
         base.Exit();
     }
-    public void SetTarget(Vector2 _hookPoint)
+    public void SetTarget(Vector2 _hookPoint, Collider2D _other)
     {
         hookPoint = _hookPoint;
-
+        other = _other;
     }
 }

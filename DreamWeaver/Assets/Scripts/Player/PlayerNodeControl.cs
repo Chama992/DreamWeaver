@@ -17,8 +17,8 @@ public class PlayerNodeControl : MonoBehaviour
         player = gameObject.GetComponentInParent<Player>();
         player.CrossDoor += OnCrossDoor;
         lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.startWidth = 0.03f;
-        lineRenderer.endWidth = 0.03f;
+        lineRenderer.startWidth = 0.3f;
+        lineRenderer.endWidth = 0.3f;
         lineRenderer.sortingLayerName = "Player";
         lineRenderer.material = Material;
         lineRenderer.startColor = Color.red;

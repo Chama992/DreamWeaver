@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d704ca1d22d222b4db76913d3ebff543
+guid: 2d80095d6ec78604c8670158683e8cab
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u274C-3_0"
+      name: wake_0
       rect:
         serializedVersion: 2
-        x: 97
-        y: 101
-        width: 289
-        height: 276
+        x: 704
+        y: 194
+        width: 483
+        height: 630
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,8 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 81c21d2ba4db1cb4da039a2501b1b5e5
-      internalID: 1086423211
+      spriteID: 8b3c102d1f2da634dbd1d7f18e3fc1d4
+      internalID: 446519904
       vertices: []
       indices: 
       edges: []
@@ -128,7 +128,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "\u274C-3_0": 1086423211
+      wake_0: 446519904
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d704ca1d22d222b4db76913d3ebff543
+guid: db5c2c4c91e70244ebfddfed0fdd8d9d
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,13 +97,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\u274C-3_0"
+      name: dreamaganin_0
       rect:
         serializedVersion: 2
-        x: 97
-        y: 101
-        width: 289
-        height: 276
+        x: 810
+        y: 413
+        width: 307
+        height: 218
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -111,8 +111,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 81c21d2ba4db1cb4da039a2501b1b5e5
-      internalID: 1086423211
+      spriteID: e5ad53c892bd70c4484a9f1cf5d77504
+      internalID: 2041769764
       vertices: []
       indices: 
       edges: []
@@ -128,7 +128,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "\u274C-3_0": 1086423211
+      dreamaganin_0: 2041769764
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

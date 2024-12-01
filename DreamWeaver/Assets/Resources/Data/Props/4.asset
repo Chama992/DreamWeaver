@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 4
   m_EditorClassIdentifier: 
   propID: 4
-  propName: Bomb
-  propDescription: Plant a bomb
+  propName: "\u70B8\u5F39"
+  propDescription: "\u653E\u7F6E\u4E00\u4E2A\u70B8\u5F39"
   propIcon: {fileID: -792083361, guid: f065c9a4455306549b5df1deff5a5246, type: 3}
   propType: 3
   propEffectorType: 1

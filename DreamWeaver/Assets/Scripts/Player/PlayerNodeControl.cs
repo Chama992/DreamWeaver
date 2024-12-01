@@ -55,10 +55,10 @@ public class PlayerNodeControl : MonoBehaviour
         {
             CancleLinkNode(pieceIndex);
             GameController.instance.TryDisconnectNode(piece);
-            MySoundManager.PlayOneAudio("取消连接");
+            MySoundManager.PlayAudio("取消连接");
             return;
         }
-        MySoundManager.PlayOneAudio("连接");
+        MySoundManager.PlayAudio("连接");
         GameController.instance.ConnectNode(piece);
         pointCount++;
         lineRenderer.positionCount = pointCount;

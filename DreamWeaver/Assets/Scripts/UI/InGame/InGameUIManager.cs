@@ -19,6 +19,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     [Header("RoguePanel")]
     public GameObject roguePropPanel;
     public GameObject roguePropFrame;
+    public GameObject rogueExtraView;
     private List<GameObject> propRogueFrameObjectsPool = new();
     private int chooseCount;
     [Header("PropPanel")]
@@ -94,7 +95,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         FX.instance.SmoothSizeAppear(roguePropPanel);
         chooseCount = count;
         GenerateRoguePropPanel();
-        MySoundManager.PlayOneAudio("获得道具");
+        MySoundManager.PlayAudio("获得道具");
     }
     /// <summary>
     /// ����������
@@ -113,12 +114,14 @@ public class InGameUIManager : SingleTon<InGameUIManager>
 
     public void ChoseRogue()
     {
+        rogueExtraView.SetActive(false);
         chooseCount--;
         CloseRoguePropPanel();
         if (chooseCount > 0)
         {
+            rogueExtraView.SetActive(true);
             GenerateRoguePropPanel();
-            MySoundManager.PlayOneAudio("获得额外道具");
+            MySoundManager.PlayAudio("获得额外道具");
         }
         else
         {

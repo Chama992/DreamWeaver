@@ -24,7 +24,7 @@ public class Piece_Spring : Piece
             CDTimer = 1f;
             GameController.instance.player.Rb.velocity = new Vector2(GameController.instance.player.Rb.velocity.x,0);
             GameController.instance.player.Rb.AddForce(new Vector2(0,force),ForceMode2D.Impulse);
-            MySoundManager.PlayOneAudio("µ¯»É");
+            MySoundManager.PlayAudio("µ¯»É");
         }
         else
         {

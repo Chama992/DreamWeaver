@@ -34,7 +34,8 @@ public  class MySoundManager : SingleTon<MySoundManager>
             oneShotObj = new GameObject(AUDIO_PATH + "OneShotSound");
             oneShotAudioSource = oneShotObj.AddComponent<AudioSource>();
         }
-        oneShotAudioSource.pitch = Random.Range(0.8f, 1.2f);
+        oneShotAudioSource.volume = Random.Range(0.25f, 0.4f);
+        // oneShotAudioSource.volume = Random.Range(0.6f, 0.8f);
         oneShotAudioSource.PlayOneShot(GetAudio(_sfxName));
     }
 
@@ -60,8 +61,9 @@ public  class MySoundManager : SingleTon<MySoundManager>
             {
                 oneShotObj = new GameObject(AUDIO_PATH + "OneShotSound");
                 oneShotAudioSource = oneShotObj.AddComponent<AudioSource>();
+                oneShotAudioSource.volume = Random.Range(0.25f, 0.4f);
             }
-            oneShotAudioSource.pitch = Random.Range(0.6f, 1f);
+            
             oneShotAudioSource.PlayOneShot(GetAudio(_sfxName));
             SfxName_PlayTime[_sfxName] = curTime;
         }

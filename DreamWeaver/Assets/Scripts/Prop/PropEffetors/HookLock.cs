@@ -22,7 +22,7 @@ public class HookLock : PropEffector
         playerLineRender.startColor = new Color(105,105,105);
         playerLineRender.endColor = new Color(47,79,79);
         player.LineRenderer.enabled = true;
-        MySoundManager.PlayOneAudio("像坰1");
+        MySoundManager.PlayAudio("像坰1");
     }
     public override void Instant()
     {
@@ -45,7 +45,7 @@ public class HookLock : PropEffector
         playerLineRender.SetPosition(1, (player.transform.position + (mousePos - player.transform.position).normalized * radius));
         if (Input.GetMouseButtonDown(0))
         {
-            MySoundManager.PlayOneAudio("像坰2");
+            MySoundManager.PlayAudio("像坰2");
             RaycastHit2D hit = Physics2D.Raycast(player.transform.position,(mousePos - player.transform.position).normalized,radius,LayerMask.GetMask("Ground"));
             if (hit)
             {
@@ -67,8 +67,8 @@ public class HookLock : PropEffector
     public override void Destroy()
     {
         base.Destroy();
-        playerLineRender.positionCount = 0;
         playerLineRender.enabled = false;
+        playerLineRender.positionCount = 0;
         player.canGrap = true;
     }
 }

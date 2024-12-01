@@ -27,7 +27,7 @@ public class HammerChoosePoint : MonoBehaviour
                 break;
             }
         }
-        MySoundManager.PlayOneAudio("工程锤");
+        MySoundManager.PlayAudio("工程锤");
         GameController.instance.otherPieces.Add(GameController.instance.GeneratePiece(piece, point, false));
         FindObjectOfType<PropEffectorManager>().position2Generate.Remove(point);
         PieceGenerated?.Invoke();

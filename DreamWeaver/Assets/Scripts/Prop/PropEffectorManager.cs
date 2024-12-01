@@ -75,10 +75,10 @@ public class PropEffectorManager : MonoBehaviour
         GameController.instance.onLevelReset -= OnGameReset;
     }
 
-    public void AddPropEffector<T>() where T : PropEffector,new()
+    public void AddPropEffector<T>(int _id) where T : PropEffector,new()
     {
         T newPropEffector = new T();
-        newPropEffector.Initialize(this);
+        newPropEffector.Initialize(this,_id);
         propEffectors.Add(newPropEffector);
     }
 

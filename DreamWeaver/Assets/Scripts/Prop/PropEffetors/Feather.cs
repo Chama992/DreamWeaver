@@ -4,9 +4,9 @@ public class Feather : PropEffector
 {
     private float decreaseScale;
     private float propDuration;
-    public override void Initialize(PropEffectorManager _manager)
+    public override void Initialize(PropEffectorManager _manager, int _id)
     {
-        base.Initialize(_manager);
+        base.Initialize(_manager,_id);
         PropEffectorType = PropEffectorType.Constant;
         propDuration = _manager.featherPropDuration;
         propEffectCounter = propDuration;

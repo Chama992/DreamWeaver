@@ -1006,7 +1006,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &187262502
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3604,15 +3604,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   force: 30
-  bombforce: 20
-  bombforceUp: 15
-  bombradius: 7.5
+  bombWaitTime: 0
+  bombForce: 0
+  bombForceUp: 0
+  bombRadius: 0
   decreaseScale: 0.5
   featherPropDuration: 3.5
   radius: 30
   hookSpeed: 100
   hookLockPropDuration: 10
   hammerPropDuration: 10
+  position2Generate: []
 --- !u!50 &1336130282
 Rigidbody2D:
   serializedVersion: 4
@@ -3694,7 +3696,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1430333852
 RectTransform:
   m_ObjectHideFlags: 0

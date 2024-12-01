@@ -38,10 +38,6 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     }
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Tab))
-        {
-            OpenRoguePropPanel(1);
-        }
         SetThreadLength(GameController.instance.levelWeaveLength);
         SetLevelDepth(GameController.instance.level);
         SetScore(GameController.instance.score);
@@ -98,6 +94,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         FX.instance.SmoothSizeAppear(roguePropPanel);
         chooseCount = count;
         GenerateRoguePropPanel();
+        MySoundManager.PlayOneAudio("获得道具");
     }
     /// <summary>
     /// ����������
@@ -121,6 +118,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         if (chooseCount > 0)
         {
             GenerateRoguePropPanel();
+            MySoundManager.PlayOneAudio("获得额外道具");
         }
         else
         {

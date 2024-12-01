@@ -84,6 +84,7 @@ public class UI_Out : MonoBehaviour
         level.text = GameController.instance.level.ToString();
         score.text = GameController.instance.score.ToString();
         weavelength.text = GameController.instance.overallWeaveLength.ToString();
+        MySoundManager.PlayOneAudio("Ω·À„");
         pauseGame.gameObject.SetActive(false);
         endGame.gameObject.SetActive(true);
     }

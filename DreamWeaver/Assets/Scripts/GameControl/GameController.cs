@@ -485,6 +485,7 @@ public class GameController : MonoBehaviour
         {
             int index = Random.Range(0, levelPiecesCopy.Count);
             readyToClear_2.Add(FX.instance.SmoothSizeInstantiate(blackHole, levelPiecesCopy[index].transform.position+(Vector3)Random.insideUnitCircle * blackHoleGenePositionRamdonBias));
+            MySoundManager.PlayOneAudio("黑洞生成");
             levelPiecesCopy.RemoveAt(index);
         }
     }
@@ -798,13 +799,12 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void StartGame()
     {
-        
         level = 0;
         isGaming = true;
         Time.timeScale = 1;
         player.gameObject.SetActive(true);
         levelPieces.Add(GeneratePiece(checkPoint, levelStartPoint, true));
-
+        
         ReadyLevel();
         onGameStart?.Invoke();
     }
@@ -931,6 +931,7 @@ public class GameController : MonoBehaviour
             Destroy(otherPieces[i].gameObject);
         }
         otherPieces.Clear();
+        MySoundManager.PlayOneAudio("死亡重来");
         StartCoroutine(ResetLevelAnim());
     }
 

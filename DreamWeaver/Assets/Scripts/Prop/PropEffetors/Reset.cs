@@ -3,9 +3,9 @@ using UnityEngine;
 
 public class Reset : PropEffector
 {
-    public override void Initialize(PropEffectorManager _manager)
+    public override void Initialize(PropEffectorManager _manager, int _id)
     {
-        base.Initialize(_manager);
+        base.Initialize(_manager,_id);
     }
 
     public override void Instant()

@@ -7,9 +7,9 @@ public class HookLock : PropEffector
     private float radius;
     public float hookSpeed;
     private LineRenderer playerLineRender;
-    public override void Initialize(PropEffectorManager _manager)
+    public override void Initialize(PropEffectorManager _manager, int _id)
     {
-        base.Initialize(_manager);
+        base.Initialize(_manager,_id);
         PropEffectorType = PropEffectorType.Constant;
         radius = _manager.radius;
         hookSpeed = _manager.hookSpeed;
@@ -22,6 +22,7 @@ public class HookLock : PropEffector
         playerLineRender.startColor = new Color(105,105,105);
         playerLineRender.endColor = new Color(47,79,79);
         player.LineRenderer.enabled = true;
+        MySoundManager.PlayOneAudio("¹³Ë÷1");
     }
     public override void Instant()
     {
@@ -32,12 +33,10 @@ public class HookLock : PropEffector
     {
         base.Update();
         propEffectCounter -= Time.deltaTime;
-        if (propEffectCounter < 0)
+        if (propEffectCounter < 0 || Input.GetMouseButtonDown(1))
         {
             propActive = false;
-            playerLineRender.positionCount = 0;
-            playerLineRender.enabled = false;
-            player.canGrap = true;
+            player.Props.GetProps(propId,1);
             return;
         }
         Vector3 mousePos = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, Camera.main.transform.position.z));;
@@ -46,6 +45,7 @@ public class HookLock : PropEffector
         playerLineRender.SetPosition(1, (player.transform.position + (mousePos - player.transform.position).normalized * radius));
         if (Input.GetMouseButtonDown(0))
         {
+            MySoundManager.PlayOneAudio("¹³Ë÷2");
             RaycastHit2D hit = Physics2D.Raycast(player.transform.position,(mousePos - player.transform.position).normalized,radius,LayerMask.GetMask("Ground"));
             if (hit)
             {
@@ -53,16 +53,22 @@ public class HookLock : PropEffector
                 player.StateMachine.ChangeState(player.HookState);
                 propActive = false;
             }
+            else
+            {
+                propActive = true;
+            }
         }
         // else if (Input.GetMouseButtonDown(1))
         // {
         //     propActive = false;
         // }
     }
-
+    
     public override void Destroy()
     {
-        GameObject.Destroy(player.GetComponent<LineRenderer>());
-        propActive = false;
+        base.Destroy();
+        playerLineRender.positionCount = 0;
+        playerLineRender.enabled = false;
+        player.canGrap = true;
     }
 }

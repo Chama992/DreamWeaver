@@ -42,10 +42,13 @@ public class PlayerHookState : PlayerState
         // Debug.Log((hookPoint - (Vector2)player.transform.position).normalized * player.hookSpeed);
         // if (Vector2.Distance(player.transform.position, hookPoint) <= player.DistanceJoint2D.distance)
         //     StateMachine.ChangeState(player.IdleState);
-        if (player.Cc2.IsTouching(other))
+        // if (player.Cc2.IsTouching(other))
+        //     StateMachine.ChangeState(player.IdleState);
+        if (player.IsGroundChecked() || player.IsWallChecked() || player.Cc2.IsTouching(other))
+        {
+            MySoundManager.PlayOneAudio("¹³Ë÷3");
             StateMachine.ChangeState(player.IdleState);
-        if (player.IsGroundChecked() || player.IsWallChecked())
-            StateMachine.ChangeState(player.IdleState);
+        }
     }
     public override void Exit()
     {

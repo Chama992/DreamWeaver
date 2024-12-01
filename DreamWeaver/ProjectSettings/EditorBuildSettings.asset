@@ -5,13 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/StartMenu.unity
-    guid: 418b6f7e1e222f74798bf110aa773301
-  - enabled: 0
-    path: Assets/Scenes/GameScene/LyhScene.unity
-    guid: 068d96d3eedf97d4097fa20749ae53a9
   - enabled: 1
-    path: Assets/Scenes/GameScene/DingScene.unity
-    guid: 8c5007004af317f4394bf19f2bd14044
+    path: Assets/Scenes/GameScene/LyhScene1.unity
+    guid: 8c79c68169332b1469a8434e5f0a7ba2
   m_configObjects: {}

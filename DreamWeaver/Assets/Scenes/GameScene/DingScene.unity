@@ -2837,7 +2837,7 @@ MonoBehaviour:
   - {fileID: 5759850538299065577, guid: 60be482128b2c4e4abee098d81a9529f, type: 3}
   tutorPieces:
   - pieces:
-    - {fileID: 284421843422116301, guid: f0ebd7abb0ff171428e9d97c6b648bb6, type: 3}
+    - {fileID: 1975627078552454185, guid: c74259336ceea094ab9a9dc8df076599, type: 3}
     anchor:
     - {fileID: 1103420517}
   - pieces:

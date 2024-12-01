@@ -38,4 +38,10 @@ public class Bomb : PropEffector
             MySoundManager.PlayAudio("Õ¨µ¯");
         }
     }
+
+    public override void Destroy()
+    {
+        base.Destroy();
+        // GameObject.Destroy(bomb);
+    }
 }

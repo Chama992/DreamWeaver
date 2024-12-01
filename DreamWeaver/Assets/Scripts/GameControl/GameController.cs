@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 
@@ -18,6 +19,7 @@ public class GameController : MonoBehaviour
     [Tooltip("开启教程")]
     public bool Tutorial;
 
+ 
     [Tooltip("玩家")]
     public Player player;
 
@@ -146,6 +148,10 @@ public class GameController : MonoBehaviour
     /// 关卡所有生成的碎片
     /// </summary>
     public List<Piece> levelPieces { get; private set; } = new();
+    /// <summary>
+    /// 关卡所有生成的碎片（排除黑洞）
+    /// </summary>
+    public List<Piece> achievablelevelPieces { get; private set; } = new();
 
     /// <summary>
     /// 下一次清除的碎片
@@ -225,12 +231,12 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 是否正在暂停
     /// </summary>
-    public bool isPausing { get;  set; }
+    public bool isPausing { get; set; }
 
     /// <summary>
     /// 游戏是否正在进行
     /// </summary>
-    public bool isGaming { get;  set; }
+    public bool isGaming { get; set; }
 
     /// <summary>
     /// 是否正在播放重置动画
@@ -240,7 +246,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 是否正在播放转关卡动画
     /// </summary>
-    public bool isReadyAnimating {  get; set; }
+    public bool isReadyAnimating { get; set; }
     #endregion
 
     #region Actions
@@ -305,7 +311,7 @@ public class GameController : MonoBehaviour
             RefreshStars();
         }
 
-        if (isResetAnimating||isReadyAnimating)
+        if (isResetAnimating || isReadyAnimating)
         {
             InputModule.DeactivateModule();
         }
@@ -326,19 +332,10 @@ public class GameController : MonoBehaviour
             }
         }
 
-        //Debug
-        if (Input.GetKeyDown(KeyCode.Q))
+        if(Input.GetKeyDown(KeyCode.KeypadEnter))
         {
-            foreach (var nodes in Solution)
-            {
-                Debug.Log(nodes);
-            }
+            CompleteLevel();
         }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            RegenerateLevel();
-        }
-
     }
     #endregion
 
@@ -352,6 +349,7 @@ public class GameController : MonoBehaviour
     public Piece GeneratePiece(Piece _piece, Vector3 _position, bool _readyToBeClear)
     {
         Piece piece = FX.instance.SmoothSizeInstantiate(_piece.gameObject, _position).GetComponent<Piece>();
+        piece.isTutorial = false;
         if (_readyToBeClear)
             readyToClear_2.Add(piece.gameObject);
         else
@@ -434,7 +432,7 @@ public class GameController : MonoBehaviour
             {
                 enabledPieceCopy.RemoveAll(t => t is Piece_Door);
             }
-            if (i == 0 && enabledPieceCopy.Find(t=>t.difficulty == level))
+            if (i == 0 && enabledPieceCopy.Find(t => t.difficulty == level))
             {
                 List<Piece> tmpList = new();
                 tmpList.Add(enabledPieceCopy.Find(t => t.difficulty == level));
@@ -485,24 +483,39 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(.4f);
         List<Piece> enabledPieceCopy = tutorPieces[_Level].pieces.FindAll(t => true);
         pieceGenePositions.Clear();
-        foreach (var anchor in tutorPieces[_Level].anchor.FindAll(t=>true))
+        foreach (var anchor in tutorPieces[_Level].anchor.FindAll(t => true))
         {
             pieceGenePositions.Add(anchor.position);
         }
+        int mod = 0;
         for (int i = 0; i < enabledPieceCopy.Count; i++)
         {
-            enabledPieceCopy[i].isTutorial = true;
-            enabledPieceCopy[i].canFilp = false;
-            if (Math.Min(pieceGeneAmount - i, pieceGenePositions.Count) < 2)
+            if (enabledPieceCopy[i] is Piece_Door door)
             {
-                enabledPieceCopy.RemoveAll(t => t is Piece_Door);
+                if (pieceGenePositions.Count >= 2)
+                {
+                    List<Piece> temp = new();
+                    temp.Add(door);
+                    List<Vector3> tmpPos = new();
+                    tmpPos.Add(pieceGenePositions[i]);
+                    tmpPos.Add(pieceGenePositions[i + 1]);
+                    Piece extraDoor = null;
+                    Piece newPiece = GenerateRandomPiece(temp, tmpPos, true, false, out extraDoor);
+                    newPiece.isTutorial = true;
+                    extraDoor.isTutorial = true;
+                    if (newPiece != null)
+                        levelPieces.Add(newPiece);
+                    if (extraDoor != null)
+                        levelPieces.Add(extraDoor);
+                    mod++;
+                }
             }
-            Piece extraDoor = null;
-            Piece newPiece = GenerateRandomPiece(enabledPieceCopy, pieceGenePositions, true, false, out extraDoor);
-            if (newPiece != null)
-                levelPieces.Add(newPiece);
-            if (extraDoor != null)
-                levelPieces.Add(extraDoor);
+            else
+            {
+                Piece piece = GeneratePiece(enabledPieceCopy[i], pieceGenePositions[i + mod], true);
+                piece.isTutorial = true;
+                levelPieces.Add(piece);
+            }
             yield return new WaitForSeconds(.4f);
         }
 
@@ -569,13 +582,15 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void GenerateBlackHole()
     {
-        List<Piece> levelPiecesCopy = levelPieces.FindAll(t => !t.isCheckPoint);
-
-        for (int i = 0; i < Math.Min(blackHoleAmount, levelPiecesCopy.Count); i++)
+        achievablelevelPieces = levelPieces.FindAll(t => !t.isCheckPoint);
+        int amount = achievablelevelPieces.Count;
+        for (int i = 0; i < Math.Min(blackHoleAmount, amount); i++)
         {
-            int index = Random.Range(0, levelPiecesCopy.Count);
-            readyToClear_2.Add(FX.instance.SmoothSizeInstantiate(blackHole, levelPiecesCopy[index].transform.position+(Vector3)Random.insideUnitCircle * blackHoleGenePositionRamdonBias));
-            levelPiecesCopy.RemoveAt(index);
+            int index = Random.Range(0, achievablelevelPieces.Count);
+            GameObject newOB = FX.instance.SmoothSizeInstantiate(blackHole, achievablelevelPieces[index].transform.position + (Vector3)Random.insideUnitCircle * blackHoleGenePositionRamdonBias);
+            readyToClear_2.Add(newOB);
+
+            achievablelevelPieces.RemoveAt(index);
         }
     }
 
@@ -896,7 +911,6 @@ public class GameController : MonoBehaviour
         isGaming = true;
         Time.timeScale = 1;
         player.gameObject.SetActive(true);
-        levelPieces.Add(GeneratePiece(checkPoint, levelStartPoint, true));
 
         ReadyLevel();
         onGameStart?.Invoke();
@@ -932,6 +946,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void EndGame()
     {
+        MySoundManager.PlayAudio("WakeUp");
         if (!isPausing)
             return;
         player.gameObject.SetActive(false);
@@ -963,9 +978,10 @@ public class GameController : MonoBehaviour
     public void CompleteLevel()
     {
         level++;
+        blackHoleAmount = 0;
         Time.timeScale = 0;
         isPausing = true;
-        InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus);
+        InGameUIManager.Instance.OpenRoguePropPanel(stars + bonus + 1);
         onLevelComplete?.Invoke();
     }
 
@@ -990,9 +1006,9 @@ public class GameController : MonoBehaviour
         Solution.Clear();
         RefreshNodedLevelWeaveLength();
 
-        if(level == 0)
+        if (level == 0)
         {
-            player.transform.position = new Vector3(0,5);
+            player.transform.position = new Vector3(0, 5);
         }
         else
         {
@@ -1027,7 +1043,7 @@ public class GameController : MonoBehaviour
         }
         otherPieces.Clear();
         onLevelReset?.Invoke();
-        FX.instance.SmoothRefresh(resetColor,2f,ResetLevelCallBack);
+        FX.instance.SmoothRefresh(resetColor, ResetLevelCallBack);
     }
 
     private void ResetLevelCallBack()
@@ -1106,10 +1122,6 @@ public class GameController : MonoBehaviour
         _piece.isLinked = true;
         Solution.Push(_piece.node.position);
         RefreshNodedLevelWeaveLength();
-        if (_piece.transform.position == levelEndPoint)
-        {
-            CompleteLevel();
-        }
     }
     /// <summary>
     /// 取消连接节点。返回成功与否
@@ -1139,6 +1151,7 @@ public class GameController : MonoBehaviour
         Solution.Push(_door.door.position);
         Solution.Push(-Vector3.one);
         Solution.Push(_door.relatedDoor.door.position);
+        _door.isLinked = true;
         RefreshNodedLevelWeaveLength();
 
     }
@@ -1155,6 +1168,7 @@ public class GameController : MonoBehaviour
         Solution.Pop();
         Solution.Pop();
         Solution.Pop();
+        _door.isLinked = false;
         RefreshNodedLevelWeaveLength();
 
         return true;

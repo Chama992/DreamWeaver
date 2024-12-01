@@ -33,7 +33,7 @@ public class Bomb : PropEffector
             if (collider2D != null)
             {
                 player.Rb.velocity = new Vector2(player.Rb.velocity.x, 0);
-                player.Rb.AddForce((collider2D.transform.position - bomb.transform.position).normalized * force + Vector3.up * forceUp, ForceMode2D.Impulse);
+                player.Rb.AddForce((collider2D.transform.position - bomb.transform.position).normalized * force + Vector3.up * forceUp, ForceMode2D.Force);
             }
             MySoundManager.PlayAudio("Õ¨µ¯");
         }

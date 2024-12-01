@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3275870045762810454}
   - component: {fileID: 8078452813744848991}
-  - component: {fileID: 5061286007264545821}
+  - component: {fileID: 7759989619956052457}
   m_Layer: 3
   m_Name: Collider
   m_TagString: Untagged
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &5061286007264545821
+--- !u!61 &7759989619956052457
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -117,7 +117,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.022418559, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -128,7 +128,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.5683154, y: 3.63}
   m_EdgeRadius: 0
 --- !u!1 &951855938358757281
 GameObject:
@@ -380,13 +380,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backGround: {fileID: 452741690507715515}
   node: {fileID: 0}
+  tutorial: {fileID: 0}
+  showed: 0
   nodedSprited: {fileID: 0}
-  difficulty: 9
+  difficulty: 5
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0
   allowLink: 1
   isLinked: 0
+  isTutorial: 0
   treasureBox: {fileID: 3492106496227555515}
   treasureClose: {fileID: 2029998668, guid: e7c673036b81a4a4a818fa13b189f6f5, type: 3}
   treasureOpen: {fileID: -200430150, guid: e7c673036b81a4a4a818fa13b189f6f5, type: 3}

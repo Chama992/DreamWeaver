@@ -45,6 +45,7 @@ public class Piece : MonoBehaviour
     /// </summary>
     [HideInInspector] public bool isTutorial = false;
 
+
     protected virtual void Start()
     {
         ramdomInt = Random.Range(0f, 1f);
@@ -54,6 +55,8 @@ public class Piece : MonoBehaviour
             transform.Rotate(0, 180, 0);
         }
         backGround.Rotate(0, 0, Random.Range(-30, 30));
+        if (node == null)
+            isLinked = true;
     }
 
     protected virtual void OnDisable()
@@ -62,18 +65,27 @@ public class Piece : MonoBehaviour
     }
     protected virtual void Update()
     {
+        if (Input.GetKeyDown(KeyCode.K))
+            Debug.Log(tutorial);
     }
     protected virtual void ResetPiece()
     {
-        isLinked = false;
+        if (node != null)
+            isLinked = false;
     }
 
-    public virtual void ShowTutorial()
+    public void ShowTutorial()
     {
-        if (showed||tutorial==null)
+        if (!isTutorial || showed)
             return;
+        ShowTutorial_Content();
+    }
 
+    protected virtual void ShowTutorial_Content()
+    {
         showed = true;
+        if (tutorial == null)
+            return;
         FX.instance.SmoothSizeAppear(tutorial.gameObject);
     }
 }

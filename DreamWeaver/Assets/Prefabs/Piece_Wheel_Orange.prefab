@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 104947852503122691}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 2.51, y: 2.96, z: 0}
+  m_LocalPosition: {x: 2.35, y: 2.82, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -73,15 +73,15 @@ SpriteRenderer:
   m_SortingLayerID: 438742037
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: -256619314, guid: da761d19f8f740f45a6b44699a01cbf9, type: 3}
+  m_Sprite: {fileID: -1564823611, guid: 1fbe14f83f0692e4fa614198bd1b7d9c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1.05, y: 1.52}
+  m_Size: {x: 1.1600566, y: 1.6899999}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1419470274910259551
@@ -475,17 +475,17 @@ MonoBehaviour:
   tutorial: {fileID: 5197291068576229557}
   showed: 0
   nodedSprited: {fileID: 0}
-  difficulty: 5
+  difficulty: 2
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0
   allowLink: 1
   isLinked: 0
-  isTutorial: 0
+  isTutorial: 1
   wheel: {fileID: 6457129966022486095}
   colliders: {fileID: 2843908922505667758}
-  ratio: 0.05
-  speed: 2
+  ratio: 0.1
+  speed: 1
 --- !u!1 &6771695901720297468
 GameObject:
   m_ObjectHideFlags: 0

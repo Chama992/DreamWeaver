@@ -135,7 +135,7 @@ PolygonCollider2D:
     serializedVersion: 2
     m_Bits: 4294967295
   m_IsTrigger: 0
-  m_UsedByEffector: 0
+  m_UsedByEffector: 1
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
@@ -589,13 +589,13 @@ MonoBehaviour:
   tutorial: {fileID: 1483224777145799184}
   showed: 0
   nodedSprited: {fileID: 0}
-  difficulty: 3
+  difficulty: 2
   isCheckPoint: 0
-  canFilp: 1
+  canFilp: 0
   ramdomInt: 0
   allowLink: 1
   isLinked: 0
-  isTutorial: 0
+  isTutorial: 1
   speed: 5
   force: 10
 --- !u!1 &7229984371234561516

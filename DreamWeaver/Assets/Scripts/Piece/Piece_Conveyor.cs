@@ -20,12 +20,8 @@ public class Piece_Conveyor : Piece
         se.forceScale = force;
         if(ramdomInt>0.5)
         {
-            anim.speed *= -1;
-            se.speed *= -1;
-        }
-        if(Random.Range(0,2)==1)
-        {
-            GetComponentInChildren<SurfaceEffector2D>().gameObject.transform.Rotate(180, 0, 0);
+            GetComponentInChildren<SurfaceEffector2D>().gameObject.transform.Rotate(0, 180, 0);
+            speed *= -1;
         }
     }
 }

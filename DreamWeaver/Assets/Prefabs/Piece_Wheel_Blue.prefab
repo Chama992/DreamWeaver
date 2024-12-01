@@ -470,17 +470,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backGround: {fileID: 3146554173004267723}
   node: {fileID: 9064780719181784462}
+  tutorial: {fileID: 0}
+  showed: 0
   nodedSprited: {fileID: 0}
-  difficulty: 0
+  difficulty: 2
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0
   allowLink: 1
   isLinked: 0
+  isTutorial: 0
   wheel: {fileID: 6457129966022486095}
   colliders: {fileID: 2843908922505667758}
-  ratio: 0.05
-  speed: 2
+  ratio: 0.1
+  speed: 1.5
 --- !u!1 &7430690071059525232
 GameObject:
   m_ObjectHideFlags: 0

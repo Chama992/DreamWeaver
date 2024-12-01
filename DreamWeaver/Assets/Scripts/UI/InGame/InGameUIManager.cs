@@ -17,6 +17,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     private int  levelDepth;
     private float threadLength;
     [Header("RoguePanel")]
+    public GameObject rogueParent;
     public GameObject roguePropPanel;
     public GameObject roguePropFrame;
     public GameObject rogueExtraView;
@@ -92,7 +93,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     /// </summary>
     public void OpenRoguePropPanel(int count)
     {
-        FX.instance.SmoothSizeAppear(roguePropPanel);
+        FX.instance.SmoothSizeAppear(rogueParent);
         chooseCount = count;
         GenerateRoguePropPanel();
         MySoundManager.PlayAudio("获得道具");
@@ -126,7 +127,7 @@ public class InGameUIManager : SingleTon<InGameUIManager>
         else
         {
             GameController.instance.ReadyLevel();
-            FX.instance.SmoothSizeDisappear(roguePropPanel);
+            FX.instance.SmoothSizeDisappear(rogueParent);
         }
 
     }

@@ -27,8 +27,8 @@ Transform:
   m_GameObject: {fileID: 175138299000783814}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.44, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.0039, y: -1.44, z: 0}
+  m_LocalScale: {x: 1.0018, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1313349565752605041}
@@ -117,7 +117,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.04463774}
+  m_Offset: {x: 0.007748246, y: -0.04463774}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -128,7 +128,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.37, y: 1.3907245}
+  m_Size: {x: 4.555958, y: 1.3907245}
   m_EdgeRadius: 0
 --- !u!1 &1807933133588411313
 GameObject:
@@ -212,6 +212,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   backGround: {fileID: 7964880256438595817}
   node: {fileID: 2844707695318386751}
+  tutorial: {fileID: 0}
+  showed: 0
   nodedSprited: {fileID: -1873611001, guid: aaf84e3a4dc979b4cb8584f3884540e0, type: 3}
   difficulty: 6
   isCheckPoint: 0
@@ -219,10 +221,11 @@ MonoBehaviour:
   ramdomInt: 0
   allowLink: 1
   isLinked: 0
+  isTutorial: 0
   spring: {fileID: 3499207392435176616}
   springIn: {fileID: 130709923, guid: aaf84e3a4dc979b4cb8584f3884540e0, type: 3}
   springOut: {fileID: 1764116461, guid: aaf84e3a4dc979b4cb8584f3884540e0, type: 3}
-  force: 50
+  force: 40
   detectRange: 1
 --- !u!1 &5610345302284009403
 GameObject:
@@ -381,15 +384,15 @@ SpriteRenderer:
   m_SortingLayerID: 438742037
   m_SortingLayer: 3
   m_SortingOrder: -1
-  m_Sprite: {fileID: -2136459720, guid: 44e7325fca0a1644bbab421126a65287, type: 3}
+  m_Sprite: {fileID: 130709923, guid: aaf84e3a4dc979b4cb8584f3884540e0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2.19, y: 3.82}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &7825849741339805013

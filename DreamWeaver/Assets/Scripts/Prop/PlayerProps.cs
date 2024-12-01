@@ -44,6 +44,12 @@ public class PlayerProps
     /// <param name="propId"></param>
     public void UseProp(int propId)
     {
+        if (GameController.instance.Tutorial)
+        {
+            FX.instance.ShowHint("You can try your props after the tutorial is over~");
+            return;
+        }
+
         if (props.ContainsKey(propId) && props[propId] > 0)
         {
             if (!UseSpecificProps(propId))

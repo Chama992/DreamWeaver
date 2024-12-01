@@ -24,6 +24,11 @@ public class RogueFrameUI : MonoBehaviour,IPointerClickHandler
     {
         if (eventData.button == PointerEventData.InputButton.Left)
         {
+            if (propId == 7)
+            {
+                FX.instance.ShowHint("That's horrible for you now...store something useful for the future!");
+                return;
+            }
             if (PropDataManager.Instance.GetPropTypeEffectorType(propId) == PropEffectorType.Special)
             {
                 GameController.instance.AddBonue(1);

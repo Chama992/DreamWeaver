@@ -28,7 +28,7 @@ public class Piece_Door : Piece
     protected override void Update()
     {
         base.Update();
-        if (Input.GetKeyDown(KeyCode.F) && !isInteracting && (GameController.instance.player.transform.position - door.position).magnitude < GameController.instance.interactRatio )
+        if (Input.GetKeyDown(KeyCode.S) && !isInteracting && (GameController.instance.player.transform.position - door.position).magnitude < GameController.instance.interactRatio )
         {
             if (!isOpen)
             {
@@ -71,11 +71,9 @@ public class Piece_Door : Piece
         isInteracting = false;
     }
 
-    public override void ShowTutorial()
+    protected override void ShowTutorial_Content()
     {
-        if (showed || tutorial == null)
-            return;
-        base.ShowTutorial();
+        base.ShowTutorial_Content();
         relatedDoor.showed = true;
     }
     protected override void ResetPiece()

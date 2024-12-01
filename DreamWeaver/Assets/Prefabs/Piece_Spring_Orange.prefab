@@ -386,8 +386,8 @@ MonoBehaviour:
   node: {fileID: 2844707695318386751}
   tutorial: {fileID: 4994749104781994192}
   showed: 0
-  nodedSprited: {fileID: -1873611001, guid: aaf84e3a4dc979b4cb8584f3884540e0, type: 3}
-  difficulty: 6
+  nodedSprited: {fileID: 0}
+  difficulty: 3
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0
@@ -395,9 +395,9 @@ MonoBehaviour:
   isLinked: 0
   isTutorial: 0
   spring: {fileID: 3499207392435176616}
-  springIn: {fileID: 130709923, guid: aaf84e3a4dc979b4cb8584f3884540e0, type: 3}
-  springOut: {fileID: 1764116461, guid: aaf84e3a4dc979b4cb8584f3884540e0, type: 3}
-  force: 50
+  springIn: {fileID: 1677856413, guid: c77e4da46c761464aac59a703897eca7, type: 3}
+  springOut: {fileID: 164011689, guid: c77e4da46c761464aac59a703897eca7, type: 3}
+  force: 40
   detectRange: 1
 --- !u!1 &5610345302284009403
 GameObject:

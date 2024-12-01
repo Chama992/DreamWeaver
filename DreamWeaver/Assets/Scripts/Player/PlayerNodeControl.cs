@@ -51,11 +51,37 @@ public class PlayerNodeControl : MonoBehaviour
     {
         if (piece.transform.position == GameController.instance.levelStartPoint)
             return;
+
+        if (piece.transform.position == GameController.instance.levelEndPoint)
+        {
+            bool allow = true;
+
+            foreach (var item in GameController.instance.achievablelevelPieces)
+            {
+                if (!item.isLinked)
+                {
+                    FX.instance.ShowHint("You need to link all the interactable pieces before link the end!");
+                    allow = false;
+                }
+            }
+            if (allow)
+            {
+                GameController.instance.CompleteLevel();
+            }
+            else
+            {
+                return;
+            }
+
+        }
+
         if (piecesSequences.ContainsKey(pieceIndex))
         {
-            CancleLinkNode(pieceIndex);
-            GameController.instance.TryDisconnectNode(piece);
-            MySoundManager.PlayAudio("取消连接");
+            if(GameController.instance.TryDisconnectNode(piece))
+            {
+                CancleLinkNode(pieceIndex);
+                MySoundManager.PlayAudio("取消连接");
+            }
             return;
         }
         MySoundManager.PlayAudio("连接");

@@ -11,13 +11,14 @@ public class Piece_Trapdoor : Piece
     [SerializeField] private Transform Right;
     private float waitTimer = 100;
     private bool isOpened = false;
+    private bool soundPlayed = false;
 
     protected override void Update()
     {
         base.Update();
         if(isOpened)
         {
-            if (Left.rotation.eulerAngles.z == 0 ||Left.rotation.eulerAngles.z > 270)
+            if (Left.rotation.eulerAngles.z < 1 ||Left.rotation.eulerAngles.z > 270)
             {
                 Left.Rotate(0, 0, -Time.deltaTime * openSpeed);
             }
@@ -25,7 +26,11 @@ public class Piece_Trapdoor : Piece
             {
                 Right.Rotate(0, 0, Time.deltaTime * openSpeed);
             }
-            MySoundManager.PlayAudio("活板门打开");
+            if(!soundPlayed)
+            {
+                soundPlayed = true;
+                MySoundManager.PlayAudio("活板门打开");
+            }
         }
         if((GameController.instance.player.transform.position-checkPoint.position).magnitude<GameController.instance.interactRatio)
         {
@@ -53,6 +58,7 @@ public class Piece_Trapdoor : Piece
     {
         base.ResetPiece();
         isOpened = false;
+        soundPlayed = false;
         Left.rotation = Quaternion.identity;
         Right.rotation = Quaternion.identity;
     }

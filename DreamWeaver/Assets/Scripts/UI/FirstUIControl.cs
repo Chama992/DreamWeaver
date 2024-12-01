@@ -6,6 +6,7 @@ public class FirstUIControl : MonoBehaviour
 {
     public GameObject MainMenu;
     [SerializeField] private Color refreshColor;
+    private bool started;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,9 +16,10 @@ public class FirstUIControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.anyKeyDown)
+        if (Input.anyKeyDown&&!started)
         {
-            FX.instance.SmoothRefresh(refreshColor,1.5f,CallBack);
+            started = true;
+            FX.instance.SmoothRefresh(refreshColor,CallBack);
         }
     }
 

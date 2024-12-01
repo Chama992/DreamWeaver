@@ -18,11 +18,9 @@ public class Piece_CheckPoint : Piece
         base.OnDisable();
         GameController.instance.onLevelStart -= DisableTutorial;
     }
-    public override void ShowTutorial()
+    protected override void ShowTutorial_Content()
     {
-        if (showed || tutorial == null)
-            return;
-        base.ShowTutorial();
+        base.ShowTutorial_Content();
         if (GameController.instance.level >= startTutor.Count)
             return;
 
@@ -43,6 +41,6 @@ public class Piece_CheckPoint : Piece
             if (endTutor[GameController.instance.level - 1] != null) 
                 FX.instance.SmoothSizeDisappear(endTutor[GameController.instance.level - 1].gameObject);
         }
-        ShowTutorial();
+        showed = false;
     }
 }

@@ -44,6 +44,8 @@ public class PropEffectorManager : MonoBehaviour
     {
         if (propEffectors.Count == 0 || GameController.instance.isPausing ||GameController.instance.isReadyAnimating|| GameController.instance.isResetAnimating || !GameController.instance.isGaming)
             return;
+
+        
         List<PropEffector> propRemoveEffectors = new List<PropEffector>();
         for (int i = 0; i < propEffectors.Count; i++)
         {

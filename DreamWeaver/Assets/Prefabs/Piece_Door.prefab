@@ -726,13 +726,13 @@ MonoBehaviour:
   tutorial: {fileID: 0}
   showed: 0
   nodedSprited: {fileID: 0}
-  difficulty: 8
+  difficulty: 4
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0
   allowLink: 1
   isLinked: 0
-  isTutorial: 0
+  isTutorial: 1
   closeTutor: {fileID: 9086336539556239016}
   openTutor: {fileID: 2312447839260802205}
   door: {fileID: 335054902102215878}

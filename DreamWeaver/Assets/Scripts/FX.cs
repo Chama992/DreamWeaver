@@ -11,6 +11,7 @@ public class FX : MonoBehaviour
     public static FX instance;
 
     [SerializeField] private UI_ResetAnim resetAnim;
+    [SerializeField] private TextMeshProUGUI hint;
 
     private void Awake()
     {
@@ -162,19 +163,54 @@ public class FX : MonoBehaviour
     /// <summary>
     /// 平滑刷新界面
     /// </summary>
-    public void SmoothRefresh(Color _color,float _waitTime, Action _callBack = null)
+    public void SmoothRefresh(Color _color, Action _callBack = null)
     {
-        StartCoroutine(SmoothRefresh_Anim(_color, _waitTime,_callBack));
+        StartCoroutine(SmoothRefresh_Anim(_color,_callBack));
     }
-    private IEnumerator SmoothRefresh_Anim(Color _color,float _waitTime,Action _callBack = null)
+    private IEnumerator SmoothRefresh_Anim(Color _color,Action _callBack = null)
     {
+        MySoundManager.PlayAudio("书写");
         GameController.instance.isResetAnimating = true;
         resetAnim.gameObject.SetActive(true);
         resetAnim.GetComponent<Image>().color = _color;
         resetAnim.anim.SetBool("isStart", true);
-        yield return new WaitForSecondsRealtime(_waitTime);
+        yield return new WaitForSecondsRealtime(2f);
         _callBack?.Invoke();
+        MySoundManager.PlayAudio("书写");
         GameController.instance.isResetAnimating = false;
         resetAnim.anim.SetBool("isStart", false);
+    }
+
+    private bool hintShowing;
+    /// <summary>
+    /// 显示提示
+    /// </summary>
+    /// <param name="_message"></param>
+    public void ShowHint(string _message)
+    {
+        if (hintShowing)
+            return;
+        StartCoroutine(ShowHint_Anim(_message));
+    }
+
+    private IEnumerator ShowHint_Anim(string _message)
+    {
+        hintShowing = true;
+        hint.text = _message;
+        hint.color = new Color(hint.color.r, hint.color.g, hint.color.b, 1);
+        hint.gameObject.SetActive(true);
+        yield return new WaitForSecondsRealtime(1f);
+        while(true)
+        {
+            hint.color = new Color(hint.color.r, hint.color.g, hint.color.b, hint.color.a - Time.unscaledDeltaTime);
+            if (hint.color.a < .01f)
+            {
+                hint.gameObject.SetActive(false);
+                hintShowing = false;
+                break;
+            }
+            yield return null;
+        }
+
     }
 }

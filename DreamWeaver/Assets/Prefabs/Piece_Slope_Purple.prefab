@@ -256,13 +256,13 @@ MonoBehaviour:
   tutorial: {fileID: 6994060472668206630}
   showed: 0
   nodedSprited: {fileID: 0}
-  difficulty: 0
+  difficulty: 1
   isCheckPoint: 0
   canFilp: 0
   ramdomInt: 0
   allowLink: 1
   isLinked: 0
-  isTutorial: 0
+  isTutorial: 1
 --- !u!1 &4718703842922492344
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Xml.Serialization;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_Out : MonoBehaviour
 {
+    [SerializeField] private Transform tutorSkip;
     [SerializeField] private Color startColor;
     [SerializeField] private Color endColor;
     [SerializeField] private Transform inUI;
@@ -40,13 +42,14 @@ public class UI_Out : MonoBehaviour
 
     public void RefreshUI_Start()
     {
-        FX.instance.SmoothRefresh(startColor, 1.5f, RefreshUI_Start_CallBack);
+        FX.instance.SmoothRefresh(startColor, RefreshUI_Start_CallBack);
     }
     public void RefreshUI_Start_CallBack()
     {
         inUI.gameObject.SetActive(true);
         inGameBG.gameObject.SetActive(true);
         startGame.gameObject.SetActive(false);
+        tutorSkip.gameObject.SetActive(true);
     }
     public void RefreshUI_Continue()
     {
@@ -58,7 +61,7 @@ public class UI_Out : MonoBehaviour
     }
     public void RefreshUI_End()
     {
-        FX.instance.SmoothRefresh(endColor, 2.5f, RefreshUI_End_CallBack);
+        FX.instance.SmoothRefresh(endColor, RefreshUI_End_CallBack);
     }
     public void RefreshUI_End_CallBack()
     {
@@ -78,6 +81,11 @@ public class UI_Out : MonoBehaviour
         FX.instance.SmoothColorAppear<TextMeshProUGUI>(hint);
         FX.instance.SmoothColorAppear<TextMeshProUGUI>(hintLevel);
         hintLevel.text = GameController.instance.level.ToString();
+
+        if(!GameController.instance.Tutorial)
+        {
+            tutorSkip.gameObject.SetActive(false);
+        }
     }
 
     public void CloseHint()
@@ -94,5 +102,11 @@ public class UI_Out : MonoBehaviour
     public void CloseInfo()
     {
         info.gameObject.SetActive(false);
+    }
+
+    public void SkipTutor()
+    {
+        GameController.instance.Tutorial = false;
+        tutorSkip.gameObject.SetActive(false);
     }
 }

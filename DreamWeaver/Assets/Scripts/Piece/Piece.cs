@@ -38,7 +38,6 @@ public class Piece : MonoBehaviour
 
     protected virtual void Start()
     {
-        node.GetComponent<SpriteRenderer>().sprite = null;
         ramdomInt = Random.Range(0f, 1f);
         GameController.instance.onLevelReset += ResetPiece;
         if(canFilp&&Random.Range(0,2)==0)
@@ -54,14 +53,9 @@ public class Piece : MonoBehaviour
     }
     protected virtual void Update()
     {
-        if(isLinked)
-        {
-            node.GetComponent<SpriteRenderer>().sprite = nodedSprited;
-        }
     }
     protected virtual void ResetPiece()
     {
         isLinked = false;
-        node.GetComponent<SpriteRenderer>().sprite = null;
     }
 }

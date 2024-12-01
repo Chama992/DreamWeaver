@@ -91,7 +91,8 @@ public class PlayerProps
             case PropType.Hammer:
                 if (!player.canBuild)
                     useProp = false;
-                propEffectorManager.AddPropEffector<Hammer>();
+                else
+                    propEffectorManager.AddPropEffector<Hammer>();
                 break;
             default:
                 break;

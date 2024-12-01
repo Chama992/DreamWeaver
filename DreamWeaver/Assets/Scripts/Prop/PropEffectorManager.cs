@@ -5,22 +5,37 @@ using UnityEngine;
 
 public class PropEffectorManager : MonoBehaviour
 {
+    public static PropEffectorManager instance;
     private List<PropEffector> propEffectors = new();
     [Header("Firework")]
-    [SerializeField]public float force;
+    public float force;
     [Header("Bomb")]
-    [SerializeField]public float bombforce;
-    [SerializeField]public float bombforceUp;
-    [SerializeField]public float bombradius;
+    public float bombWaitTime;
+    public float bombForce;
+    public float bombForceUp;
+    public float bombRadius;
     [Header("Feather")]
-    [SerializeField]public float decreaseScale;
-    [SerializeField]public float featherPropDuration;
+    public float decreaseScale;
+    public float featherPropDuration;
     [Header("HookLock")]
-    [SerializeField]public float radius;
-    [SerializeField]public float hookSpeed;
-    [SerializeField]public float hookLockPropDuration;
+    public float radius;
+    public float hookSpeed;
+    public float hookLockPropDuration;
     [Header("Hammer")]
-    [SerializeField]public float hammerPropDuration;
+    public float hammerPropDuration;
+    public List<Vector3> position2Generate = new List<Vector3>();
+
+    private void Awake()
+    {
+        if(instance != null)
+        {
+            Destroy(this);
+        }
+        else
+        {
+            instance = this;
+        }
+    }
     private void Start()
     {
         GameController.instance.onLevelReset += OnGameReset;
@@ -73,6 +88,8 @@ public class PropEffectorManager : MonoBehaviour
         {
             effect.Destroy();
         }
-       
+        position2Generate = GameController.instance.pieceGenePositions.FindAll(t => true);
+
+
     }
 }

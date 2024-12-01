@@ -28,7 +28,7 @@ public class HammerChoosePoint : MonoBehaviour
             }
         }
         GameController.instance.otherPieces.Add(GameController.instance.GeneratePiece(piece, point, false));
-        GameController.instance.pieceGenePositions.Remove(point);
+        FindObjectOfType<PropEffectorManager>().position2Generate.Remove(point);
         PieceGenerated?.Invoke();
     }
 }

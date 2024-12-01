@@ -15,6 +15,7 @@ public class PlayerHookState : PlayerState
     public override void Enter()
     {
         base.Enter();
+        GameController.instance.onLevelReset += Exit;
         // hookOriginPoint = player.transform.position;
         // hookDistance = Vector2.Distance(hookOriginPoint, hookPoint);
         player.SetVelocity(0,0);
@@ -54,6 +55,7 @@ public class PlayerHookState : PlayerState
         player.DistanceJoint2D.enabled = false;
         player.LineRenderer.enabled = false;
         player.LineRenderer.positionCount = 0;
+        GameController.instance.onLevelReset -= Exit;
     }
     public void SetTarget(Vector2 _hookPoint, Collider2D _other,float _hookSpeed)
     {

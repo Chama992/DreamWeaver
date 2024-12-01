@@ -39,7 +39,7 @@ public class Piece_Door : Piece
                 GameController.instance.player.CrossDoor?.Invoke(relatedDoor.transform.position,relatedDoor.door.position);
                 onOpenDoor?.Invoke();
                 StartCoroutine(DoorCD());
-                MySoundManager.PlayOneAudio("门开");
+                MySoundManager.PlayAudio("门开");
             }
             else if (isOpen && GameController.instance.TryDisconnectDoor(this))
             {
@@ -52,7 +52,7 @@ public class Piece_Door : Piece
                 GameController.instance.player.CrossDoor?.Invoke(relatedDoor.transform.position,relatedDoor.door.position);
                 onCloseDoor?.Invoke();
                 StartCoroutine(DoorCD());
-                MySoundManager.PlayOneAudio("门开");
+                MySoundManager.PlayAudio("门开");
             }
         }
     }
@@ -61,7 +61,7 @@ public class Piece_Door : Piece
     {
         yield return new WaitForSeconds(.5f);
         isInteracting = false;
-        MySoundManager.PlayOneAudio("门关");
+        MySoundManager.PlayAudio("门关");
     }
 
     protected override void ResetPiece()

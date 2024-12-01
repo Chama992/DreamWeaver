@@ -66,6 +66,7 @@ public class PropEffectorManager : MonoBehaviour
         //ÒÆ³ý
         for (int i = 0; i < propRemoveEffectors.Count; i++)
         {
+            propRemoveEffectors[i].Destroy();
             propEffectors.Remove(propRemoveEffectors[i]);
         }
     }
@@ -88,8 +89,7 @@ public class PropEffectorManager : MonoBehaviour
         {
             effect.Destroy();
         }
+        propEffectors.Clear();
         position2Generate = GameController.instance.pieceGenePositions.FindAll(t => true);
-
-
     }
 }

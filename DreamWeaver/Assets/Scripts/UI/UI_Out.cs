@@ -10,6 +10,7 @@ public class UI_Out : MonoBehaviour
     [SerializeField] private Transform inUI;
     [SerializeField] private Transform inGameBG;
     [SerializeField] private Transform startGame;
+    [SerializeField] private Transform BG;
     [SerializeField] private Transform pauseGame;
     [SerializeField] private Transform endGame;
     [SerializeField] private Transform info;
@@ -52,6 +53,7 @@ public class UI_Out : MonoBehaviour
     {
         CanvasGroup canvasGroup  =  startGame.gameObject.GetComponent<CanvasGroup>();
         CanvasGroup inCanvasGroup =  inUI.gameObject.GetComponent<CanvasGroup>();
+        CanvasGroup bGroup =  BG.gameObject.GetComponent<CanvasGroup>();
         Image image = inGameBG.GetComponentInChildren<Image>();
         float alpha = 1;
         float speed = 1.5f;
@@ -61,10 +63,12 @@ public class UI_Out : MonoBehaviour
         {
             alpha = Mathf.MoveTowards(alpha, 0, Time.deltaTime * speed);
             canvasGroup.alpha = alpha;
+            bGroup.alpha = alpha;
             inCanvasGroup.alpha = 1-alpha;
             image.color = new Color(image.color.r, image.color.g, image.color.b, 1-alpha);
             yield return null;
         }
+        bGroup.gameObject.SetActive(false);
         startGame.gameObject.SetActive(false);
         image.color = new Color(image.color.r, image.color.g, image.color.b, 1);
         inCanvasGroup.alpha = 1;
@@ -84,7 +88,7 @@ public class UI_Out : MonoBehaviour
         level.text = GameController.instance.level.ToString();
         score.text = GameController.instance.score.ToString();
         weavelength.text = GameController.instance.overallWeaveLength.ToString();
-        MySoundManager.PlayOneAudio("Ω·À„");
+        MySoundManager.PlayAudio("Ω·À„");
         pauseGame.gameObject.SetActive(false);
         endGame.gameObject.SetActive(true);
     }
@@ -105,9 +109,11 @@ public class UI_Out : MonoBehaviour
     public void OpenInfo()
     {
         info.gameObject.SetActive(true);
+        startGame.GetComponent<CanvasGroup>().interactable = false;
     }
     public void CloseInfo()
     {
+        startGame.GetComponent<CanvasGroup>().interactable = true;
         info.gameObject.SetActive(false);
     }
 }

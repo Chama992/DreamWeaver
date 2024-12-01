@@ -13,9 +13,8 @@ MonoBehaviour:
   m_Name: 3
   m_EditorClassIdentifier: 
   propID: 3
-  propName: HookLock
-  propDescription: Within a certain circle, to any direction shot hook, if it can
-    hit the collision box, then fly in the corresponding direction
+  propName: "\u94A9\u7D22"
+  propDescription: "\u5411\u6307\u5B9A\u65B9\u5411\u6254\u51FA\u4E00\u4E2A\u94A9\u9501"
   propIcon: {fileID: -62483875, guid: f065c9a4455306549b5df1deff5a5246, type: 3}
   propType: 2
   propEffectorType: 1

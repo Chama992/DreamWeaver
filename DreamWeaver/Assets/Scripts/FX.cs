@@ -53,7 +53,13 @@ public class FX : MonoBehaviour
     {
         while (true)
         {
-            if (_object is TextMeshProUGUI tmp)
+            if (_object is TextMeshProUGUI tmpUI)
+            {
+                tmpUI.color = new Color(tmpUI.color.r, tmpUI.color.g, tmpUI.color.b, tmpUI.color.a + Time.deltaTime * _appearOrDisappear);
+                if ((tmpUI.color.a > 1 && _appearOrDisappear > 0) || (tmpUI.color.a < 0 && _appearOrDisappear < 0))
+                    break;
+            }
+            else if (_object is TextMeshPro tmp)
             {
                 tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, tmp.color.a + Time.deltaTime * _appearOrDisappear);
                 if ((tmp.color.a > 1 && _appearOrDisappear > 0) || (tmp.color.a < 0 && _appearOrDisappear < 0))
@@ -114,6 +120,7 @@ public class FX : MonoBehaviour
         if (_gameObject.GetComponent<Image>() != null&&_appearOrDisappear == 1)
             GameController.instance.isReadyAnimating = true;
 
+        _gameObject.SetActive(true);
 
         if (_gameObject!=null)
         {
@@ -141,6 +148,7 @@ public class FX : MonoBehaviour
                 if (_gameObject.transform.localScale.x < .01f && _appearOrDisappear == 0)
                 {
                     _gameObject.transform.localScale = Vector3.zero;
+                    _gameObject.SetActive(false);
                     break;
                 }
                 yield return null;

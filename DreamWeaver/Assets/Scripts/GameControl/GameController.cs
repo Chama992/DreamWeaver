@@ -15,6 +15,9 @@ public class GameController : MonoBehaviour
 
     #region stats
     [Header("玩家与游戏相关")]
+    [Tooltip("开启教程")]
+    public bool Tutorial;
+
     [Tooltip("玩家")]
     public Player player;
 
@@ -33,6 +36,19 @@ public class GameController : MonoBehaviour
     [Header("地图相关")]
     [Tooltip("全局碎片数据列表")]
     public List<Piece> pieces;
+
+    [Tooltip("教程碎片数据列表")]
+    public List<TutorPieceInfo> tutorPieces;
+
+    [Serializable]
+    public struct TutorPieceInfo
+    {
+        public List<Piece> pieces;
+        public List<Transform> anchor;
+    }
+
+    [Tooltip("教程碎片终点锚点")]
+    public List<Transform> tutorEndAnchor;
 
     [Tooltip("检查点碎片数据")]
     public Piece checkPoint;
@@ -418,15 +434,83 @@ public class GameController : MonoBehaviour
             {
                 enabledPieceCopy.RemoveAll(t => t is Piece_Door);
             }
+            if (i == 0 && enabledPieceCopy.Find(t=>t.difficulty == level))
+            {
+                List<Piece> tmpList = new();
+                tmpList.Add(enabledPieceCopy.Find(t => t.difficulty == level));
+                Piece extraDoor = null;
+                Piece newPiece = GenerateRandomPiece(new List<Piece>(tmpList), pieceGenePositions, true, false, out extraDoor);
+                if (newPiece != null)
+                    levelPieces.Add(newPiece);
+                if (extraDoor != null)
+                    levelPieces.Add(extraDoor);
+            }
+            else
+            {
+                Piece extraDoor = null;
+                Piece newPiece = GenerateRandomPiece(enabledPieceCopy, pieceGenePositions, true, false, out extraDoor);
+                if (newPiece != null)
+                    levelPieces.Add(newPiece);
+                if (extraDoor != null)
+                    levelPieces.Add(extraDoor);
+            }
+        }
+
+        GenerateBlackHole();
+    }
+
+    /// <summary>
+    /// 生成教程地图并播放动画
+    /// </summary>
+    public IEnumerator GenenrateTutorialMap_Smooth(int _Level)
+    {
+        isReadyAnimating = true;
+        if (level == 0)
+        {
+            levelPieces.Clear();
+            Piece piece = GeneratePiece(checkPoint, levelStartPoint, true);
+            piece.isTutorial = true;
+            if (piece != null)
+                levelPieces.Add(piece);
+        }
+        else
+        {
+            Piece checkPoint = levelPieces.Find(t => t.transform.position == levelStartPoint);
+            levelPieces.Clear();
+            levelPieces.Add(checkPoint);
+        }
+        Piece piece2 = GeneratePiece(checkPoint, levelEndPoint, false);
+        piece2.isTutorial = true;
+        levelPieces.Add(piece2);
+        yield return new WaitForSeconds(.4f);
+        List<Piece> enabledPieceCopy = tutorPieces[_Level].pieces.FindAll(t => true);
+        pieceGenePositions.Clear();
+        foreach (var anchor in tutorPieces[_Level].anchor.FindAll(t=>true))
+        {
+            pieceGenePositions.Add(anchor.position);
+        }
+        for (int i = 0; i < enabledPieceCopy.Count; i++)
+        {
+            enabledPieceCopy[i].isTutorial = true;
+            enabledPieceCopy[i].canFilp = false;
+            if (Math.Min(pieceGeneAmount - i, pieceGenePositions.Count) < 2)
+            {
+                enabledPieceCopy.RemoveAll(t => t is Piece_Door);
+            }
             Piece extraDoor = null;
             Piece newPiece = GenerateRandomPiece(enabledPieceCopy, pieceGenePositions, true, false, out extraDoor);
             if (newPiece != null)
                 levelPieces.Add(newPiece);
             if (extraDoor != null)
                 levelPieces.Add(extraDoor);
+            yield return new WaitForSeconds(.4f);
         }
 
         GenerateBlackHole();
+        yield return new WaitForSeconds(1f);
+        isReadyAnimating = false;
+        ClearMap();
+        StartLevel();
     }
 
     /// <summary>
@@ -434,6 +518,12 @@ public class GameController : MonoBehaviour
     /// </summary>
     public IEnumerator GenenrateMap_Smooth()
     {
+        if (Tutorial)
+        {
+            StartCoroutine(GenenrateTutorialMap_Smooth(level));
+            yield break;
+        }
+
         isReadyAnimating = true;
         if (level == 0)
         {
@@ -554,7 +644,10 @@ public class GameController : MonoBehaviour
     /// <returns></returns>
     private void RefreshLevelEndPosition()
     {
-        levelEndPoint = levelStartPoint + new Vector3((Math.Min((level / blockHorizontalAddLv), blockHorizontalMaxAmount) + 2) * Math.Min(blockHorizontalInterval * (1 + level / blockHorizontalInterAddLv * blockHorizontalInterAddRate), blockHorizontalMaxInterval),
+        if (Tutorial)
+            levelEndPoint = tutorEndAnchor[level].position;
+        else
+            levelEndPoint = levelStartPoint + new Vector3((Math.Min((level / blockHorizontalAddLv), blockHorizontalMaxAmount) + 2) * Math.Min(blockHorizontalInterval * (1 + level / blockHorizontalInterAddLv * blockHorizontalInterAddRate), blockHorizontalMaxInterval),
             Math.Min((level / blockVerticalAddLv), blockVerticalMaxAmount) * Math.Min(blockVerticalInterval * (1 + level / blockVerticalInterAddLv * blockVerticalInterAddRate), blockVerticalMaxInterval));
     }
 
@@ -882,6 +975,8 @@ public class GameController : MonoBehaviour
     public void ReadyLevel()
     {
         Time.timeScale = 1;
+        if (level >= tutorPieces.Count)
+            Tutorial = false;
         isPausing = false;
         RefreshLevelStartPosition();
         RefreshLevelEndPosition();

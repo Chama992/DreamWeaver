@@ -91,13 +91,13 @@ public class Player : MonoBehaviour
         LinkNodeChekc();
 
     }
-
     private void LinkNodeChekc()
     {
         RaycastHit2D hit = IsPieceChecked();
         if (hit)
         {
             currentPiece = hit.transform.gameObject.GetComponentInParent<Piece>();
+            currentPiece.ShowTutorial();
         }
         if (currentPiece != null)
         {

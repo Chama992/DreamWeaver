@@ -11,6 +11,11 @@ public class Piece : MonoBehaviour
     [Tooltip("碎片节点")]
     public Transform node;
 
+    [Tooltip("教程文案")]
+    public Transform tutorial;
+
+    [HideInInspector]public bool showed = false;
+
     [Tooltip("碎片节点已连接图案")]
     public Sprite nodedSprited;
 
@@ -35,6 +40,10 @@ public class Piece : MonoBehaviour
     /// 是否被连接
     /// </summary>
     [HideInInspector] public bool isLinked = false;
+    /// <summary>
+    /// 教程相关
+    /// </summary>
+    [HideInInspector] public bool isTutorial = false;
 
     protected virtual void Start()
     {
@@ -57,5 +66,14 @@ public class Piece : MonoBehaviour
     protected virtual void ResetPiece()
     {
         isLinked = false;
+    }
+
+    public virtual void ShowTutorial()
+    {
+        if (showed||tutorial==null)
+            return;
+
+        showed = true;
+        FX.instance.SmoothSizeAppear(tutorial.gameObject);
     }
 }

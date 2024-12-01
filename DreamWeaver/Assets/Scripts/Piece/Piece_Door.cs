@@ -8,12 +8,15 @@ public class Piece_Door : Piece
     public static Action onCloseDoor;
     public static bool isInteracting;
 
+    [SerializeField] private Transform closeTutor;
+    public Transform openTutor;
     public Transform door;
     [SerializeField] private Sprite OpenSprite;
     [SerializeField] private Sprite CloseSprite;
     [HideInInspector] private SpriteRenderer doorSr;
     [HideInInspector] public Piece_Door relatedDoor;
     [HideInInspector] public bool isOpen = false;
+    private bool alsoShowed;
 
     protected override void Start()
     {
@@ -29,6 +32,11 @@ public class Piece_Door : Piece
         {
             if (!isOpen)
             {
+                if(!alsoShowed)
+                {
+                    alsoShowed = true;
+                    FX.instance.SmoothSizeAppear(relatedDoor.openTutor.gameObject);
+                }
                 isInteracting = true;
                 isOpen = true;
                 doorSr.sprite = OpenSprite;
@@ -52,7 +60,7 @@ public class Piece_Door : Piece
                 GameController.instance.player.CrossDoor?.Invoke(relatedDoor.transform.position,relatedDoor.door.position);
                 onCloseDoor?.Invoke();
                 StartCoroutine(DoorCD());
-                MySoundManager.PlayOneAudio("门开");
+                MySoundManager.PlayOneAudio("门关");
             }
         }
     }
@@ -61,9 +69,15 @@ public class Piece_Door : Piece
     {
         yield return new WaitForSeconds(.5f);
         isInteracting = false;
-        MySoundManager.PlayOneAudio("门关");
     }
 
+    public override void ShowTutorial()
+    {
+        if (showed || tutorial == null)
+            return;
+        base.ShowTutorial();
+        relatedDoor.showed = true;
+    }
     protected override void ResetPiece()
     {
         base.ResetPiece();

@@ -225,12 +225,17 @@ public class InGameUIManager : SingleTon<InGameUIManager>
     {
         FreshPropPanelComplete();
         player.Props.props = new Dictionary<int, int>(propFrameUISave);
+        List<int> needToRemove = new();
         foreach (int key in player.Props.props.Keys)
         {
             if (player.Props.props[key] == 0)
             {
-                player.Props.props.Remove(key);
+                needToRemove.Add(key);
             }
+        }
+        foreach (int key in needToRemove)
+        {
+            player.Props.props.Remove(key);
         }
     }
 }

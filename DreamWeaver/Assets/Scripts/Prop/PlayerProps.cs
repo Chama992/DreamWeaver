@@ -62,11 +62,11 @@ public class PlayerProps
         switch (propType)
         {
             case PropType.Fireworks:
-                propEffectorManager.AddPropEffector<Firework>();
+                propEffectorManager.AddPropEffector<Firework>(propId);
                 return true;
                 break;
             case PropType.Feather:
-                propEffectorManager.AddPropEffector<Feather>();
+                propEffectorManager.AddPropEffector<Feather>(propId);
                 return true;
                 break;
             case PropType.HookLock:
@@ -74,25 +74,25 @@ public class PlayerProps
                     useProp = false;
                 else
                 {
-                    propEffectorManager.AddPropEffector<HookLock>();
+                    propEffectorManager.AddPropEffector<HookLock>(propId);
                     player.canGrap = false;
                 }
                 break;
             case PropType.Bomb:
                 if (player.IsGroundChecked())
-                    propEffectorManager.AddPropEffector<Bomb>();
+                    propEffectorManager.AddPropEffector<Bomb>(propId);
                 else
                     useProp = false;
                 break;
             case PropType.Reset:
                 InGameUIManager.Instance.propFrameUISave[propId]--;
-                propEffectorManager.AddPropEffector<Reset>();
+                propEffectorManager.AddPropEffector<Reset>(propId);
                 break;
             case PropType.Hammer:
                 if (!player.canBuild)
                     useProp = false;
                 else
-                    propEffectorManager.AddPropEffector<Hammer>();
+                    propEffectorManager.AddPropEffector<Hammer>(propId);
                 break;
             default:
                 break;

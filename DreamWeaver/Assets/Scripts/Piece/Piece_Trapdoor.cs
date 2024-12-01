@@ -25,6 +25,7 @@ public class Piece_Trapdoor : Piece
             {
                 Right.Rotate(0, 0, Time.deltaTime * openSpeed);
             }
+            MySoundManager.PlayOneAudio("活板门打开");
         }
         if((GameController.instance.player.transform.position-checkPoint.position).magnitude<GameController.instance.interactRatio)
         {

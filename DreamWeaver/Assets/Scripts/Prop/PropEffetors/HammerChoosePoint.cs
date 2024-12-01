@@ -27,6 +27,7 @@ public class HammerChoosePoint : MonoBehaviour
                 break;
             }
         }
+        MySoundManager.PlayOneAudio("¹¤³Ì´¸");
         GameController.instance.otherPieces.Add(GameController.instance.GeneratePiece(piece, point, false));
         FindObjectOfType<PropEffectorManager>().position2Generate.Remove(point);
         PieceGenerated?.Invoke();

@@ -17,8 +17,8 @@ public class PlayerNodeControl : MonoBehaviour
         player = gameObject.GetComponentInParent<Player>();
         player.CrossDoor += OnCrossDoor;
         lineRenderer = gameObject.AddComponent<LineRenderer>();
-        lineRenderer.startWidth = 0.3f;
-        lineRenderer.endWidth = 0.3f;
+        lineRenderer.startWidth = 0.25f;
+        lineRenderer.endWidth = 0.25f;
         lineRenderer.sortingLayerName = "Player";
         lineRenderer.material = Material;
         lineRenderer.startColor = Color.red;
@@ -55,8 +55,10 @@ public class PlayerNodeControl : MonoBehaviour
         {
             CancleLinkNode(pieceIndex);
             GameController.instance.TryDisconnectNode(piece);
+            MySoundManager.PlayOneAudio("取消连接");
             return;
         }
+        MySoundManager.PlayOneAudio("连接");
         GameController.instance.ConnectNode(piece);
         pointCount++;
         lineRenderer.positionCount = pointCount;

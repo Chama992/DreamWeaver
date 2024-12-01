@@ -8,9 +8,9 @@ public class Bomb : PropEffector
     private float radius;
     private float waitTime;
     private GameObject bomb;
-    public override void Initialize(PropEffectorManager _manager)
+    public override void Initialize(PropEffectorManager _manager, int _id)
     {
-        base.Initialize(_manager);
+        base.Initialize(_manager,_id);
         PropEffectorType = PropEffectorType.Constant;
         force = _manager.bombForce;
         forceUp = _manager.bombForceUp;
@@ -35,6 +35,7 @@ public class Bomb : PropEffector
                 player.Rb.velocity = new Vector2(player.Rb.velocity.x, 0);
                 player.Rb.AddForce((collider2D.transform.position - bomb.transform.position).normalized * force + Vector3.up * forceUp, ForceMode2D.Impulse);
             }
+            MySoundManager.PlayOneAudio("Õ¨µ¯");
         }
     }
 }

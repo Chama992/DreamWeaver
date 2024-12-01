@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: 1
   m_EditorClassIdentifier: 
   propID: 1
-  propName: "\u70DF\u82B1"
-  propDescription: "\u4EA7\u751F\u4E00\u4E2A\u5411\u4E0A\u7684\u63A8\u529B"
+  propName: FireWork
+  propDescription: Generate an upward Force
   propIcon: {fileID: -1669697398, guid: f065c9a4455306549b5df1deff5a5246, type: 3}
   propType: 0
   propEffectorType: 0

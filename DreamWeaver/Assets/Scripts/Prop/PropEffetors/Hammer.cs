@@ -13,7 +13,7 @@ public class Hammer : PropEffector
         propEffectCounter = _manager.hammerPropDuration;
         PropEffectorType = PropEffectorType.Constant;
         pointPrefab = Resources.Load<GameObject>("Prefab/ChoosePoint") ;
-        foreach (Vector3 position in GameController.instance.pieceGenePositions)
+        foreach (Vector3 position in player.GetComponent<PropEffectorManager>().position2Generate)
         {
             GameObject point = GameObject.Instantiate(pointPrefab, position, Quaternion.identity);
             HammerChoosePoint  hammerChoosePoint =  point.GetComponent<HammerChoosePoint>();

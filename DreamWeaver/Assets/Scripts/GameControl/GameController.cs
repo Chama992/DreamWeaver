@@ -930,6 +930,7 @@ public class GameController : MonoBehaviour
         {
             Destroy(otherPieces[i].gameObject);
         }
+        otherPieces.Clear();
         StartCoroutine(ResetLevelAnim());
     }
 
@@ -960,8 +961,8 @@ public class GameController : MonoBehaviour
         if (!GameController.instance.isGaming)
             return false;
 
-        ResetLevel();
         ReadyLevel();
+        ResetLevel();
         return true;
     }
 

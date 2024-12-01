@@ -70,7 +70,7 @@ public class Piece_Wheel : Piece
             Transform thisCd = cds[i];
             Vector3 thisRelativePosition = thisCd.transform.position - colliders.transform.position;
             thisRelativePosition = Vector3.RotateTowards(thisRelativePosition, nextCdsRelaPosition[i], speed * Time.deltaTime,0);
-            wheel.transform.Rotate(0, 0, speed * Time.deltaTime);
+            wheel.transform.Rotate(0, 0, speed * Time.deltaTime*10);
             thisCd.transform.position = thisRelativePosition + colliders.transform.position;
 
             if (cds[i].GetComponent<BoxCollider2D>().IsTouching(GameController.instance.player.GetComponent<Collider2D>()) && GameController.instance.player.transform.parent != cds[i])

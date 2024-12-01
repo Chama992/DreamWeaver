@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class UI_Out : MonoBehaviour
 {
+    [SerializeField] private Color startColor;
+    [SerializeField] private Color endColor;
     [SerializeField] private Transform inUI;
     [SerializeField] private Transform inGameBG;
     [SerializeField] private Transform startGame;
@@ -38,6 +40,10 @@ public class UI_Out : MonoBehaviour
 
     public void RefreshUI_Start()
     {
+        FX.instance.SmoothRefresh(startColor, 1.5f, RefreshUI_Start_CallBack);
+    }
+    public void RefreshUI_Start_CallBack()
+    {
         inUI.gameObject.SetActive(true);
         inGameBG.gameObject.SetActive(true);
         startGame.gameObject.SetActive(false);
@@ -52,6 +58,10 @@ public class UI_Out : MonoBehaviour
     }
     public void RefreshUI_End()
     {
+        FX.instance.SmoothRefresh(endColor, 2.5f, RefreshUI_End_CallBack);
+    }
+    public void RefreshUI_End_CallBack()
+    {
         inUI.gameObject.SetActive(false);
         level.text = GameController.instance.level.ToString();
         score.text = GameController.instance.score.ToString();
@@ -59,8 +69,12 @@ public class UI_Out : MonoBehaviour
         pauseGame.gameObject.SetActive(false);
         endGame.gameObject.SetActive(true);
     }
+
+
     public void RefreshHint()
     {
+        if (GameController.instance.level == 0)
+            return;
         FX.instance.SmoothColorAppear<TextMeshProUGUI>(hint);
         FX.instance.SmoothColorAppear<TextMeshProUGUI>(hintLevel);
         hintLevel.text = GameController.instance.level.ToString();

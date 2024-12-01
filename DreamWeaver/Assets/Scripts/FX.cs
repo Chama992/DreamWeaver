@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using Unity.VisualScripting;
@@ -9,6 +10,7 @@ public class FX : MonoBehaviour
 {
     public static FX instance;
 
+    [SerializeField] private UI_ResetAnim resetAnim;
 
     private void Awake()
     {
@@ -147,5 +149,24 @@ public class FX : MonoBehaviour
 
         if (_gameObject.GetComponent<Image>() != null && _appearOrDisappear == 1)
             GameController.instance.isReadyAnimating = false;
+    }
+
+    /// <summary>
+    /// 平滑刷新界面
+    /// </summary>
+    public void SmoothRefresh(Color _color,float _waitTime, Action _callBack = null)
+    {
+        StartCoroutine(SmoothRefresh_Anim(_color, _waitTime,_callBack));
+    }
+    private IEnumerator SmoothRefresh_Anim(Color _color,float _waitTime,Action _callBack = null)
+    {
+        GameController.instance.isResetAnimating = true;
+        resetAnim.gameObject.SetActive(true);
+        resetAnim.GetComponent<Image>().color = _color;
+        resetAnim.anim.SetBool("isStart", true);
+        yield return new WaitForSecondsRealtime(_waitTime);
+        _callBack?.Invoke();
+        GameController.instance.isResetAnimating = false;
+        resetAnim.anim.SetBool("isStart", false);
     }
 }

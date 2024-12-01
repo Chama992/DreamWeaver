@@ -18,9 +18,6 @@ public class GameController : MonoBehaviour
     [Tooltip("玩家")]
     public Player player;
 
-    [Tooltip("重置动画")]
-    public UI_ResetAnim resetAnim;
-
     [Tooltip("黑洞")]
     public GameObject blackHole;
 
@@ -29,6 +26,9 @@ public class GameController : MonoBehaviour
 
     [Tooltip("交互器")]
     public StandaloneInputModule InputModule;
+
+    [Tooltip("刷新颜色")]
+    public Color resetColor;
 
     [Header("地图相关")]
     [Tooltip("全局碎片数据列表")]
@@ -209,12 +209,12 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// 是否正在暂停
     /// </summary>
-    public bool isPausing { get; private set; }
+    public bool isPausing { get;  set; }
 
     /// <summary>
     /// 游戏是否正在进行
     /// </summary>
-    public bool isGaming { get; private set; }
+    public bool isGaming { get;  set; }
 
     /// <summary>
     /// 是否正在播放重置动画
@@ -841,8 +841,8 @@ public class GameController : MonoBehaviour
     {
         if (!isPausing)
             return;
-        isGaming = false;
         player.gameObject.SetActive(false);
+        isGaming = false;
         isPausing = true;
         onGameEnd?.Invoke();
     }
@@ -931,15 +931,12 @@ public class GameController : MonoBehaviour
             Destroy(otherPieces[i].gameObject);
         }
         otherPieces.Clear();
-        StartCoroutine(ResetLevelAnim());
+        onLevelReset?.Invoke();
+        FX.instance.SmoothRefresh(resetColor,2f,ResetLevelCallBack);
     }
 
-    private IEnumerator ResetLevelAnim()
+    private void ResetLevelCallBack()
     {
-        isResetAnimating = true;
-        resetAnim.gameObject.SetActive(true);
-        onLevelReset?.Invoke();
-        yield return new WaitForSeconds(2);
         Solution.Clear();
         Solution.Push(levelPieces.Find(t => t.transform.position == levelStartPoint).node.position);
         RefreshNodedLevelWeaveLength();
@@ -948,9 +945,6 @@ public class GameController : MonoBehaviour
         RefreshOthers();
         player.transform.position = levelPieces.Find(t => t.transform.position == levelStartPoint).node.position;
         StartLevel();
-        resetAnim.anim.SetBool("isStart", false);
-        isResetAnimating = false;
-        
     }
 
     /// <summary>

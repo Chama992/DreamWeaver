@@ -783,7 +783,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 1
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -843,7 +843,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -336.07596, y: 279}
+  m_AnchoredPosition: {x: -211.07596, y: 279}
   m_SizeDelta: {x: 131.2797, y: 122.5238}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &133990552
@@ -2519,10 +2519,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1336130277}
-  resetAnim: {fileID: 937860379}
   blackHole: {fileID: 556817302177590367, guid: c0f91ab5a9b24834c8b3c9c4c062e50e, type: 3}
   interactRatio: 3
   InputModule: {fileID: 227186150}
+  resetColor: {r: 0.8490566, g: 0.25898883, b: 0.25898883, a: 1}
   pieces:
   - {fileID: 284421843422116301, guid: f0ebd7abb0ff171428e9d97c6b648bb6, type: 3}
   - {fileID: 1302710236246886096, guid: cecae4158388ea04383e516d68f68179, type: 3}
@@ -2572,6 +2572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1154a759e088bc04790c7d30feb5f8ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  resetAnim: {fileID: 937860379}
 --- !u!4 &904843330
 Transform:
   m_ObjectHideFlags: 0
@@ -2766,7 +2767,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 949bcf5b0d020b8408153aa6d575cb0c, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -3640,6 +3641,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MainMenu: {fileID: 187262501}
+  refreshColor: {r: 0.7012578, g: 0.91685385, b: 1, a: 1}
 --- !u!114 &1430333854
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4364,7 +4366,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -704, y: 279}
+  m_AnchoredPosition: {x: -579, y: 279}
   m_SizeDelta: {x: 604.5697, y: 122.5238}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1591775414
@@ -4395,7 +4397,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u8FDB\u5165\uFF1A\u5C42\u7EA7"
+  m_text: 'Enter Depth: '
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: caa4ed9a0522d9946a195188cdfd4275, type: 2}
   m_sharedMaterial: {fileID: -2416409897172382830, guid: caa4ed9a0522d9946a195188cdfd4275, type: 2}
@@ -4428,7 +4430,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 4
   m_VerticalAlignment: 512
   m_textAlignment: 65535
@@ -4523,6 +4525,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e671be28525cc2644ba11b7bc9e7904d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startColor: {r: 0.9622642, g: 0.9210074, b: 0.83214664, a: 1}
+  endColor: {r: 0.98742133, g: 0.9258962, b: 0.47507998, a: 1}
   inUI: {fileID: 21586768}
   inGameBG: {fileID: 1773433244}
   startGame: {fileID: 2007643001}

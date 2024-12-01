@@ -5,6 +5,7 @@ using UnityEngine;
 public class FirstUIControl : MonoBehaviour
 {
     public GameObject MainMenu;
+    [SerializeField] private Color refreshColor;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,8 +17,13 @@ public class FirstUIControl : MonoBehaviour
     {
         if (Input.anyKeyDown)
         {
-            gameObject.SetActive(false);
-            MainMenu.SetActive(true);
+            FX.instance.SmoothRefresh(refreshColor,1.5f,CallBack);
         }
+    }
+
+    private void CallBack()
+    {
+        gameObject.SetActive(false);
+        MainMenu.SetActive(true);
     }
 }

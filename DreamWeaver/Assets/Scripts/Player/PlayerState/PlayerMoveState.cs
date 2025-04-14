@@ -26,6 +26,6 @@ public class PlayerMoveState : PlayerGroundedState
             return;
         if (xInput == 0 || player.IsWallChecked())
             StateMachine.ChangeState(player.IdleState);
-        player.SetVelocity(xInput * player.moveSpeed, rb.velocity.y);
+        player.SetVelocity(xInput * player.moveSpeed, -10);
     }
 }

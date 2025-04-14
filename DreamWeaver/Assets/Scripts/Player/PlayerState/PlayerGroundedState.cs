@@ -29,7 +29,10 @@ public class PlayerGroundedState : PlayerState
         base.Update();
         if (!player.IsGroundChecked())
             StateMachine.ChangeState(player.AirState);
-        if (Input.GetKeyDown(KeyCode.Space) && player.IsGroundChecked())
+        if ((Input.GetKeyDown(KeyCode.Space)|| Input.GetKeyDown(KeyCode.W)) && player.IsGroundChecked())
+        {
+            MySoundManager.PlayAudio("跳跃");
             StateMachine.ChangeState(player.JumpState);
+        }
     }
 }

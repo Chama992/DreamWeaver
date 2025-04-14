@@ -22,6 +22,7 @@ public class PlayerIdleState : PlayerGroundedState
     public override void Update()
     {
         base.Update();
+
         if (StateMachine.currentState != player.IdleState)
             return;
         //这么多主要用于判断临近墙不能走

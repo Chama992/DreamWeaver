@@ -17,7 +17,7 @@ using UnityEngine.Audio;
  */
 public  class MySoundManager : SingleTon<MySoundManager>
 {
-    public const string AUDIO_PATH = "Audio/Sound/";//音效路径
+    public const string AUDIO_PATH = "Audio/";//音效路径
     private static GameObject oneShotObj;
     private static AudioSource oneShotAudioSource;
     private static GameObject defalutSoundObj_1;//没想好干啥,也许用来做BGM？可BGM直接在unity里面设置不就好了(没错我就是懒
@@ -33,12 +33,9 @@ public  class MySoundManager : SingleTon<MySoundManager>
         {
             oneShotObj = new GameObject(AUDIO_PATH + "OneShotSound");
             oneShotAudioSource = oneShotObj.AddComponent<AudioSource>();
-            //添加AudioMixer
-            oneShotAudioSource.outputAudioMixerGroup = Instance.audioMixerGroup;
-            
-            
         }
-        oneShotAudioSource.pitch = Random.Range(0.8f, 1.2f);
+        oneShotAudioSource.volume = Random.Range(0.25f, 0.4f);
+        // oneShotAudioSource.volume = Random.Range(0.6f, 0.8f);
         oneShotAudioSource.PlayOneShot(GetAudio(_sfxName));
     }
 
@@ -64,11 +61,9 @@ public  class MySoundManager : SingleTon<MySoundManager>
             {
                 oneShotObj = new GameObject(AUDIO_PATH + "OneShotSound");
                 oneShotAudioSource = oneShotObj.AddComponent<AudioSource>();
-                
-                //添加AudioMixer
-                oneShotAudioSource.outputAudioMixerGroup = Instance.audioMixerGroup;
+                oneShotAudioSource.volume = Random.Range(0.25f, 0.4f);
             }
-            oneShotAudioSource.pitch = Random.Range(0.8f, 1.2f);
+            
             oneShotAudioSource.PlayOneShot(GetAudio(_sfxName));
             SfxName_PlayTime[_sfxName] = curTime;
         }

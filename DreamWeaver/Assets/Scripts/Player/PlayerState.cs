@@ -12,7 +12,8 @@ public class PlayerState
     protected float yInput;
     protected Rigidbody2D rb;
     protected float stateTimer;
-    protected bool animTriggerCalled; 
+    protected bool animTriggerCalled;
+    public bool stateActive;
     
     public PlayerState(Player _player, PlayerStateMachine _playerStateMachine, string _animBoolName)
     { 
@@ -26,6 +27,7 @@ public class PlayerState
     {
         player.Anim.SetBool(animBoolName, true);
         animTriggerCalled = false;
+        stateActive = true;
         // Debug.Log($"enter the {StateMachine.currentState.GetType().Name} state");
     }
 
@@ -41,6 +43,7 @@ public class PlayerState
     {
         player.Anim.SetBool(animBoolName, false);
         // Debug.Log($"exit the {StateMachine.currentState.GetType().Name} state");
+        stateActive = false;
     }
 
     public void AnimationFinishTrigger()

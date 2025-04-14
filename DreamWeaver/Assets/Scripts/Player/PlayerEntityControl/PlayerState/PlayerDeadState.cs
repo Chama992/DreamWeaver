@@ -3,7 +3,7 @@
 
 public class PlayerDeadState : PlayerState
 {
-    public PlayerDeadState(Player _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
+    public PlayerDeadState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
     {
         
     }

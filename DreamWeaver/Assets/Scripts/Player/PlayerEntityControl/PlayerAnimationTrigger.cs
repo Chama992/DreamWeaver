@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerAnimationTrigger : MonoBehaviour
 {
-    Player player => GetComponentInParent<Player>();
+    PlayerEntityController player => GetComponentInParent<PlayerEntityController>();
     /// <summary>
     /// ���ڶ�������֡���ж�
     /// </summary>

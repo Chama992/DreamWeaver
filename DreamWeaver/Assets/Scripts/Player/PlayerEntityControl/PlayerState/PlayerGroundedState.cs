@@ -10,7 +10,7 @@ public class PlayerGroundedState : PlayerState
 {
     private  readonly int _weaponIndex = Animator.StringToHash("WeaponIndex");
 
-    public PlayerGroundedState(Player _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
+    public PlayerGroundedState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
     {
     }
 

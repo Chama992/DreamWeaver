@@ -6,7 +6,7 @@ using UnityEngine;
 public class PlayerState
 {
     protected PlayerStateMachine StateMachine;
-    protected Player player;
+    protected PlayerEntityController player;
     private string animBoolName;
     protected float xInput;
     protected float yInput;
@@ -15,7 +15,7 @@ public class PlayerState
     protected bool animTriggerCalled;
     public bool stateActive;
     
-    public PlayerState(Player _player, PlayerStateMachine _playerStateMachine, string _animBoolName)
+    public PlayerState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName)
     { 
         this.StateMachine = _playerStateMachine;
         this.player = _player;

@@ -85,7 +85,7 @@ public class PlayerProps
                 }
                 break;
             case PropType.Bomb:
-                if (player.IsGroundChecked())
+                if (player.PlayerEntityController.IsGroundChecked())
                     propEffectorManager.AddPropEffector<Bomb>(propId);
                 else
                     useProp = false;

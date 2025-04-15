@@ -1036,7 +1036,7 @@ public class GameController : MonoBehaviour
     /// </summary>
     public void ResetLevel()
     {
-        GameController.instance.player.StateMachine.ChangeState(GameController.instance.player.IdleState);
+        GameController.instance.player.PlayerEntityController.StateMachine.ChangeState(GameController.instance.player.PlayerEntityController.IdleState);
         for (int i = 0; i < otherPieces.Count; i++)
         {
             Destroy(otherPieces[i].gameObject);

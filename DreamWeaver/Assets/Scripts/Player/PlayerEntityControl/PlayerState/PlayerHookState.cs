@@ -8,7 +8,9 @@ public class PlayerHookState : PlayerState
     private Collider2D other;
     private float hookSpeed;
     // public bool canHook;
-    public PlayerHookState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
+
+
+    public PlayerHookState(PlayerEntityController playerEntity, PlayerStateMachine _playerStateMachine, string _animBoolName, PlayerInputCheck _playerInputCheck) : base(playerEntity, _playerStateMachine, _animBoolName, _playerInputCheck)
     {
     }
 

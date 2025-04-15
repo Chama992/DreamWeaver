@@ -4,26 +4,64 @@ using UnityEngine;
 
 public class PlayerJumpState : PlayerState
 {
-    public PlayerJumpState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
+    private float jumpStartHeight;
+    private float jumpLerpSpeed;
+    public PlayerJumpState(PlayerEntityController playerEntity, PlayerStateMachine _playerStateMachine, string _animBoolName, PlayerInputCheck _playerInputCheck) : base(playerEntity, _playerStateMachine, _animBoolName, _playerInputCheck)
     {
+        jumpLerpSpeed = 0.1f;
     }
-
     public override void Enter()
     {
         base.Enter();
-        rb.velocity = new Vector2(rb.velocity.x, player.jumpForce);//给一个瞬间的力
+        rb.velocity = new Vector2(rb.velocity.x, playerEntity.jumpFirstVelo);//给一个瞬间的初速度
+        jumpStartHeight = playerEntity.transform.position.y;
     }
 
     public override void Exit()
     {
         base.Exit();
+        jumpStartHeight = 0;
     }
 
     public override void Update()
     {
         base.Update();
         if (rb.velocity.y < 0)
-            StateMachine.ChangeState(player.AirState);
-        player.SetVelocity(xInput * player.airMoveSpeed, rb.velocity.y);
+            StateMachine.ChangeState(playerEntity.AirState);
+        float yvelocity = rb.velocity.y;
+        yvelocity = JumpHold(yvelocity);
+        if (rb.transform.position.y - jumpStartHeight < playerEntity.jumpMaxHeight * 0.8f)
+        {
+            yvelocity = JumpHold(yvelocity);
+        }
+        else
+        {
+            yvelocity = JumpLerp2Zero(yvelocity);
+        }
+        playerEntity.SetVelocity(xInput * playerEntity.airMoveSpeed, yvelocity);
+    }
+    
+    private float JumpLerp2Zero(float yvelocity)
+    {
+        if (rb.transform.position.y - jumpStartHeight > playerEntity.jumpMaxHeight)
+        {
+            return 0;
+        }
+        return Mathf.Lerp(yvelocity,0,jumpLerpSpeed);
+        
+    }
+
+    private float JumpHold(float yvelocity)
+    {
+        if (rb.velocity.y < playerEntity.jumpMaxVelo && playerInputCheck.PlayerInput.Jump.IsInProgress())
+        {
+            yvelocity += playerEntity.jumpAcceleration * Time.deltaTime;
+            yvelocity = yvelocity > playerEntity.jumpMaxVelo? playerEntity.jumpMaxVelo : yvelocity;
+        }
+        else
+        {
+            yvelocity = rb.velocity.y;
+        }
+        return yvelocity;
     }
 }

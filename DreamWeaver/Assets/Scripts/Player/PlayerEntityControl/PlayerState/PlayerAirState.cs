@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerAirState : PlayerState
 {
-    public PlayerAirState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
+    public PlayerAirState(PlayerEntityController playerEntity, PlayerStateMachine _playerStateMachine, string _animBoolName, PlayerInputCheck _playerInputCheck) : base(playerEntity, _playerStateMachine, _animBoolName, _playerInputCheck)
     {
     }
 
@@ -21,13 +21,10 @@ public class PlayerAirState : PlayerState
     public override void Update()
     {
         base.Update();
-        if (player.IsGroundChecked())
+        playerEntity.SetVelocity(xInput * playerEntity.airMoveSpeed, rb.velocity.y);
+        if (playerEntity.isOnGround)
         {
-            StateMachine.ChangeState(player.IdleState);
+            StateMachine.ChangeState(playerEntity.IdleState);
         }
-        // if (player.IsWallChecked())
-        //     StateMachine.ChangeState(player.WallSlideState);
-        player.SetVelocity(xInput * player.airMoveSpeed, rb.velocity.y);
-
     }
 }

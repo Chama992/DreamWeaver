@@ -3,9 +3,8 @@
 
 public class PlayerDeadState : PlayerState
 {
-    public PlayerDeadState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
+    public PlayerDeadState(PlayerEntityController playerEntity, PlayerStateMachine _playerStateMachine, string _animBoolName, PlayerInputCheck _playerInputCheck) : base(playerEntity, _playerStateMachine, _animBoolName, _playerInputCheck)
     {
-        
     }
 
     public override void Enter()

@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerState
 {
+    protected PlayerInputCheck playerInputCheck;
     protected PlayerStateMachine StateMachine;
-    protected PlayerEntityController player;
+    protected PlayerEntityController playerEntity;
     private string animBoolName;
     protected float xInput;
     protected float yInput;
@@ -15,33 +17,33 @@ public class PlayerState
     protected bool animTriggerCalled;
     public bool stateActive;
     
-    public PlayerState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName)
+    public PlayerState(PlayerEntityController playerEntity, PlayerStateMachine _playerStateMachine, string _animBoolName, PlayerInputCheck _playerInputCheck)
     { 
         this.StateMachine = _playerStateMachine;
-        this.player = _player;
+        this.playerEntity = playerEntity;
         this.animBoolName = _animBoolName;
-        rb = _player.Rb;
+        rb = playerEntity.Rb;
+        playerInputCheck = _playerInputCheck;
     }
 
     public virtual void Enter()
     {
-        player.Anim.SetBool(animBoolName, true);
+        playerEntity.Anim.SetBool(animBoolName, true);
         animTriggerCalled = false;
         stateActive = true;
-        // Debug.Log($"enter the {StateMachine.currentState.GetType().Name} state");
     }
 
     public virtual void Update()
     {
         stateTimer -= Time.deltaTime;
-        xInput = Input.GetAxisRaw("Horizontal");
-        yInput = Input.GetAxisRaw("Vertical");
-        player.Anim.SetFloat("yVelocity",  rb.velocity.y);
+        xInput = playerInputCheck.PlayerInput.Move.ReadValue<Vector2>().x;
+        yInput = playerInputCheck.PlayerInput.Move.ReadValue<Vector2>().y;
+        playerEntity.Anim.SetFloat("yVelocity",  rb.velocity.y);
     }
 
     public virtual void Exit() 
     {
-        player.Anim.SetBool(animBoolName, false);
+        playerEntity.Anim.SetBool(animBoolName, false);
         // Debug.Log($"exit the {StateMachine.currentState.GetType().Name} state");
         stateActive = false;
     }

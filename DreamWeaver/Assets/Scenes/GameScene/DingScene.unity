@@ -4440,6 +4440,7 @@ GameObject:
   - component: {fileID: 1336130281}
   - component: {fileID: 1336130280}
   - component: {fileID: 1336130279}
+  - component: {fileID: 1336130284}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -4459,9 +4460,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24c702e3997ff594aa25c9720fbb2a65, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 12.5
-  jumpForce: 20
-  airMoveSpeed: 10
   PlayerNodeControl: {fileID: 2001528352}
   groundCheck1: {fileID: 1160364499}
   groundCheck2: {fileID: 1430630771}
@@ -4469,8 +4467,6 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 8
-  wallCheck: {fileID: 2004877392}
-  wallCheckDistance: 0.2
   canGrap: 0
   canBuild: 1
 --- !u!4 &1336130278
@@ -4702,6 +4698,29 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: -0.122458935}
   m_Size: {x: 1.4622536, y: 2.5809326}
   m_Direction: 0
+--- !u!114 &1336130284
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1336130276}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 535f38a13a5b4446bf700c4a6e153c3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 12.5
+  jumpForce: 20
+  airMoveSpeed: 10
+  groundCheck1: {fileID: 1160364499}
+  groundCheck2: {fileID: 1430630771}
+  groundCheckDistance: 0.2
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 8
+  wallCheck: {fileID: 2004877392}
+  wallCheckDistance: 0.2
 --- !u!1 &1353262192
 GameObject:
   m_ObjectHideFlags: 0

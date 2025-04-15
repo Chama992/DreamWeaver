@@ -8,15 +8,14 @@ using UnityEngine;
 /// </summary>
 public class PlayerGroundedState : PlayerState
 {
-    private  readonly int _weaponIndex = Animator.StringToHash("WeaponIndex");
-
-    public PlayerGroundedState(PlayerEntityController _player, PlayerStateMachine _playerStateMachine, string _animBoolName) : base(_player, _playerStateMachine, _animBoolName)
+    public PlayerGroundedState(PlayerEntityController playerEntity, PlayerStateMachine _playerStateMachine, string _animBoolName, PlayerInputCheck _playerInputCheck) : base(playerEntity, _playerStateMachine, _animBoolName, _playerInputCheck)
     {
     }
 
     public override void Enter()
     {
         base.Enter();
+        playerEntity.SetVelocity(rb.velocity.x,0);
     }
 
     public override void Exit()
@@ -27,12 +26,12 @@ public class PlayerGroundedState : PlayerState
     public override void Update()
     {
         base.Update();
-        if (!player.IsGroundChecked())
-            StateMachine.ChangeState(player.AirState);
-        if ((Input.GetKeyDown(KeyCode.Space)|| Input.GetKeyDown(KeyCode.W)) && player.IsGroundChecked())
+        if (!playerEntity.isOnGround)
+            StateMachine.ChangeState(playerEntity.AirState);
+        if (playerInputCheck.PlayerInput.Jump.WasPerformedThisFrame() && playerEntity.isOnGround)
         {
             MySoundManager.PlayAudio("跳跃");
-            StateMachine.ChangeState(player.JumpState);
+            StateMachine.ChangeState(playerEntity.JumpState);
         }
     }
 }

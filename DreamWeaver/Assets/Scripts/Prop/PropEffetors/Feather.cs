@@ -21,7 +21,7 @@ public class Feather : PropEffector
             propActive = false;
             return;
         }
-        if (player.AirState.stateActive)
+        if (player.PlayerEntityController.AirState.stateActive)
         {
             player.Rb.velocity = new Vector2(player.Rb.velocity.x, player.Rb.velocity.y * decreaseScale);
         }

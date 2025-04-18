@@ -868,7 +868,7 @@ Transform:
   m_GameObject: {fileID: 1048254459}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -0.34, y: 0, z: 0}
   m_LocalScale: {x: 0.65, y: 0.65, z: 0.65}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -897,6 +897,9 @@ MonoBehaviour:
   jumpMaxVelo: 25
   jumpAcceleration: 2.5
   jumpMaxHeight: 7
+  jumpLerpSpeed: 0.2
+  jumpBufferFrameCount: 10
+  jumpGraceFrameCount: 20
   airMoveSpeed: 10
   groundCheckPoint: {fileID: 937611053}
   groundCheckWidth: 0.6

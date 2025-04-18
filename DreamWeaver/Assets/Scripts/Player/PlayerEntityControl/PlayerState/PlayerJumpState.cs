@@ -8,7 +8,7 @@ public class PlayerJumpState : PlayerState
     private float jumpLerpSpeed;
     public PlayerJumpState(PlayerEntityController playerEntity, PlayerStateMachine _playerStateMachine, string _animBoolName, PlayerInputCheck _playerInputCheck) : base(playerEntity, _playerStateMachine, _animBoolName, _playerInputCheck)
     {
-        jumpLerpSpeed = 0.1f;
+        jumpLerpSpeed = playerEntity.jumpLerpSpeed;
     }
     public override void Enter()
     {
@@ -30,7 +30,7 @@ public class PlayerJumpState : PlayerState
             StateMachine.ChangeState(playerEntity.AirState);
         float yvelocity = rb.velocity.y;
         yvelocity = JumpHold(yvelocity);
-        if (rb.transform.position.y - jumpStartHeight < playerEntity.jumpMaxHeight * 0.8f)
+        if (rb.transform.position.y - jumpStartHeight < playerEntity.jumpMaxHeight * 0.9f)
         {
             yvelocity = JumpHold(yvelocity);
         }
@@ -47,8 +47,8 @@ public class PlayerJumpState : PlayerState
         {
             return 0;
         }
-        return Mathf.Lerp(yvelocity,0,jumpLerpSpeed);
-        
+        Debug.Log(Mathf.Lerp(yvelocity,0,jumpLerpSpeed * Time.deltaTime));
+        return Mathf.Lerp(yvelocity,0,jumpLerpSpeed * Time.deltaTime);
     }
 
     private float JumpHold(float yvelocity)
